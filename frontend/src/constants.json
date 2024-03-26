@@ -7,12 +7,14 @@
         {
           "label": "Single Family Dwelling",
           "value": 0,
-          "unit_load": 24
+          "unit_load": 24,
+          "lighting_df": 0
         },
         {
           "label": "Multiple Family Dwelling",
           "value": 1,
-          "unit_load": 24
+          "unit_load": 24,
+          "lighting_df":  0
         }
       ],
       "addons": []
@@ -24,87 +26,104 @@
         {
           "label": "Armories and Auditoriums",
           "value": 0,
-          "unit_load": 8
+          "unit_load": 8,
+          "lighting_df": null
         },
         {
           "label": "Banks",
           "value": 1,
-          "unit_load": 28
+          "unit_load": 28,
+          "lighting_df": null
         },
         {
           "label": "Barber shops and beauty parlors",
           "value": 2,
-          "unit_load": 24
+          "unit_load": 24,
+          "lighting_df": null
         },
         {
           "label": "Churches",
           "value": 3,
-          "unit_load": 8
+          "unit_load": 8,
+          "lighting_df": null
         },
         {
           "label": "Clubs",
           "value": 4,
-          "unit_load": 16
+          "unit_load": 16,
+          "lighting_df": null
         },
         {
           "label": "Court Rooms",
           "value": 5,
-          "unit_load": 16
+          "unit_load": 16,
+          "lighting_df": null
         },
         {
           "label": "Dwelling Units",
           "value": 6,
-          "unit_load": 24
+          "unit_load": 24,
+          "lighting_df": null
         },
         {
           "label": "Garages - commercial (storage)",
           "value": 7,
-          "unit_load": 4
+          "unit_load": 4,
+          "lighting_df": null
         },
         {
           "label": "Hospitals",
           "value": 8,
-          "unit_load": 16
+          "unit_load": 16,
+          "lighting_df": 1
         },
         {
           "label": "Hotels and motels, no cooking",
           "value": 9,
-          "unit_load": 16
+          "unit_load": 16,
+          "lighting_df": 2
         },
         {
           "label": "Industrial commercial (loft) buildings",
           "value": 10,
-          "unit_load": 16
+          "unit_load": 16,
+          "lighting_df": null
         },
         {
           "label": "Lodge rooms",
           "value": 11,
-          "unit_load": 12
+          "unit_load": 12,
+          "lighting_df": null
         },
         {
           "label": "Office buildings",
           "value": 12,
-          "unit_load": 28
+          "unit_load": 28,
+          "lighting_df": null
         },
         {
           "label": "Restaurants",
           "value": 13,
-          "unit_load": 16
+          "unit_load": 16,
+          "lighting_df": null
         },
         {
           "label": "Schools",
           "value": 14,
-          "unit_load": 24
+          "unit_load": 24,
+          "lighting_df": null
         },
         {
           "label": "Stores",
           "value": 15,
-          "unit_load": 24
+          "unit_load": 24,
+          "lighting_df": null
         },
         {
           "label": "Warehouses (storage)",
           "value": 16,
-          "unit_load": 2
+          "unit_load": 2,
+          "lighting_df": 3
         }
       ],
       "addons": [
@@ -326,5 +345,11 @@
         }
       ]
     }
+  ],
+  "lightingDemandFactors": [
+    [[3000, 100], [120000, 35], [null, 25]],
+    [[50000, 40], [null, 20]],
+    [[20000, 50], [100000, 40], [null, 30]],
+    [[12500, 100], [null, 50]]
   ]
 }

@@ -4,13 +4,14 @@
     import {writable} from "svelte/store";
     import {SaveJSON} from "../wailsjs/go/main/App.js";
 
-    let constants = {occupancyTypes: [], phaseTypes: [], loadSpecificationCategories: []};
+    let constants = {occupancyTypes: [], phaseTypes: [], loadSpecificationCategories: [], lightingDemandFactors: []};
 
     let projectData = writable({});
 
     // ui
     let showLoadSpecs = false;
     let showConsole = false;
+    let showSpecForm = false;
 
     let projectName = "";
     let floorArea = 0;
@@ -24,6 +25,7 @@
     let systemPhaseType = null;
     let sumOfSpecifications = {};
     let totalSumOfSpecs = 0;
+    let selectedLightingDemandFactorID = null;
     let applicationDemandFactor = 0;
     let amps = 0;
 
@@ -161,7 +163,8 @@
 
     function getSumOfSpecifications(){
         let sumOfSpecs = {};
-        let tempDemandFactor = 0;
+        let tempLightingDemandFactor = 0;
+        let tempConvenienceDemandFactor = 0;
         let tempOtherDemandFactor = 0;
         totalSumOfSpecs = 0;
 
@@ -185,8 +188,10 @@
                 sumOfSpecs[key]["sum"] = (sumOfSpecs[key]["sum"] * .8).toFixed(2);
             }
 
-            if(key === "Convenience outlet" || key === "Lighting"){
-                tempDemandFactor += parseFloat(value["sum"])
+            if(key === "Lighting"){
+                tempLightingDemandFactor += calculateDemandFactor(parseFloat(value["sum"]))
+            }else if(key === "Convenience outlet"){
+                tempConvenienceDemandFactor += parseFloat(value["sum"])
             }else{
                 tempOtherDemandFactor += parseFloat(value["sum"]);
             }
@@ -194,15 +199,47 @@
             // totalSumOfSpecs += parseFloat(sumOfSpecs[key]["sum"]);
         }
 
-        if(tempDemandFactor > 10000){
-            let tempExcess = tempDemandFactor - 10000;
-            tempDemandFactor = 10000 + (tempExcess * .5);
+        if(tempConvenienceDemandFactor > 10000){
+            let tempExcess = tempConvenienceDemandFactor - 10000;
+            tempConvenienceDemandFactor = 10000 + (tempExcess * .5);
         }
-        applicationDemandFactor = tempDemandFactor;
+        applicationDemandFactor = tempLightingDemandFactor + tempConvenienceDemandFactor;
         totalSumOfSpecs += applicationDemandFactor + tempOtherDemandFactor;
 
         onDestroy(specs);
         return sumOfSpecs;
+    }
+
+    function calculateDemandFactor(value){
+        console.log(value);
+        if(selectedLightingDemandFactorID !== null){
+            const rules = constants.lightingDemandFactors[selectedLightingDemandFactorID];
+
+            let remainder = value;
+            let total = 0;
+
+            for (let i = 0; i < rules.length; i++) {
+                const [max, percentage] = rules[i];
+                let applicableValue = 0;
+
+                if (max === null) {
+                    applicableValue = remainder;
+                } else if (remainder > max) {
+                    applicableValue = max - (rules[i - 1] ? rules[i - 1][0] : 0);
+                    remainder -= applicableValue;
+                } else {
+                    applicableValue = remainder;
+                    remainder = 0;
+                }
+
+                total += applicableValue * (percentage / 100);
+
+                // If remainder is zero after applying the current rule, break the loop
+                if (remainder === 0) break;
+            }
+            return total;
+        }
+        return value;
     }
 
     // Reactively update the available types and calculate load based on selections
@@ -225,6 +262,7 @@
         if (selectedTypeValue !== null && selectedOccupancyTypes.length > 0) {
             const type = selectedOccupancyTypes[selectedTypeValue];
             if (type) {
+
                 totalLoad = type.unit_load;
                 if (selectedAddOns.length > 0) {
                     if (selectedAddOnValue !== null && selectedAddOnValue !== "") {
@@ -233,11 +271,14 @@
                     }
                 }
                 loadByOccupancy = type ? totalLoad * floorArea : 0;
+                selectedLightingDemandFactorID = type.lighting_df;
             } else {
                 loadByOccupancy = 0;
+                selectedLightingDemandFactorID = null;
             }
         } else {
             loadByOccupancy = 0;
+            selectedLightingDemandFactorID = null;
         }
 
         if (selectedCategoryIndex !== null && selectedCategoryIndex !== "") {
@@ -245,6 +286,8 @@
         } else {
             hasCategoryTypes = false;
         }
+
+        showSpecForm = !!(selectedOccupancyValue !== null && floorArea > 0);
     }
 
 </script>
@@ -344,6 +387,7 @@
                     </div>
                 </div>
 
+                {#if showSpecForm}
                 <!-- begin spec form -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4">
                     <div class="h-20 py-4">
@@ -579,6 +623,7 @@
                     </div>
 
                 </div>
+                {/if} <!-- /showSpecForm -->
             </div>
         </main>
         <aside class="transition-all h-full duration-500 bg-white {showConsole ? 'w-1/3' : 'hidden'}">
@@ -599,6 +644,10 @@
                         <p><span class="font-semibold">Application Demand Factor:</span> <code>{applicationDemandFactor} VA</code></p>
                         <p><span class="font-bold">Total:</span> <code>{totalSumOfSpecs} VA</code></p>
                     </div>
+
+                    <pre>
+                        {JSON.stringify(selectedOccupancyValue, null, 2)}
+                    </pre>
                 </div>
             </div>
         </aside>
