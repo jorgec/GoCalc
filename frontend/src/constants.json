@@ -1,0 +1,242 @@
+{
+  "occupancyTypes": [
+    {
+      "label": "Residential",
+      "value": 1,
+      "types": [
+        {
+          "label": "Single Family Dwelling",
+          "value": 1,
+          "unit_load": 24
+        },
+        {
+          "label": "Multiple Family Dwelling",
+          "value": 2,
+          "unit_load": 24
+        }
+      ]
+    },
+    {
+      "label": "Commercial",
+      "value": 2,
+      "types": [
+        {
+          "label": "Type 1",
+          "value": 1,
+          "unit_load": 1
+        },
+        {
+          "label": "Type 2",
+          "value": 2,
+          "unit_load": 2
+        },
+        {
+          "label": "Type 10",
+          "value": 10,
+          "unit_load": 3
+        }
+      ]
+    }
+  ],
+  "phaseTypes": [
+    {
+      "label": "Single Phase",
+      "value": 1
+    },
+    {
+      "label": "Three Phase",
+      "value": 2
+    }
+  ],
+  "loadSpecificationCategories": [
+    {
+      "label": "Lighting",
+      "value": 0,
+      "types": [
+        {
+          "label": "Fluorescent Lamp",
+          "value": 0,
+          "unit_load": 1
+        },
+        {
+          "label": "CFL",
+          "value": 1,
+          "unit_load": 1
+        },
+        {
+          "label": "PL",
+          "value": 2,
+          "unit_load": 1
+        },
+        {
+          "label": "EL",
+          "value": 3,
+          "unit_load": 1
+        },
+        {
+          "label": "LED",
+          "value": 4,
+          "unit_load": 1
+        },
+        {
+          "label": "Chandelier",
+          "value": 5,
+          "unit_load": 1
+        },
+        {
+          "label": "Others",
+          "value": 6,
+          "unit_load": 1
+        }
+      ]
+    },
+    {
+      "label": "Convenience outlet",
+      "value": 1
+    },
+    {
+      "label": "Kitchen Load",
+      "value": 2,
+      "types": [
+        {
+          "label": "Electric Oven",
+          "value": 0,
+          "unit_load": 1
+        },
+        {
+          "label": "Electric Range",
+          "value": 1,
+          "unit_load": 1
+        },
+        {
+          "label": "Electric Griller",
+          "value": 2,
+          "unit_load": 1
+        }
+      ]
+    },
+    {
+      "label": "Motor",
+      "value": 3,
+      "types": [
+        {
+          "label": "Air-Conditioning Unit",
+          "value": 0,
+          "unit_load": 1
+        },
+        {
+          "label": "Tonner ACU",
+          "value": 1,
+          "unit_load": 1
+        },
+        {
+          "label": "Water Pump",
+          "value": 2,
+          "unit_load": 1
+        },
+        {
+          "label": "Booster Pump",
+          "value": 3,
+          "unit_load": 1
+        },
+        {
+          "label": "Transfer Pump",
+          "value": 4,
+          "unit_load": 1
+        },
+        {
+          "label": "Fire Pump",
+          "value": 5,
+          "unit_load": 1
+        },
+        {
+          "label": "Jockey Pump",
+          "value": 6,
+          "unit_load": 1
+        },
+        {
+          "label": "Elevator",
+          "value": 7,
+          "unit_load": 1
+        },
+        {
+          "label": "Freezer",
+          "value": 8,
+          "unit_load": 1
+        },
+        {
+          "label": "Sump Pump",
+          "value": 9,
+          "unit_load": 1
+        },
+        {
+          "label": "Dishwasher",
+          "value": 10,
+          "unit_load": 1
+        },
+        {
+          "label": "Washing Machine",
+          "value": 11,
+          "unit_load": 1
+        },
+        {
+          "label": "Compressor",
+          "value": 12,
+          "unit_load": 1
+        },
+        {
+          "label": "Condenser",
+          "value": 13,
+          "unit_load": 1
+        },
+        {
+          "label": "Blower",
+          "value": 14,
+          "unit_load": 1
+        }
+      ]
+    },
+    {
+      "label": "Spare",
+      "value": 4,
+      "types": [
+        {
+          "label": "500W",
+          "value": 0,
+          "unit_load": 500
+        },
+        {
+          "label": "1000W",
+          "value": 1,
+          "unit_load": 1000
+        }
+      ]
+    },
+    {
+      "label": "Other Loads",
+      "value": 5,
+      "types": [
+        {
+          "label": "PA",
+          "value": 0,
+          "unit_load": 1
+        },
+        {
+          "label": "CCTV",
+          "value": 1,
+          "unit_load": 1
+        },
+        {
+          "label": "FDAS",
+          "value": 2,
+          "unit_load": 1
+        },
+        {
+          "label": "Water Heater",
+          "value": 3,
+          "unit_load": 1
+        }
+      ]
+    }
+  ]
+}
