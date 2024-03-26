@@ -2,38 +2,126 @@
   "occupancyTypes": [
     {
       "label": "Residential",
-      "value": 1,
+      "value": 0,
       "types": [
         {
           "label": "Single Family Dwelling",
-          "value": 1,
+          "value": 0,
           "unit_load": 24
         },
         {
           "label": "Multiple Family Dwelling",
-          "value": 2,
+          "value": 1,
           "unit_load": 24
         }
-      ]
+      ],
+      "addons": []
     },
     {
       "label": "Commercial",
-      "value": 2,
+      "value": 1,
       "types": [
         {
-          "label": "Type 1",
-          "value": 1,
-          "unit_load": 1
+          "label": "Armories and Auditoriums",
+          "value": 0,
+          "unit_load": 8
         },
         {
-          "label": "Type 2",
+          "label": "Banks",
+          "value": 1,
+          "unit_load": 28
+        },
+        {
+          "label": "Barber shops and beauty parlors",
+          "value": 2,
+          "unit_load": 24
+        },
+        {
+          "label": "Churches",
+          "value": 3,
+          "unit_load": 8
+        },
+        {
+          "label": "Clubs",
+          "value": 4,
+          "unit_load": 16
+        },
+        {
+          "label": "Court Rooms",
+          "value": 5,
+          "unit_load": 16
+        },
+        {
+          "label": "Dwelling Units",
+          "value": 6,
+          "unit_load": 24
+        },
+        {
+          "label": "Garages - commercial (storage)",
+          "value": 7,
+          "unit_load": 4
+        },
+        {
+          "label": "Hospitals",
+          "value": 8,
+          "unit_load": 16
+        },
+        {
+          "label": "Hotels and motels, no cooking",
+          "value": 9,
+          "unit_load": 16
+        },
+        {
+          "label": "Industrial commercial (loft) buildings",
+          "value": 10,
+          "unit_load": 16
+        },
+        {
+          "label": "Lodge rooms",
+          "value": 11,
+          "unit_load": 12
+        },
+        {
+          "label": "Office buildings",
+          "value": 12,
+          "unit_load": 28
+        },
+        {
+          "label": "Restaurants",
+          "value": 13,
+          "unit_load": 16
+        },
+        {
+          "label": "Schools",
+          "value": 14,
+          "unit_load": 24
+        },
+        {
+          "label": "Stores",
+          "value": 15,
+          "unit_load": 24
+        },
+        {
+          "label": "Warehouses (storage)",
+          "value": 16,
+          "unit_load": 2
+        }
+      ],
+      "addons": [
+        {
+          "label": "Assembly halls and auditoriums",
+          "value": 0,
+          "unit_load": 8
+        },
+        {
+          "label": "Halls, corridors, closets, stairways",
+          "value": 1,
+          "unit_load": 4
+        },
+        {
+          "label": "Storage spaces",
           "value": 2,
           "unit_load": 2
-        },
-        {
-          "label": "Type 10",
-          "value": 10,
-          "unit_load": 3
         }
       ]
     }
@@ -41,11 +129,11 @@
   "phaseTypes": [
     {
       "label": "Single Phase",
-      "value": 1
+      "value": 0
     },
     {
       "label": "Three Phase",
-      "value": 2
+      "value": 1
     }
   ],
   "loadSpecificationCategories": [
