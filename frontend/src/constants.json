@@ -14,7 +14,7 @@
           "label": "Multiple Family Dwelling",
           "value": 1,
           "unit_load": 24,
-          "lighting_df":  0
+          "lighting_df": 0
         }
       ],
       "addons": []
@@ -306,18 +306,7 @@
     {
       "label": "Spare",
       "value": 4,
-      "types": [
-        {
-          "label": "500W",
-          "value": 0,
-          "unit_load": 500
-        },
-        {
-          "label": "1000W",
-          "value": 1,
-          "unit_load": 1000
-        }
-      ]
+      "types": null
     },
     {
       "label": "Other Loads",

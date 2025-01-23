@@ -1,18 +1,24 @@
 <script>
+    import { onDestroy, onMount } from 'svelte';
+    import { writable } from "svelte/store";
+    import { SaveJSON } from "../wailsjs/go/main/App.js";
 
-    import {onDestroy, onMount} from 'svelte';
-    import {writable} from "svelte/store";
-    import {SaveJSON} from "../wailsjs/go/main/App.js";
-
-    let constants = {occupancyTypes: [], phaseTypes: [], loadSpecificationCategories: [], lightingDemandFactors: []};
+    // Constants loaded from JSON
+    let constants = {
+        occupancyTypes: [],
+        phaseTypes: [],
+        loadSpecificationCategories: [],
+        lightingDemandFactors: []
+    };
 
     let projectData = writable({});
 
-    // ui
+    // UI toggles
     let showLoadSpecs = false;
     let showConsole = false;
     let showSpecForm = false;
 
+    // Basic fields
     let projectName = "";
     let floorArea = 0;
     let totalLoad = 0;
@@ -29,69 +35,149 @@
     let applicationDemandFactor = 0;
     let amps = 0;
 
-    // selectedCategory
+    // For categories
     let hasCategoryTypes = false;
     let selectedCategoryIndex = null;
     let loadSpecifications = writable([]);
+
+    // MULTIPLE lighting rows
+    let lightingRows = writable([
+        { typeValue: null, wattage: 0, quantity: 1 }
+    ]);
+
+    // For convenience outlets
+    let convenienceVA = 180;
+
+    // Shared fields for kitchen, motor, others
     let quantity = 1;
     let wattage = 0;
+
+    // Motor category: user enters wattage directly
+    // Spare category: uses wattage + optional name
     let horsepower = 0;
     let selectedCategoryType = null;
+    let spareName = "";
 
-
-    // Function to load constants
+    // Load constants on component mount
     const fetchConstants = async () => {
         const response = await import('./constants.json');
         constants = response.default;
     };
 
-    // Load constants on component mount
     onMount(() => {
         fetchConstants();
-
     });
 
+    /**
+     * Remove a specification from the main list
+     */
     function removeLoadSpecification(indexToRemove) {
-        loadSpecifications.update(currentSpecifications =>
-            currentSpecifications.filter((_, index) => index !== indexToRemove)
+        loadSpecifications.update(current =>
+            current.filter((_, idx) => idx !== indexToRemove)
         );
         sumOfSpecifications = getSumOfSpecifications();
     }
 
-    const addLoadSpecification = () => {
+    /**
+     * Move a specification row UP in the table
+     */
+    function moveSpecUp(index) {
+        if (index <= 0) return; // already at the top
+        loadSpecifications.update(specs => {
+            const newSpecs = [...specs];
+            [newSpecs[index - 1], newSpecs[index]] = [newSpecs[index], newSpecs[index - 1]];
+            return newSpecs;
+        });
+        sumOfSpecifications = getSumOfSpecifications();
+    }
+
+    /**
+     * Move a specification row DOWN in the table
+     */
+    function moveSpecDown(index) {
+        loadSpecifications.update(specs => {
+            if (index >= specs.length - 1) return specs; // already at the bottom
+            const newSpecs = [...specs];
+            [newSpecs[index + 1], newSpecs[index]] = [newSpecs[index], newSpecs[index + 1]];
+            return newSpecs;
+        });
+        sumOfSpecifications = getSumOfSpecifications();
+    }
+
+    /**
+     * Add another row for lighting
+     */
+    function addAnotherLightingRow() {
+        lightingRows.update(rows => [
+            ...rows,
+            { typeValue: null, wattage: 0, quantity: 1 }
+        ]);
+    }
+
+    /**
+     * Remove one lighting row
+     */
+    function removeLightingRow(rowIndex) {
+        lightingRows.update(rows =>
+            rows.filter((_, i) => i !== rowIndex)
+        );
+    }
+
+    /**
+     * Main function to add the chosen specification
+     */
+    function addLoadSpecification() {
         let category = constants.loadSpecificationCategories[selectedCategoryIndex];
+        let details = {};
 
-        let details = {}
-
+        // ---- LIGHTING (with multiple rows)
         if (selectedCategoryIndex === 0) {
-            // lighting
+            let totalLighting = 0;
+            let rowDetails = [];
+
+            let unsub = lightingRows.subscribe(rows => {
+                for (let row of rows) {
+                    totalLighting += (row.wattage * row.quantity);
+                    // Look up a label for the row's type, if it exists
+                    let foundType = (category.types || []).find(t => t.value === +row.typeValue);
+                    rowDetails.push({
+                        type: foundType ? foundType.label : "Unknown",
+                        wattage: row.wattage,
+                        quantity: row.quantity
+                    });
+                }
+            });
+            unsub();
 
             details = {
                 category: category.label,
-                name: category.types[selectedCategoryType].label,
-                quantity: quantity,
-                wattage: wattage,
-                horsepower: (wattage / 746).toFixed(2),
-                subtotal: (quantity * wattage * 1.05).toFixed(2)
-            }
+                name: `Multiple Lighting Loads (${rowDetails.length} rows)`,
+                lightingLoads: rowDetails,
+                wattage: totalLighting,
+                horsepower: (totalLighting / 746).toFixed(2),
+                quantity: 1,
+                subtotal: totalLighting.toFixed(2)
+            };
 
+            // Reset the lighting array
+            lightingRows.set([{ typeValue: null, wattage: 0, quantity: 1 }]);
         }
 
-        if (selectedCategoryIndex === 1) {
-            // convenience outlet
-            wattage = 180;
+        // ---- CONVENIENCE OUTLET
+        else if (selectedCategoryIndex === 1) {
             details = {
                 category: category.label,
                 name: "N/A",
                 quantity: quantity,
-                wattage: wattage,
-                horsepower: (wattage / 746).toFixed(2),
-                subtotal: (quantity * wattage).toFixed(2)
-            }
+                va: convenienceVA,
+                wattage: convenienceVA,
+                horsepower: (convenienceVA / 746).toFixed(2),
+                subtotal: (quantity * convenienceVA).toFixed(2)
+            };
         }
 
-        if (selectedCategoryIndex === 2) {
-            // kitchen
+        // ---- KITCHEN
+        else if (selectedCategoryIndex === 2) {
             details = {
                 category: category.label,
                 name: category.types[selectedCategoryType].label,
@@ -99,26 +185,11 @@
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
                 subtotal: (quantity * wattage).toFixed(2)
-            }
+            };
         }
 
-        if (selectedCategoryIndex === 3) {
-            // motor
-            wattage = horsepower * 742;
-            details = {
-                category: category.label,
-                name: category.types[selectedCategoryType].label,
-                quantity: 1,
-                wattage: wattage,
-                horsepower: horsepower,
-                subtotal: (quantity * wattage).toFixed(2)
-            }
-        }
-
-        if (selectedCategoryIndex === 4) {
-            // spare
-            wattage = category.types[selectedCategoryType].unit_load;
-
+        // ---- MOTOR
+        else if (selectedCategoryIndex === 3) {
             details = {
                 category: category.label,
                 name: category.types[selectedCategoryType].label,
@@ -126,12 +197,24 @@
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
                 subtotal: (quantity * wattage).toFixed(2)
-            }
+            };
         }
 
-        if (selectedCategoryIndex === 5) {
-            // others
+        // ---- SPARE
+        else if (selectedCategoryIndex === 4) {
+            const chosenName = spareName.trim() !== "" ? spareName : "Spare";
+            details = {
+                category: category.label,
+                name: chosenName,
+                quantity: 1,
+                wattage: wattage,
+                horsepower: (wattage / 746).toFixed(2),
+                subtotal: (1 * wattage).toFixed(2)
+            };
+        }
 
+        // ---- OTHER LOADS
+        else if (selectedCategoryIndex === 5) {
             details = {
                 category: category.label,
                 name: category.types[selectedCategoryType].label,
@@ -139,35 +222,40 @@
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
                 subtotal: (quantity * wattage).toFixed(2)
-            }
+            };
         }
 
-
+        // Update store
         loadSpecifications.update(current => [
             ...current,
-            {...details}
+            { ...details }
         ]);
 
+        // Reset form fields
         quantity = 1;
         wattage = 0;
+        convenienceVA = 180;
         horsepower = 0;
+        spareName = ""; // Reset Spare Name
         selectedCategoryIndex = null;
         selectedCategoryType = null;
+
         sumOfSpecifications = getSumOfSpecifications();
     }
 
     function calculateAmps() {
         // https://www.calculatorology.com/va-to-amps-calculator/
-
     }
 
+    /**
+     * Summarize all specs, applying original demand factor logic
+     */
     function getSumOfSpecifications() {
         let sumOfSpecs = {};
         let tempLightingDemandFactor = 0;
         let tempConvenienceDemandFactor = 0;
         let tempOtherDemandFactor = 0;
         totalSumOfSpecs = 0;
-
 
         const specs = loadSpecifications.subscribe(items => {
             for (let i = 0; i < items.length; i++) {
@@ -176,7 +264,7 @@
                     sumOfSpecs[item.category] = {
                         "sum": 0,
                         "count": 0
-                    }
+                    };
                 }
                 sumOfSpecs[item.category]["sum"] += parseFloat(item.subtotal);
                 sumOfSpecs[item.category]["count"] += 1;
@@ -185,24 +273,23 @@
 
         for (const [key, value] of Object.entries(sumOfSpecs)) {
             if (sumOfSpecs[key]["count"] === 1 && key === "Kitchen Load") {
-                sumOfSpecs[key]["sum"] = (sumOfSpecs[key]["sum"] * .8).toFixed(2);
+                sumOfSpecs[key]["sum"] = (sumOfSpecs[key]["sum"] * 0.8).toFixed(2);
             }
 
             if (key === "Lighting") {
-                tempLightingDemandFactor += calculateDemandFactor(parseFloat(value["sum"]))
+                tempLightingDemandFactor += calculateDemandFactor(parseFloat(value["sum"]));
             } else if (key === "Convenience outlet") {
-                tempConvenienceDemandFactor += parseFloat(value["sum"])
+                tempConvenienceDemandFactor += parseFloat(value["sum"]);
             } else {
                 tempOtherDemandFactor += parseFloat(value["sum"]);
             }
-
-            // totalSumOfSpecs += parseFloat(sumOfSpecs[key]["sum"]);
         }
 
         if (tempConvenienceDemandFactor > 10000) {
             let tempExcess = tempConvenienceDemandFactor - 10000;
-            tempConvenienceDemandFactor = 10000 + (tempExcess * .5);
+            tempConvenienceDemandFactor = 10000 + (tempExcess * 0.5);
         }
+
         applicationDemandFactor = tempLightingDemandFactor + tempConvenienceDemandFactor;
         totalSumOfSpecs += applicationDemandFactor + tempOtherDemandFactor;
 
@@ -211,54 +298,34 @@
     }
 
     function calculateDemandFactor(value) {
-        // Check if a specific set of rules (identified by `selectedLightingDemandFactorID`) is selected.
         if (selectedLightingDemandFactorID !== null) {
-            // Retrieve the applicable set of rules based on the selected ID.
             const rules = constants.lightingDemandFactors[selectedLightingDemandFactorID];
-
-            // Initialize `remainder` with the input value. `remainder` will be reduced as rules are applied.
             let remainder = value;
-            // Initialize `total` which will accumulate the calculated demand based on applicable percentages.
             let total = 0;
 
-            // Iterate through each rule in the selected set of rules.
             for (let i = 0; i < rules.length; i++) {
-                // Destructure the current rule into `max` (maximum value for this tier) and `percentage` (applicable percentage).
                 const [max, percentage] = rules[i];
-                // Initialize `applicableValue` which will hold the value from `remainder` that this rule applies to.
                 let applicableValue = 0;
 
-                // If `max` is null, this rule applies to all remaining value.
                 if (max === null) {
                     applicableValue = remainder;
-                }
-                    // If `remainder` exceeds the current `max`, calculate `applicableValue` as the difference up to this `max`,
-                // subtracting any value covered by the previous rule, if any.
-                else if (remainder > max) {
+                } else if (remainder > max) {
                     applicableValue = max - (rules[i - 1] ? rules[i - 1][0] : 0);
-                    remainder -= applicableValue; // Reduce `remainder` by `applicableValue`.
-                }
-                // If `remainder` does not exceed `max`, this rule applies to the entire remaining value.
-                else {
+                    remainder -= applicableValue;
+                } else {
                     applicableValue = remainder;
-                    remainder = 0; // Set `remainder` to 0 as the entire remaining value is accounted for.
+                    remainder = 0;
                 }
 
-                // Accumulate into `total` the `applicableValue` multiplied by the `percentage` factor (converted from percentage to decimal).
                 total += applicableValue * (percentage / 100);
-
-                // If there's no remainder left after applying this rule, exit the loop early as all value has been accounted for.
                 if (remainder === 0) break;
             }
-            // Return the calculated `total` after applying all applicable rules.
             return total;
         }
-        // If no rules set is selected, return the original input value unmodified.
         return value;
     }
 
-
-    // Reactively update the available types and calculate load based on selections
+    // Reactively track occupant-based calculations
     $: {
         if (selectedOccupancyValue !== null) {
             const occupancy = constants.occupancyTypes[parseInt(selectedOccupancyValue)];
@@ -266,7 +333,6 @@
             selectedAddOns = [];
             selectedOccupancyTypes = occupancy.types.length > 0 ? occupancy.types : [];
             selectedAddOns = occupancy.addons.length > 0 ? occupancy.addons : [];
-
         } else {
             selectedOccupancyTypes = [];
             selectedAddOns = [];
@@ -278,7 +344,6 @@
         if (selectedTypeValue !== null && selectedOccupancyTypes.length > 0) {
             const type = selectedOccupancyTypes[selectedTypeValue];
             if (type) {
-
                 totalLoad = type.unit_load;
                 if (selectedAddOns.length > 0) {
                     if (selectedAddOnValue !== null && selectedAddOnValue !== "") {
@@ -298,50 +363,85 @@
         }
 
         if (selectedCategoryIndex !== null && selectedCategoryIndex !== "") {
-            hasCategoryTypes = !!(constants.loadSpecificationCategories[selectedCategoryIndex].types && constants.loadSpecificationCategories[selectedCategoryIndex].types.length > 0);
+            hasCategoryTypes = !!(
+                constants.loadSpecificationCategories[selectedCategoryIndex].types &&
+                constants.loadSpecificationCategories[selectedCategoryIndex].types.length > 0
+            );
         } else {
             hasCategoryTypes = false;
         }
 
-        showSpecForm = !!(selectedOccupancyValue !== null && floorArea > 0);
+        showSpecForm = !!(selectedOccupancyValue !== null);
     }
-
 </script>
+
 <div class="flex flex-col h-screen">
     <header id="header" class="flex items-center bg-gray-800 h-14 sticky top-0 z-50 px-4">
         <div class="flex-1">
             <h1 class="text-white">GoCalc</h1>
         </div>
         <div class="flex flex-1 justify-center">
-            <input type="text" id="projectName" bind:value={projectName} required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                   placeholder="Enter Project Name">
+            <input
+                    type="text"
+                    id="projectName"
+                    bind:value={projectName}
+                    required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter Project Name"
+            />
         </div>
         <div class="flex-1 flex justify-end items-center gap-2">
             <button
                     on:click={() => SaveJSON(projectName, $loadSpecifications)}
-                    class="bg-green-500 hover:bg-green-700 text-white p-2 rounded inline-flex items-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 3v18h18V9l-6-6H3zm9 13a2 2 0 110-4 2 2 0 010 4zm-1-9V3l5 5h-5z"/>
+                    class="bg-green-500 hover:bg-green-700 text-white p-2 rounded inline-flex items-center"
+            >
+                <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 3v18h18V9l-6-6H3zm9 13a2 2 0 110-4 2 2 0 010 4zm-1-9V3l5 5h-5z"
+                    />
                 </svg>
             </button>
             <button class="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded inline-flex items-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 21h6V11l-3-3-3 3v10zm0 0V11l-3 3m3-3l3 3m-6 0h6"/>
+                <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 21h6V11l-3-3-3 3v10zm0 0V11l-3 3m3-3l3 3m-6 0h6"
+                    />
                 </svg>
-
             </button>
-            <button id="sideToggle"
+            <button
+                    id="sideToggle"
                     class="bg-gray-200 hover:bg-gray-400 text-black p-2 rounded inline-flex items-center"
-                    on:click={() => showConsole = !showConsole}>
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                          clip-rule="evenodd"/>
+                    on:click={() => (showConsole = !showConsole)}
+            >
+                <svg
+                        class="w-6 h-6"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                            fill-rule="evenodd"
+                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            clip-rule="evenodd"
+                    />
                 </svg>
             </button>
         </div>
@@ -350,22 +450,32 @@
     <div class="flex flex-1 bg-gray-200">
         <main class="transition-all h-full duration-500 {showConsole ? 'w-2/3' : 'w-full'}">
             <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
-
                 <!-- begin main form -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     <div class="h-20 py-4">
-                        <label for="floorArea" class="block text-gray-700 text-sm font-bold mb-2">Floor Area:</label>
-                        <input type="number" id="floorArea" bind:value={floorArea} required
-                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                               min="0" placeholder="Enter floor area">
+                        <label for="floorArea" class="block text-gray-700 text-sm font-bold mb-2">
+                            Floor Area:
+                        </label>
+                        <input
+                                type="number"
+                                id="floorArea"
+                                bind:value={floorArea}
+                                required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                min="0"
+                                placeholder="Enter floor area"
+                        />
                     </div>
                     <div class="h-20 py-4">
-                        <label for="typeOfOccupancy" class="block text-gray-700 text-sm font-bold mb-2">Type of
-                            Occupancy:</label>
-                        <select bind:value={selectedOccupancyValue} required
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-
-                            {#each constants.occupancyTypes as {label, value}}
+                        <label for="typeOfOccupancy" class="block text-gray-700 text-sm font-bold mb-2">
+                            Type of Occupancy:
+                        </label>
+                        <select
+                                bind:value={selectedOccupancyValue}
+                                required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        >
+                            {#each constants.occupancyTypes as { label, value }}
                                 <option value={value}>{label}</option>
                             {/each}
                         </select>
@@ -373,12 +483,15 @@
 
                     {#if selectedOccupancyTypes.length > 0}
                         <div class="h-20 py-4">
-                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">Occupancy
-                                Type:</label>
-                            <select bind:value={selectedTypeValue} required
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-
-                                {#each selectedOccupancyTypes as {label, value}}
+                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">
+                                Occupancy Type:
+                            </label>
+                            <select
+                                    bind:value={selectedTypeValue}
+                                    required
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            >
+                                {#each selectedOccupancyTypes as { label, value }}
                                     <option value={value}>{label}</option>
                                 {/each}
                             </select>
@@ -387,25 +500,32 @@
 
                     {#if selectedAddOns.length > 0}
                         <div class="h-20 py-4">
-                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">AddOn:</label>
-                            <select bind:value={selectedAddOnValue} required
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">
+                                AddOn:
+                            </label>
+                            <select
+                                    bind:value={selectedAddOnValue}
+                                    required
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            >
                                 <option value="">Optional</option>
-                                {#each selectedAddOns as {label, value}}
+                                {#each selectedAddOns as { label, value }}
                                     <option value={value}>{label}</option>
                                 {/each}
                             </select>
                         </div>
                     {/if}
 
-
                     <div class="h-20 py-4">
-                        <label for="systemPhaseType" class="block text-gray-700 text-sm font-bold mb-2">System
-                            Phase:</label>
-                        <select bind:value={systemPhaseType} required
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-
-                            {#each constants.phaseTypes as {label, value}}
+                        <label for="systemPhaseType" class="block text-gray-700 text-sm font-bold mb-2">
+                            System Phase:
+                        </label>
+                        <select
+                                bind:value={systemPhaseType}
+                                required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        >
+                            {#each constants.phaseTypes as { label, value }}
                                 <option value={value}>{label}</option>
                             {/each}
                         </select>
@@ -414,152 +534,285 @@
 
                 {#if showSpecForm}
                     <!-- begin spec form -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4">
+                    <div
+                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4"
+                    >
                         <div class="h-20 py-4">
                             <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
                                 Load Specification Category:
                             </label>
-                            <select id="category" bind:value={selectedCategoryIndex}
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <select
+                                    id="category"
+                                    bind:value={selectedCategoryIndex}
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            >
                                 <option value="">Select a Category</option>
                                 {#each constants.loadSpecificationCategories as category, index}
                                     <option value={index}>{category.label}</option>
                                 {/each}
                             </select>
                         </div>
-                        {#if hasCategoryTypes }
-                            <div class="h-20 py-4">
-                                <label for="selectedCategoryType" class="block text-gray-700 text-sm font-bold mb-2">Type:</label>
-                                <select bind:value={selectedCategoryType} required
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
 
-                                    {#each constants.loadSpecificationCategories[selectedCategoryIndex].types as {
-                                        label,
-                                        value
-                                    }}
+                        {#if hasCategoryTypes && selectedCategoryIndex !== 0}
+                            <div class="h-20 py-4">
+                                <label
+                                        for="selectedCategoryType"
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                >
+                                    Type:
+                                </label>
+                                <select
+                                        bind:value={selectedCategoryType}
+                                        required
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                >
+                                    {#each constants.loadSpecificationCategories[selectedCategoryIndex].types as { label, value }}
                                         <option value={value}>{label}</option>
                                     {/each}
                                 </select>
                             </div>
                         {/if}
 
+                        <!-- LIGHTING Loads with multiple rows -->
                         {#if selectedCategoryIndex === 0}
-                            <!-- Lighting Form -->
-                            <div class="h-20 py-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="wattage">
-                                    Wattage:
-                                </label>
-                                <div class="sm:flex sm:items-center">
-                                    <div class="w-full sm:max-w-xs">
-                                        <input type="number" min="1" bind:value={wattage} id="wattage"
-                                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                    </div>
-                                </div>
+                            <div class="col-span-4 py-4 border rounded bg-white px-2">
+                                <h3 class="font-bold text-gray-700 mb-2">
+                                    Lighting: Multiple Rows
+                                </h3>
 
-                            </div>
-                            <div class="h-20 py-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
-                                    Quantity:
-                                </label>
-                                <div class="sm:flex sm:items-center">
-                                    <div class="w-full sm:max-w-xs">
-                                        <input type="number" min="1" max="8" bind:value={quantity} id="quantity"
-                                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                    </div>
-                                </div>
+                                {#each $lightingRows as row, rowIndex}
+                                    <div class="flex flex-wrap gap-2 mb-2 items-end">
+                                        <div class="flex flex-col">
+                                            <label class="block text-gray-700 text-sm font-bold">
+                                                Type:
+                                            </label>
+                                            <select
+                                                    bind:value={row.typeValue}
+                                                    class="shadow appearance-none border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline"
+                                            >
+                                                <option value={null}>Select Type</option>
+                                                {#each constants.loadSpecificationCategories[0].types as { label, value }}
+                                                    <option value={value}>{label}</option>
+                                                {/each}
+                                            </select>
+                                        </div>
 
+                                        <div class="flex flex-col">
+                                            <label
+                                                    class="block text-gray-700 text-sm font-bold"
+                                                    for="wattage"
+                                            >
+                                                Wattage
+                                            </label>
+                                            <input
+                                                    type="number"
+                                                    min="1"
+                                                    bind:value={row.wattage}
+                                                    class="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            />
+                                        </div>
+
+                                        <div class="flex flex-col">
+                                            <label
+                                                    class="block text-gray-700 text-sm font-bold"
+                                                    for="quantity"
+                                            >
+                                                Quantity
+                                            </label>
+                                            <input
+                                                    type="number"
+                                                    min="1"
+                                                    max="999"
+                                                    bind:value={row.quantity}
+                                                    class="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            />
+                                        </div>
+
+                                        <button
+                                                type="button"
+                                                on:click={() => removeLightingRow(rowIndex)}
+                                                class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded ml-2"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                {/each}
+
+                                <button
+                                        type="button"
+                                        on:click={addAnotherLightingRow}
+                                        class="bg-teal-500 hover:bg-teal-700 text-white py-1 px-2 rounded"
+                                >
+                                    Add Another Lighting Row
+                                </button>
                             </div>
                         {/if}
 
+                        <!-- Convenience Outlet Form -->
                         {#if selectedCategoryIndex === 1}
-                            <!-- Convenience Outlet Form -->
                             <div class="h-20 py-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="convenienceVA"
+                                >
+                                    VA:
+                                </label>
+                                <input
+                                        type="number"
+                                        min="1"
+                                        bind:value={convenienceVA}
+                                        id="convenienceVA"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                />
+                            </div>
+                            <div class="h-20 py-4">
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="quantity"
+                                >
                                     Quantity:
                                 </label>
                                 <div class="sm:flex sm:items-center">
                                     <div class="w-full sm:max-w-xs">
-                                        <input type="number" min="1" max="8" bind:value={quantity} id="quantity"
-                                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                max="8"
+                                                bind:value={quantity}
+                                                id="quantity"
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        />
                                     </div>
                                 </div>
-
-
                             </div>
                         {/if}
 
+                        <!-- Kitchen Load -->
                         {#if selectedCategoryIndex === 2}
-                            <!-- Kitchen Load Form -->
                             <div class="h-20 py-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="quantity"
+                                >
                                     Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
                                     <div class="w-full sm:max-w-xs">
-                                        <input type="number" min="1" bind:value={wattage}
-                                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                bind:value={wattage}
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        />
                                     </div>
                                 </div>
-
                             </div>
                         {/if}
 
+                        <!-- Motor: numeric Wattage input -->
                         {#if selectedCategoryIndex === 3}
-                            <!-- Motor Form -->
                             <div class="h-20 py-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
-                                    Horsepower
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="motorWattage"
+                                >
+                                    Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
                                     <div class="w-full sm:max-w-xs">
-
-                                        <select bind:value={horsepower} required
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-
-                                            <option value="0.5">0.5W</option>
-                                            <option value="0.75">0.75W</option>
-                                            <option value="1.0">1.0W</option>
-                                            <option value="1.5">1.5W</option>
-                                            <option value="2.0">2.0W</option>
-                                            <option value="2.5">2.5W</option>
-                                            <option value="3.0">3.0W</option>
-                                        </select>
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                bind:value={wattage}
+                                                id="motorWattage"
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        />
                                     </div>
                                 </div>
-
                             </div>
                         {/if}
 
+                        <!-- Spare: optional Name + Wattage -->
                         {#if selectedCategoryIndex === 4}
-                            <!-- Spare Form -->
-                            <!-- ... similar pattern -->
+                            <div class="h-20 py-4">
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="spareName"
+                                >
+                                    Spare Name (optional)
+                                </label>
+                                <input
+                                        type="text"
+                                        bind:value={spareName}
+                                        id="spareName"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        placeholder="e.g. Spare Heater, Spare Light..."
+                                />
+                            </div>
+                            <div class="h-20 py-4">
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="spareWattage"
+                                >
+                                    Wattage:
+                                </label>
+                                <div class="sm:flex sm:items-center">
+                                    <div class="w-full sm:max-w-xs">
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                bind:value={wattage}
+                                                id="spareWattage"
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         {/if}
 
                         {#if selectedCategoryIndex === 5}
-                            <!-- Other Loads Form -->
+                            <!-- Other Loads -->
                             <div class="h-20 py-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
+                                <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="quantity"
+                                >
                                     Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
                                     <div class="w-full sm:max-w-xs">
-                                        <input type="number" min="1" bind:value={wattage}
-                                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                bind:value={wattage}
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        />
                                     </div>
                                 </div>
-
                             </div>
                         {/if}
                     </div>
+
                     {#if selectedCategoryIndex !== null}
                         <div class="h-20 py-4">
-                            <button type="submit"
+                            <button
+                                    type="submit"
                                     class="mt-3 inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 sm:ml-3 sm:mt-0 sm:w-auto"
-                                    on:click={() => addLoadSpecification()}>
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M12 4v16m8-8H4"></path>
+                                    on:click={addLoadSpecification}
+                            >
+                                <svg
+                                        class="h-5 w-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 4v16m8-8H4"
+                                    />
                                 </svg>
                                 Add
                             </button>
@@ -572,10 +825,11 @@
                                 <div class="sm:flex-auto">
                                     <a
                                             class="rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 sm:ml-3 sm:mt-0 sm:w-auto"
-                                            href="#!" on:click={() => showLoadSpecs = !showLoadSpecs}>
+                                            href="#!"
+                                            on:click={() => (showLoadSpecs = !showLoadSpecs)}
+                                    >
                                         Show Load Specifications
                                     </a>
-
                                 </div>
                             </div>
                             {#if showLoadSpecs}
@@ -586,66 +840,158 @@
                                                 <table class="w-full divide-y divide-gray-300">
                                                     <thead class="bg-gray-50">
                                                     <tr>
-                                                        <th scope="col"
-                                                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                        <th
+                                                                scope="col"
+                                                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                                                        >
                                                             Category
                                                         </th>
-                                                        <th scope="col"
-                                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
                                                             Name
                                                         </th>
-                                                        <th scope="col"
-                                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Unit Load (W/HP)
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
+                                                            Unit Load (W/HP or VA)
                                                         </th>
-                                                        <th scope="col"
-                                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
                                                             Quantity
                                                         </th>
-                                                        <th scope="col"
-                                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
                                                             Subtotal
                                                         </th>
-                                                        <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                                        <th
+                                                                scope="col"
+                                                                class="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                                                        >
                                                             Actions
-
                                                         </th>
                                                     </tr>
                                                     </thead>
                                                     <tbody class="divide-y divide-gray-200 bg-white">
                                                     {#each $loadSpecifications as spec, idx}
                                                         <tr>
-                                                            <td class="whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                                            <td
+                                                                    class="whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                                            >
                                                                 {spec.category}
                                                             </td>
-                                                            <td class="whitespace-nowrap px-3 py-1 text-sm text-gray-500">
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
                                                                 {spec.name}
                                                             </td>
-                                                            <td class="whitespace-nowrap px-3 py-1 text-sm text-gray-500">
-                                                                <code>{spec.wattage}W | {spec.horsepower}HP</code>
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
+                                                                {#if spec.lightingLoads}
+                                                                    <ul class="list-disc list-inside">
+                                                                        {#each spec.lightingLoads as row}
+                                                                            <li>
+                                                                                {row.type}:
+                                                                                {row.wattage}W x {row.quantity}
+                                                                            </li>
+                                                                        {/each}
+                                                                    </ul>
+                                                                {:else}
+                                                                    <code>
+                                                                        {spec.wattage}W | {spec.horsepower}HP
+                                                                    </code>
+                                                                {/if}
                                                             </td>
-                                                            <td class="whitespace-nowrap px-3 py-1 text-sm text-gray-500">
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
                                                                 <code>{spec.quantity}</code>
                                                             </td>
-                                                            <td class="whitespace-nowrap px-3 py-1 text-sm text-gray-500">
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
                                                                 <code>{spec.subtotal}W</code>
                                                             </td>
-
-                                                            <td class="relative whitespace-nowrap py-1 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                                <button on:click={() => removeLoadSpecification(idx)}
-                                                                        style="background-color: transparent; border: none; cursor: pointer; padding: 10px;">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                                                         height="18"
-                                                                         fill="red"
-                                                                         viewBox="0 0 24 24">
-                                                                        <path d="M3 6v16c0 1.104.896 2 2 2h14c1.104 0 2-.896 2-2V6H3zm16 2h-3v12h3V8zm-5 0H9v12h5V8zm-6 0H5v12h3V8zm4-6l-1-2h-4l-1 2H2v2h20V2h-5z"/>
+                                                            <td
+                                                                    class="relative whitespace-nowrap py-1 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                                                            >
+                                                                <!-- Move Up Button -->
+                                                                <button
+                                                                        type="button"
+                                                                        on:click={() => moveSpecUp(idx)}
+                                                                        style="background-color: transparent; border: none; cursor: pointer; padding: 5px;"
+                                                                        title="Move Up"
+                                                                >
+                                                                    <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            width="16"
+                                                                            height="16"
+                                                                            fill="gray"
+                                                                            viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path
+                                                                                stroke="currentColor"
+                                                                                stroke-width="2"
+                                                                                stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                d="M12 19V5M5 12l7-7 7 7"
+                                                                        />
                                                                     </svg>
                                                                 </button>
 
+                                                                <!-- Move Down Button -->
+                                                                <button
+                                                                        type="button"
+                                                                        on:click={() => moveSpecDown(idx)}
+                                                                        style="background-color: transparent; border: none; cursor: pointer; padding: 5px;"
+                                                                        title="Move Down"
+                                                                >
+                                                                    <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            width="16"
+                                                                            height="16"
+                                                                            fill="gray"
+                                                                            viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path
+                                                                                stroke="currentColor"
+                                                                                stroke-width="2"
+                                                                                stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                d="M12 5v14M5 12l7 7 7-7"
+                                                                        />
+                                                                    </svg>
+                                                                </button>
+
+                                                                <!-- Trash Button -->
+                                                                <button
+                                                                        type="button"
+                                                                        on:click={() => removeLoadSpecification(idx)}
+                                                                        style="background-color: transparent; border: none; cursor: pointer; padding: 5px;"
+                                                                        title="Remove"
+                                                                >
+                                                                    <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            width="18"
+                                                                            height="18"
+                                                                            fill="red"
+                                                                            viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path
+                                                                                d="M3 6v16c0 1.104.896 2 2 2h14c1.104 0 2-.896 2-2V6H3zm16 2h-3v12h3V8zm-5 0H9v12h5V8zm-6 0H5v12h3V8zm4-6l-1-2h-4l-1 2H2v2h20V2h-5z"
+                                                                        />
+                                                                    </svg>
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     {/each}
-
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -654,38 +1000,44 @@
                                 </div>
                             {/if}
                         </div>
-
                     </div>
-                {/if} <!-- /showSpecForm -->
+                {/if}
             </div>
         </main>
         <aside class="transition-all h-full duration-500 bg-white {showConsole ? 'w-1/3' : 'hidden'}">
             <div class="container-fluid m-2 pl-4">
                 <div class="h-20 py-4">
-                    <h3 class="block text-gray-700 font-bold mb-2">Lighting Load at {totalLoad}VA per m<sup>2</sup>:
-                        <code>{loadByOccupancy} VA</code></h3>
+                    <h3 class="block text-gray-700 font-bold mb-2">
+                        Lighting Load at {totalLoad}VA per m<sup>2</sup>:
+                        <code>{loadByOccupancy} VA</code>
+                    </h3>
 
                     <h3 class="block text-gray-700 font-bold mb-2">Sum of Specifications</h3>
-                    <!--{JSON.stringify(sumOfSpecifications, null, 2)}-->
                     {#each Object.entries(sumOfSpecifications) as [category, data]}
                         <div class="max-w-md mx-auto grid grid-cols-2 gap-4 text-sm p-0 m-0">
-                            <div class="font-semibold  p-0 m-0">{category} ({data.count})</div>
-                            <div class="p-0 m-0"><code>{data.sum}</code></div>
+                            <div class="font-semibold p-0 m-0">
+                                {category} ({data.count})
+                            </div>
+                            <div class="p-0 m-0">
+                                <code>{data.sum}</code>
+                            </div>
                         </div>
                     {/each}
 
                     <div class="my-4 p-2 px-3 bg-teal-300 text-teal-950">
-                        <p><span class="font-semibold">Application Demand Factor:</span> <code>{applicationDemandFactor}
-                            VA</code></p>
-                        <p><span class="font-bold">Total:</span> <code>{totalSumOfSpecs} VA</code></p>
+                        <p>
+                            <span class="font-semibold">Application Demand Factor:</span>
+                            <code>{applicationDemandFactor} VA</code>
+                        </p>
+                        <p>
+                            <span class="font-bold">Total:</span>
+                            <code>{totalSumOfSpecs} VA</code>
+                        </p>
                     </div>
-
-
                 </div>
             </div>
         </aside>
     </div>
 </div>
-
 
 <style></style>
