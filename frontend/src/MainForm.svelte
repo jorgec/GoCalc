@@ -51,14 +51,35 @@
     // Shared fields for kitchen, motor, others
     let quantity = 1;
     let wattage = 0;
-
-    // Motor category: user enters wattage directly
-    // Spare category: uses wattage + optional name
     let horsepower = 0;
     let selectedCategoryType = null;
     let spareName = "";
 
-    // Load constants on component mount
+    // New: user-entered Volts
+    let volts = 220; // default
+
+    // REACTIVE total sums for the table footer
+    let totalOfAllVA = 0;
+    let totalOfAllAmp = 0;
+
+    // Subscribe to loadSpecifications to compute table-foot sums
+    $: {
+        const unsubFooter = loadSpecifications.subscribe(items => {
+            let vaSum = 0;
+            let ampSum = 0;
+            for (const spec of items) {
+                const numericSubtotal = parseFloat(spec.subtotal) || 0;
+                vaSum += numericSubtotal;
+                // For the Amp Load column, we do numericSubtotal / volts
+                ampSum += volts > 0 ? numericSubtotal / volts : 0;
+            }
+            totalOfAllVA = vaSum;
+            totalOfAllAmp = ampSum;
+        });
+        onDestroy(unsubFooter);
+    }
+
+    // Function to load constants
     const fetchConstants = async () => {
         const response = await import('./constants.json');
         constants = response.default;
@@ -137,7 +158,7 @@
 
             let unsub = lightingRows.subscribe(rows => {
                 for (let row of rows) {
-                    totalLighting += (row.wattage * row.quantity);
+                    totalLighting += row.wattage * row.quantity;
                     // Look up a label for the row's type, if it exists
                     let foundType = (category.types || []).find(t => t.value === +row.typeValue);
                     rowDetails.push({
@@ -156,6 +177,7 @@
                 wattage: totalLighting,
                 horsepower: (totalLighting / 746).toFixed(2),
                 quantity: 1,
+                // labeled "VA" in table, but stored as 'subtotal' for logic
                 subtotal: totalLighting.toFixed(2)
             };
 
@@ -236,7 +258,7 @@
         wattage = 0;
         convenienceVA = 180;
         horsepower = 0;
-        spareName = ""; // Reset Spare Name
+        spareName = "";
         selectedCategoryIndex = null;
         selectedCategoryType = null;
 
@@ -244,7 +266,7 @@
     }
 
     function calculateAmps() {
-        // https://www.calculatorology.com/va-to-amps-calculator/
+        // If needed
     }
 
     /**
@@ -260,34 +282,31 @@
         const specs = loadSpecifications.subscribe(items => {
             for (let i = 0; i < items.length; i++) {
                 let item = items[i];
-                if (sumOfSpecs[item.category] === undefined) {
-                    sumOfSpecs[item.category] = {
-                        "sum": 0,
-                        "count": 0
-                    };
+                if (!sumOfSpecs[item.category]) {
+                    sumOfSpecs[item.category] = { sum: 0, count: 0 };
                 }
-                sumOfSpecs[item.category]["sum"] += parseFloat(item.subtotal);
-                sumOfSpecs[item.category]["count"] += 1;
+                sumOfSpecs[item.category].sum += parseFloat(item.subtotal);
+                sumOfSpecs[item.category].count += 1;
             }
         });
 
         for (const [key, value] of Object.entries(sumOfSpecs)) {
-            if (sumOfSpecs[key]["count"] === 1 && key === "Kitchen Load") {
-                sumOfSpecs[key]["sum"] = (sumOfSpecs[key]["sum"] * 0.8).toFixed(2);
+            if (value.count === 1 && key === "Kitchen Load") {
+                sumOfSpecs[key].sum = parseFloat((value.sum * 0.8).toFixed(2));
             }
 
             if (key === "Lighting") {
-                tempLightingDemandFactor += calculateDemandFactor(parseFloat(value["sum"]));
+                tempLightingDemandFactor += calculateDemandFactor(parseFloat(value.sum));
             } else if (key === "Convenience outlet") {
-                tempConvenienceDemandFactor += parseFloat(value["sum"]);
+                tempConvenienceDemandFactor += value.sum;
             } else {
-                tempOtherDemandFactor += parseFloat(value["sum"]);
+                tempOtherDemandFactor += value.sum;
             }
         }
 
         if (tempConvenienceDemandFactor > 10000) {
             let tempExcess = tempConvenienceDemandFactor - 10000;
-            tempConvenienceDemandFactor = 10000 + (tempExcess * 0.5);
+            tempConvenienceDemandFactor = 10000 + tempExcess * 0.5;
         }
 
         applicationDemandFactor = tempLightingDemandFactor + tempConvenienceDemandFactor;
@@ -351,7 +370,7 @@
                         totalLoad += addon.unit_load;
                     }
                 }
-                loadByOccupancy = type ? totalLoad * floorArea : 0;
+                loadByOccupancy = totalLoad * floorArea;
                 selectedLightingDemandFactorID = type.lighting_df;
             } else {
                 loadByOccupancy = 0;
@@ -451,7 +470,7 @@
         <main class="transition-all h-full duration-500 {showConsole ? 'w-2/3' : 'w-full'}">
             <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
                 <!-- begin main form -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <div class="h-20 py-4">
                         <label for="floorArea" class="block text-gray-700 text-sm font-bold mb-2">
                             Floor Area:
@@ -483,7 +502,10 @@
 
                     {#if selectedOccupancyTypes.length > 0}
                         <div class="h-20 py-4">
-                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">
+                            <label
+                                    for="occupancyType"
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                            >
                                 Occupancy Type:
                             </label>
                             <select
@@ -500,7 +522,10 @@
 
                     {#if selectedAddOns.length > 0}
                         <div class="h-20 py-4">
-                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">
+                            <label
+                                    for="occupancyType"
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                            >
                                 AddOn:
                             </label>
                             <select
@@ -517,7 +542,10 @@
                     {/if}
 
                     <div class="h-20 py-4">
-                        <label for="systemPhaseType" class="block text-gray-700 text-sm font-bold mb-2">
+                        <label
+                                for="systemPhaseType"
+                                class="block text-gray-700 text-sm font-bold mb-2"
+                        >
                             System Phase:
                         </label>
                         <select
@@ -530,15 +558,35 @@
                             {/each}
                         </select>
                     </div>
+
+                    <!-- NEW: Volts field -->
+                    <div class="h-20 py-4">
+                        <label
+                                for="volts"
+                                class="block text-gray-700 text-sm font-bold mb-2"
+                        >
+                            Volts:
+                        </label>
+                        <input
+                                type="number"
+                                id="volts"
+                                bind:value={volts}
+                                required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                min="1"
+                                placeholder="Enter Volts"
+                        />
+                    </div>
                 </div>
 
                 {#if showSpecForm}
                     <!-- begin spec form -->
-                    <div
-                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4"
-                    >
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4">
                         <div class="h-20 py-4">
-                            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
+                            <label
+                                    for="category"
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                            >
                                 Load Specification Category:
                             </label>
                             <select
@@ -864,11 +912,33 @@
                                                         >
                                                             Quantity
                                                         </th>
+                                                        <!-- (1) Renamed "Subtotal" to "VA" -->
                                                         <th
                                                                 scope="col"
                                                                 class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                                         >
-                                                            Subtotal
+                                                            VA
+                                                        </th>
+                                                        <!-- (2) Phase column -->
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
+                                                            Phase
+                                                        </th>
+                                                        <!-- (3) Volts column -->
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
+                                                            Volts
+                                                        </th>
+                                                        <!-- (4) Amp Load column -->
+                                                        <th
+                                                                scope="col"
+                                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                        >
+                                                            Amp Load
                                                         </th>
                                                         <th
                                                                 scope="col"
@@ -898,8 +968,7 @@
                                                                     <ul class="list-disc list-inside">
                                                                         {#each spec.lightingLoads as row}
                                                                             <li>
-                                                                                {row.type}:
-                                                                                {row.wattage}W x {row.quantity}
+                                                                                {row.type}: {row.wattage}W x {row.quantity}
                                                                             </li>
                                                                         {/each}
                                                                     </ul>
@@ -914,10 +983,39 @@
                                                             >
                                                                 <code>{spec.quantity}</code>
                                                             </td>
+                                                            <!-- (1) VA -->
                                                             <td
                                                                     class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
                                                             >
-                                                                <code>{spec.subtotal}W</code>
+                                                                <code>{spec.subtotal}</code>
+                                                            </td>
+                                                            <!-- (2) Phase: single-phase => '1', else '???' -->
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
+                                                                {#if systemPhaseType == 0}
+                                                                    1
+                                                                {:else}
+                                                                    ???
+                                                                {/if}
+                                                            </td>
+                                                            <!-- (3) Volts column -->
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
+                                                                <code>{volts}</code>
+                                                            </td>
+                                                            <!-- (4) Amp Load = VA / volts -->
+                                                            <td
+                                                                    class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                                            >
+                                                                {#if volts > 0}
+                                                                    <code>
+                                                                        {(parseFloat(spec.subtotal) / volts).toFixed(2)}
+                                                                    </code>
+                                                                {:else}
+                                                                    <code>0</code>
+                                                                {/if}
                                                             </td>
                                                             <td
                                                                     class="relative whitespace-nowrap py-1 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
@@ -993,6 +1091,29 @@
                                                         </tr>
                                                     {/each}
                                                     </tbody>
+                                                    <!-- New footer row summing up VA & Amp Load -->
+                                                    <tfoot class="bg-gray-100">
+                                                    <tr>
+                                                        <!-- 9 columns total (Category, Name, UnitLoad, Q, VA, Phase, Volts, Amp, Actions) -->
+                                                        <td colspan="4" class="text-right font-semibold py-2 px-3">
+                                                            Totals:
+                                                        </td>
+                                                        <td class="py-2 px-3 text-sm text-gray-800">
+                                                            <code>{totalOfAllVA.toFixed(2)}</code>
+                                                        </td>
+                                                        <!-- Phase column empty in footer -->
+                                                        <td></td>
+                                                        <!-- Volts (we could show the user setting or blank) -->
+                                                        <td class="py-2 px-3 text-sm text-gray-800">
+                                                            <code>{volts}</code>
+                                                        </td>
+                                                        <td class="py-2 px-3 text-sm text-gray-800">
+                                                            <code>{totalOfAllAmp.toFixed(2)}</code>
+                                                        </td>
+                                                        <!-- Actions cell empty -->
+                                                        <td></td>
+                                                    </tr>
+                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
