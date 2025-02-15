@@ -1,0 +1,32 @@
+Size of wires
+- lighting: 2mm sq
+- CO: 3.5
+- motor: 5.5 minimum (table to follow)
+- see table
+
+Wire options
+- THHN
+- THW
+- THWN
+
+Conduit Size
+- 2mm wire: 15
+- 3.5: 20
+- 5.5: 20
+
+see table
+
+Add material cost data entry
+- category
+- qty
+- unit
+- desc
+- brand
+- unit price
+- total price (calculated)
+
+- calculate total cost
+-- materials = total cost + 25%
+-- labor = 70% (adjustable) of total cost
+-- logistics = data entry
+-- project cost = material + labor + logistics
