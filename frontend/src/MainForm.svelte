@@ -1,6 +1,6 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    import { writable } from "svelte/store";
+    import { writable, derived, get } from "svelte/store";
     import { SaveJSON } from "../wailsjs/go/main/App.js";
 
     // Constants loaded from JSON
@@ -28,12 +28,22 @@
     let selectedOccupancyTypes = [];
     let selectedAddOns = [];
     let selectedAddOnValue = null;
-    let systemPhaseType = null;
     let sumOfSpecifications = {};
     let totalSumOfSpecs = 0;
     let selectedLightingDemandFactorID = null;
     let applicationDemandFactor = 0;
-    let amps = 0;
+
+    // --------------------------------------------
+    // Convert 'systemPhaseType' into a Svelte store
+    // --------------------------------------------
+    let systemPhaseType = null;
+    let _systemPhaseType = writable(null);
+
+    // --------------------------------------------
+    // Convert 'volts' into a Svelte store
+    // --------------------------------------------
+    let volts = 220;
+    let _volts = writable(volts);
 
     // For categories
     let hasCategoryTypes = false;
@@ -41,9 +51,7 @@
     let loadSpecifications = writable([]);
 
     // MULTIPLE lighting rows
-    let lightingRows = writable([
-        { typeValue: null, wattage: 0, quantity: 1 }
-    ]);
+    let lightingRows = writable([]);
 
     // For convenience outlets
     let convenienceVA = 180;
@@ -55,12 +63,18 @@
     let selectedCategoryType = null;
     let spareName = "";
 
-    // New: user-entered Volts
-    let volts = 220; // default
+    // Additional fields
+    let ratings = "";  // for categories 2,3,4,5
+    let isABC = false; // check box for 3-phase loads (except lighting & convenience)
+    let showLightingInput = false;
 
     // REACTIVE total sums for the table footer
     let totalOfAllVA = 0;
     let totalOfAllAmp = 0;
+
+    // Keep the store values in sync with the local variables
+    $: _volts.set(volts);
+    $: _systemPhaseType.set(systemPhaseType);
 
     // Subscribe to loadSpecifications to compute table-foot sums
     $: {
@@ -70,7 +84,6 @@
             for (const spec of items) {
                 const numericSubtotal = parseFloat(spec.subtotal) || 0;
                 vaSum += numericSubtotal;
-                // For the Amp Load column, we do numericSubtotal / volts
                 ampSum += volts > 0 ? numericSubtotal / volts : 0;
             }
             totalOfAllVA = vaSum;
@@ -79,19 +92,16 @@
         onDestroy(unsubFooter);
     }
 
-    // Function to load constants
+    // Load constants on mount
     const fetchConstants = async () => {
         const response = await import('./constants.json');
         constants = response.default;
     };
+    onMount(fetchConstants);
 
-    onMount(() => {
-        fetchConstants();
-    });
-
-    /**
-     * Remove a specification from the main list
-     */
+    // ----------------------------------------------------------------
+    // Remove a specification from the main list
+    // ----------------------------------------------------------------
     function removeLoadSpecification(indexToRemove) {
         loadSpecifications.update(current =>
             current.filter((_, idx) => idx !== indexToRemove)
@@ -99,11 +109,11 @@
         sumOfSpecifications = getSumOfSpecifications();
     }
 
-    /**
-     * Move a specification row UP in the table
-     */
+    // ----------------------------------------------------------------
+    // Move a specification row UP in the table
+    // ----------------------------------------------------------------
     function moveSpecUp(index) {
-        if (index <= 0) return; // already at the top
+        if (index <= 0) return;
         loadSpecifications.update(specs => {
             const newSpecs = [...specs];
             [newSpecs[index - 1], newSpecs[index]] = [newSpecs[index], newSpecs[index - 1]];
@@ -112,12 +122,12 @@
         sumOfSpecifications = getSumOfSpecifications();
     }
 
-    /**
-     * Move a specification row DOWN in the table
-     */
+    // ----------------------------------------------------------------
+    // Move a specification row DOWN in the table
+    // ----------------------------------------------------------------
     function moveSpecDown(index) {
         loadSpecifications.update(specs => {
-            if (index >= specs.length - 1) return specs; // already at the bottom
+            if (index >= specs.length - 1) return specs;
             const newSpecs = [...specs];
             [newSpecs[index + 1], newSpecs[index]] = [newSpecs[index], newSpecs[index + 1]];
             return newSpecs;
@@ -125,41 +135,38 @@
         sumOfSpecifications = getSumOfSpecifications();
     }
 
-    /**
-     * Add another row for lighting
-     */
+    // ----------------------------------------------------------------
+    // Add another row for lighting
+    // ----------------------------------------------------------------
     function addAnotherLightingRow() {
+        showLightingInput = true;
         lightingRows.update(rows => [
             ...rows,
             { typeValue: null, wattage: 0, quantity: 1 }
         ]);
     }
 
-    /**
-     * Remove one lighting row
-     */
+    // ----------------------------------------------------------------
+    // Remove one lighting row
+    // ----------------------------------------------------------------
     function removeLightingRow(rowIndex) {
-        lightingRows.update(rows =>
-            rows.filter((_, i) => i !== rowIndex)
-        );
+        lightingRows.update(rows => rows.filter((_, i) => i !== rowIndex));
     }
 
-    /**
-     * Main function to add the chosen specification
-     */
+    // ----------------------------------------------------------------
+    // Main function to add the chosen specification
+    // ----------------------------------------------------------------
     function addLoadSpecification() {
         let category = constants.loadSpecificationCategories[selectedCategoryIndex];
         let details = {};
 
-        // ---- LIGHTING (with multiple rows)
+        // LIGHTING (with multiple rows)
         if (selectedCategoryIndex === 0) {
             let totalLighting = 0;
             let rowDetails = [];
-
             let unsub = lightingRows.subscribe(rows => {
                 for (let row of rows) {
                     totalLighting += row.wattage * row.quantity;
-                    // Look up a label for the row's type, if it exists
                     let foundType = (category.types || []).find(t => t.value === +row.typeValue);
                     rowDetails.push({
                         type: foundType ? foundType.label : "Unknown",
@@ -177,15 +184,16 @@
                 wattage: totalLighting,
                 horsepower: (totalLighting / 746).toFixed(2),
                 quantity: 1,
-                // labeled "VA" in table, but stored as 'subtotal' for logic
-                subtotal: totalLighting.toFixed(2)
+                subtotal: totalLighting.toFixed(2),
+                ratings: "-",
+                abc: false
             };
 
-            // Reset the lighting array
-            lightingRows.set([{ typeValue: null, wattage: 0, quantity: 1 }]);
+            // Reset lighting
+            lightingRows.set([]);
+            showLightingInput = false;
         }
-
-        // ---- CONVENIENCE OUTLET
+        // CONVENIENCE OUTLET
         else if (selectedCategoryIndex === 1) {
             details = {
                 category: category.label,
@@ -194,11 +202,12 @@
                 va: convenienceVA,
                 wattage: convenienceVA,
                 horsepower: (convenienceVA / 746).toFixed(2),
-                subtotal: (quantity * convenienceVA).toFixed(2)
+                subtotal: (quantity * convenienceVA).toFixed(2),
+                ratings: "-",
+                abc: false
             };
         }
-
-        // ---- KITCHEN
+        // KITCHEN
         else if (selectedCategoryIndex === 2) {
             details = {
                 category: category.label,
@@ -206,11 +215,12 @@
                 quantity: 1,
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
-                subtotal: (quantity * wattage).toFixed(2)
+                subtotal: (quantity * wattage).toFixed(2),
+                ratings: ratings.trim() !== "" ? ratings : "-",
+                abc: (get(_systemPhaseType) == 1 && isABC) ? true : false
             };
         }
-
-        // ---- MOTOR
+        // MOTOR
         else if (selectedCategoryIndex === 3) {
             details = {
                 category: category.label,
@@ -218,11 +228,12 @@
                 quantity: 1,
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
-                subtotal: (quantity * wattage).toFixed(2)
+                subtotal: (quantity * wattage).toFixed(2),
+                ratings: ratings.trim() !== "" ? ratings : "-",
+                abc: (get(_systemPhaseType) == 1 && isABC) ? true : false
             };
         }
-
-        // ---- SPARE
+        // SPARE
         else if (selectedCategoryIndex === 4) {
             const chosenName = spareName.trim() !== "" ? spareName : "Spare";
             details = {
@@ -231,11 +242,12 @@
                 quantity: 1,
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
-                subtotal: (1 * wattage).toFixed(2)
+                subtotal: (1 * wattage).toFixed(2),
+                ratings: ratings.trim() !== "" ? ratings : "-",
+                abc: (get(_systemPhaseType) == 1 && isABC) ? true : false
             };
         }
-
-        // ---- OTHER LOADS
+        // OTHER LOADS
         else if (selectedCategoryIndex === 5) {
             details = {
                 category: category.label,
@@ -243,17 +255,15 @@
                 quantity: 1,
                 wattage: wattage,
                 horsepower: (wattage / 746).toFixed(2),
-                subtotal: (quantity * wattage).toFixed(2)
+                subtotal: (quantity * wattage).toFixed(2),
+                ratings: ratings.trim() !== "" ? ratings : "-",
+                abc: (get(_systemPhaseType) == 1 && isABC) ? true : false
             };
         }
 
-        // Update store
-        loadSpecifications.update(current => [
-            ...current,
-            { ...details }
-        ]);
+        loadSpecifications.update(current => [...current, { ...details }]);
 
-        // Reset form fields
+        // Reset fields
         quantity = 1;
         wattage = 0;
         convenienceVA = 180;
@@ -261,34 +271,31 @@
         spareName = "";
         selectedCategoryIndex = null;
         selectedCategoryType = null;
+        ratings = "";
+        isABC = false;
 
         sumOfSpecifications = getSumOfSpecifications();
     }
 
-    function calculateAmps() {
-        // If needed
-    }
-
-    /**
-     * Summarize all specs, applying original demand factor logic
-     */
+    // ----------------------------------------------------------------
+    // Summarize all specs with demand factor logic
+    // ----------------------------------------------------------------
     function getSumOfSpecifications() {
+        const items = get(loadSpecifications);
         let sumOfSpecs = {};
         let tempLightingDemandFactor = 0;
         let tempConvenienceDemandFactor = 0;
         let tempOtherDemandFactor = 0;
         totalSumOfSpecs = 0;
 
-        const specs = loadSpecifications.subscribe(items => {
-            for (let i = 0; i < items.length; i++) {
-                let item = items[i];
-                if (!sumOfSpecs[item.category]) {
-                    sumOfSpecs[item.category] = { sum: 0, count: 0 };
-                }
-                sumOfSpecs[item.category].sum += parseFloat(item.subtotal);
-                sumOfSpecs[item.category].count += 1;
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            if (!sumOfSpecs[item.category]) {
+                sumOfSpecs[item.category] = { sum: 0, count: 0 };
             }
-        });
+            sumOfSpecs[item.category].sum += parseFloat(item.subtotal);
+            sumOfSpecs[item.category].count += 1;
+        }
 
         for (const [key, value] of Object.entries(sumOfSpecs)) {
             if (value.count === 1 && key === "Kitchen Load") {
@@ -311,8 +318,6 @@
 
         applicationDemandFactor = tempLightingDemandFactor + tempConvenienceDemandFactor;
         totalSumOfSpecs += applicationDemandFactor + tempOtherDemandFactor;
-
-        onDestroy(specs);
         return sumOfSpecs;
     }
 
@@ -335,7 +340,6 @@
                     applicableValue = remainder;
                     remainder = 0;
                 }
-
                 total += applicableValue * (percentage / 100);
                 if (remainder === 0) break;
             }
@@ -348,10 +352,8 @@
     $: {
         if (selectedOccupancyValue !== null) {
             const occupancy = constants.occupancyTypes[parseInt(selectedOccupancyValue)];
-            selectedOccupancyTypes = [];
-            selectedAddOns = [];
-            selectedOccupancyTypes = occupancy.types.length > 0 ? occupancy.types : [];
-            selectedAddOns = occupancy.addons.length > 0 ? occupancy.addons : [];
+            selectedOccupancyTypes = occupancy?.types?.length ? occupancy.types : [];
+            selectedAddOns = occupancy?.addons?.length ? occupancy.addons : [];
         } else {
             selectedOccupancyTypes = [];
             selectedAddOns = [];
@@ -364,11 +366,9 @@
             const type = selectedOccupancyTypes[selectedTypeValue];
             if (type) {
                 totalLoad = type.unit_load;
-                if (selectedAddOns.length > 0) {
-                    if (selectedAddOnValue !== null && selectedAddOnValue !== "") {
-                        const addon = selectedAddOns[selectedAddOnValue];
-                        totalLoad += addon.unit_load;
-                    }
+                if (selectedAddOns.length > 0 && selectedAddOnValue) {
+                    const addon = selectedAddOns[selectedAddOnValue];
+                    if (addon) totalLoad += addon.unit_load;
                 }
                 loadByOccupancy = totalLoad * floorArea;
                 selectedLightingDemandFactorID = type.lighting_df;
@@ -392,6 +392,77 @@
 
         showSpecForm = !!(selectedOccupancyValue !== null);
     }
+
+    // ----------------------------------------------------------------
+    // CSV Data with Pairing Logic for AB, BC, CA in groups of two
+    // skipping increments if ABC is used
+    // ----------------------------------------------------------------
+    let csvData = derived(
+        [loadSpecifications, _volts, _systemPhaseType],
+        ([$loadSpecifications, $volts, $phase]) => {
+            const result = [];
+            let pairIndex = 0; // increments for each non-ABC spec, 2 specs per "group"
+
+            for (let i = 0; i < $loadSpecifications.length; i++) {
+                const spec = $loadSpecifications[i];
+                const CRKTno = i + 1;
+
+                // Build "Load" column
+                let loadStr = spec.name;
+                if (spec.category === "Lighting" && spec.lightingLoads) {
+                    const combos = spec.lightingLoads.map(
+                        (row) => `${row.type}: ${row.wattage}W x ${row.quantity}`
+                    );
+                    loadStr = combos.join("; ");
+                }
+
+                let rowObj = {
+                    CRKTno,
+                    Load: loadStr,
+                    Ratings: spec.ratings || "-",
+                    "Volt Ampere": spec.subtotal,
+                    Volts: $volts,
+                    AmpLoadSingle: "",
+                    AmpLoadAB: "",
+                    AmpLoadBC: "",
+                    AmpLoadCA: "",
+                    AmpLoadABC: "",
+                    SizeOfWire: spec.sizeOfWire || "",
+                    ConduitSize: spec.conduitSize || ""
+                };
+
+                // Compute numeric amp
+                const numericSubtotal = parseFloat(spec.subtotal) || 0;
+                const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
+
+                if ($phase === 0) {
+                    // Single-phase => use AmpLoadSingle
+                    rowObj.AmpLoadSingle = ampLoadValue.toFixed(2);
+                } else {
+                    // 3-phase logic
+                    if (spec.abc) {
+                        // If user checked ABC, place it in ABC column
+                        rowObj.AmpLoadABC = ampLoadValue.toFixed(2);
+                        // Do not increment pairIndex => next spec uses same group
+                    } else {
+                        // Pairing logic
+                        // 2 specs per group => group = floor(pairIndex / 2) mod 3
+                        const group = Math.floor(pairIndex / 2) % 3;
+                        if (group === 0) {
+                            rowObj.AmpLoadAB = ampLoadValue.toFixed(2);
+                        } else if (group === 1) {
+                            rowObj.AmpLoadBC = ampLoadValue.toFixed(2);
+                        } else {
+                            rowObj.AmpLoadCA = ampLoadValue.toFixed(2);
+                        }
+                        pairIndex++;
+                    }
+                }
+                result.push(rowObj);
+            }
+            return result;
+        }
+    );
 </script>
 
 <div class="flex flex-col h-screen">
@@ -419,7 +490,6 @@
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        xmlns="http://www.w3.org/2000/svg"
                 >
                     <path
                             stroke-linecap="round"
@@ -435,7 +505,6 @@
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        xmlns="http://www.w3.org/2000/svg"
                 >
                     <path
                             stroke-linecap="round"
@@ -454,7 +523,6 @@
                         class="w-6 h-6"
                         fill="currentColor"
                         viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
                 >
                     <path
                             fill-rule="evenodd"
@@ -469,7 +537,7 @@
     <div class="flex flex-1 bg-gray-200">
         <main class="transition-all h-full duration-500 {showConsole ? 'w-2/3' : 'w-full'}">
             <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
-                <!-- begin main form -->
+                <!-- Main form -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <div class="h-20 py-4">
                         <label for="floorArea" class="block text-gray-700 text-sm font-bold mb-2">
@@ -502,10 +570,7 @@
 
                     {#if selectedOccupancyTypes.length > 0}
                         <div class="h-20 py-4">
-                            <label
-                                    for="occupancyType"
-                                    class="block text-gray-700 text-sm font-bold mb-2"
-                            >
+                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">
                                 Occupancy Type:
                             </label>
                             <select
@@ -522,10 +587,7 @@
 
                     {#if selectedAddOns.length > 0}
                         <div class="h-20 py-4">
-                            <label
-                                    for="occupancyType"
-                                    class="block text-gray-700 text-sm font-bold mb-2"
-                            >
+                            <label for="occupancyType" class="block text-gray-700 text-sm font-bold mb-2">
                                 AddOn:
                             </label>
                             <select
@@ -542,10 +604,7 @@
                     {/if}
 
                     <div class="h-20 py-4">
-                        <label
-                                for="systemPhaseType"
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                        >
+                        <label for="systemPhaseType" class="block text-gray-700 text-sm font-bold mb-2">
                             System Phase:
                         </label>
                         <select
@@ -559,12 +618,8 @@
                         </select>
                     </div>
 
-                    <!-- NEW: Volts field -->
                     <div class="h-20 py-4">
-                        <label
-                                for="volts"
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                        >
+                        <label for="volts" class="block text-gray-700 text-sm font-bold mb-2">
                             Volts:
                         </label>
                         <input
@@ -580,13 +635,10 @@
                 </div>
 
                 {#if showSpecForm}
-                    <!-- begin spec form -->
+                    <!-- Spec form -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4">
                         <div class="h-20 py-4">
-                            <label
-                                    for="category"
-                                    class="block text-gray-700 text-sm font-bold mb-2"
-                            >
+                            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
                                 Load Specification Category:
                             </label>
                             <select
@@ -603,10 +655,7 @@
 
                         {#if hasCategoryTypes && selectedCategoryIndex !== 0}
                             <div class="h-20 py-4">
-                                <label
-                                        for="selectedCategoryType"
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                >
+                                <label for="selectedCategoryType" class="block text-gray-700 text-sm font-bold mb-2">
                                     Type:
                                 </label>
                                 <select
@@ -621,88 +670,80 @@
                             </div>
                         {/if}
 
-                        <!-- LIGHTING Loads with multiple rows -->
+                        <!-- LIGHTING category (index === 0) -->
                         {#if selectedCategoryIndex === 0}
                             <div class="col-span-4 py-4 border rounded bg-white px-2">
                                 <h3 class="font-bold text-gray-700 mb-2">
-                                    Lighting: Multiple Rows
+                                    Lighting
                                 </h3>
+                                {#if $lightingRows.length > 0}
+                                    {#each $lightingRows as row, rowIndex}
+                                        <div class="flex flex-wrap gap-2 mb-2 items-end">
+                                            <div class="flex flex-col">
+                                                <label class="block text-gray-700 text-sm font-bold">
+                                                    Type:
+                                                </label>
+                                                <select
+                                                        bind:value={row.typeValue}
+                                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline"
+                                                >
+                                                    <option value={null}>Select Type</option>
+                                                    {#each constants.loadSpecificationCategories[0].types as { label, value }}
+                                                        <option value={value}>{label}</option>
+                                                    {/each}
+                                                </select>
+                                            </div>
 
-                                {#each $lightingRows as row, rowIndex}
-                                    <div class="flex flex-wrap gap-2 mb-2 items-end">
-                                        <div class="flex flex-col">
-                                            <label class="block text-gray-700 text-sm font-bold">
-                                                Type:
-                                            </label>
-                                            <select
-                                                    bind:value={row.typeValue}
-                                                    class="shadow appearance-none border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline"
+                                            <div class="flex flex-col">
+                                                <label class="block text-gray-700 text-sm font-bold" for="wattage">
+                                                    Wattage
+                                                </label>
+                                                <input
+                                                        type="number"
+                                                        min="1"
+                                                        bind:value={row.wattage}
+                                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                />
+                                            </div>
+
+                                            <div class="flex flex-col">
+                                                <label class="block text-gray-700 text-sm font-bold" for="quantity">
+                                                    Quantity
+                                                </label>
+                                                <input
+                                                        type="number"
+                                                        min="1"
+                                                        max="999"
+                                                        bind:value={row.quantity}
+                                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                />
+                                            </div>
+
+                                            <button
+                                                    type="button"
+                                                    on:click={() => removeLightingRow(rowIndex)}
+                                                    class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded ml-2"
                                             >
-                                                <option value={null}>Select Type</option>
-                                                {#each constants.loadSpecificationCategories[0].types as { label, value }}
-                                                    <option value={value}>{label}</option>
-                                                {/each}
-                                            </select>
+                                                Remove
+                                            </button>
                                         </div>
-
-                                        <div class="flex flex-col">
-                                            <label
-                                                    class="block text-gray-700 text-sm font-bold"
-                                                    for="wattage"
-                                            >
-                                                Wattage
-                                            </label>
-                                            <input
-                                                    type="number"
-                                                    min="1"
-                                                    bind:value={row.wattage}
-                                                    class="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            />
-                                        </div>
-
-                                        <div class="flex flex-col">
-                                            <label
-                                                    class="block text-gray-700 text-sm font-bold"
-                                                    for="quantity"
-                                            >
-                                                Quantity
-                                            </label>
-                                            <input
-                                                    type="number"
-                                                    min="1"
-                                                    max="999"
-                                                    bind:value={row.quantity}
-                                                    class="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            />
-                                        </div>
-
-                                        <button
-                                                type="button"
-                                                on:click={() => removeLightingRow(rowIndex)}
-                                                class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded ml-2"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                {/each}
+                                    {/each}
+                                {/if}
 
                                 <button
                                         type="button"
                                         on:click={addAnotherLightingRow}
                                         class="bg-teal-500 hover:bg-teal-700 text-white py-1 px-2 rounded"
                                 >
-                                    Add Another Lighting Row
+                                    Add Lighting Row
                                 </button>
                             </div>
                         {/if}
 
-                        <!-- Convenience Outlet Form -->
+                        <!-- Convenience Outlet (index === 1) -->
                         {#if selectedCategoryIndex === 1}
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="convenienceVA"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="convenienceVA">
                                     VA:
                                 </label>
                                 <input
@@ -714,10 +755,7 @@
                                 />
                             </div>
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="quantity"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
                                     Quantity:
                                 </label>
                                 <div class="sm:flex sm:items-center">
@@ -735,13 +773,10 @@
                             </div>
                         {/if}
 
-                        <!-- Kitchen Load -->
+                        <!-- Kitchen (index === 2) -->
                         {#if selectedCategoryIndex === 2}
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="quantity"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
                                     Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
@@ -757,13 +792,10 @@
                             </div>
                         {/if}
 
-                        <!-- Motor: numeric Wattage input -->
+                        <!-- Motor (index === 3) -->
                         {#if selectedCategoryIndex === 3}
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="motorWattage"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="motorWattage">
                                     Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
@@ -780,13 +812,10 @@
                             </div>
                         {/if}
 
-                        <!-- Spare: optional Name + Wattage -->
+                        <!-- Spare (index === 4) -->
                         {#if selectedCategoryIndex === 4}
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="spareName"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="spareName">
                                     Spare Name (optional)
                                 </label>
                                 <input
@@ -798,10 +827,7 @@
                                 />
                             </div>
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="spareWattage"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="spareWattage">
                                     Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
@@ -818,13 +844,10 @@
                             </div>
                         {/if}
 
+                        <!-- Other (index === 5) -->
                         {#if selectedCategoryIndex === 5}
-                            <!-- Other Loads -->
                             <div class="h-20 py-4">
-                                <label
-                                        class="block text-gray-700 text-sm font-bold mb-2"
-                                        for="quantity"
-                                >
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="quantity">
                                     Wattage:
                                 </label>
                                 <div class="sm:flex sm:items-center">
@@ -837,6 +860,37 @@
                                         />
                                     </div>
                                 </div>
+                            </div>
+                        {/if}
+
+                        <!-- "Ratings" field for categories 2,3,4,5 -->
+                        {#if selectedCategoryIndex !== null && selectedCategoryIndex != 0 && selectedCategoryIndex != 1}
+                            <div class="h-20 py-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="ratings">
+                                    Ratings:
+                                </label>
+                                <input
+                                        type="text"
+                                        bind:value={ratings}
+                                        id="ratings"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        placeholder="e.g. 1/2 HP, 220V..."
+                                />
+                            </div>
+                        {/if}
+
+                        <!-- "ABC" checkbox for 3-phase (excl. lighting/convenience) -->
+                        {#if get(_systemPhaseType) == 1 && selectedCategoryIndex != null && selectedCategoryIndex != 0 && selectedCategoryIndex != 1}
+                            <div class="flex items-end py-4">
+                                <input
+                                        type="checkbox"
+                                        bind:checked={isABC}
+                                        id="abc"
+                                        class="mr-2 h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
+                                />
+                                <label for="abc" class="block text-gray-700 text-sm font-bold">
+                                    ABC
+                                </label>
                             </div>
                         {/if}
                     </div>
@@ -872,7 +926,7 @@
                             <div class="sm:flex sm:items-center">
                                 <div class="sm:flex-auto">
                                     <a
-                                            class="rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 sm:ml-3 sm:mt-0 sm:w-auto"
+                                            class="rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500"
                                             href="#!"
                                             on:click={() => (showLoadSpecs = !showLoadSpecs)}
                                     >
@@ -912,7 +966,7 @@
                                                         >
                                                             Quantity
                                                         </th>
-                                                        <!-- (1) Renamed "Subtotal" to "VA" -->
+                                                        <!-- (1) Subtotal => "VA" -->
                                                         <th
                                                                 scope="col"
                                                                 class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -989,23 +1043,23 @@
                                                             >
                                                                 <code>{spec.subtotal}</code>
                                                             </td>
-                                                            <!-- (2) Phase: single-phase => '1', else '???' -->
+                                                            <!-- (2) Phase: single-phase => '1'; else '3' -->
                                                             <td
                                                                     class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
                                                             >
                                                                 {#if systemPhaseType == 0}
                                                                     1
                                                                 {:else}
-                                                                    ???
+                                                                    3
                                                                 {/if}
                                                             </td>
-                                                            <!-- (3) Volts column -->
+                                                            <!-- (3) Volts -->
                                                             <td
                                                                     class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
                                                             >
                                                                 <code>{volts}</code>
                                                             </td>
-                                                            <!-- (4) Amp Load = VA / volts -->
+                                                            <!-- (4) Amp Load => VA / volts -->
                                                             <td
                                                                     class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
                                                             >
@@ -1020,7 +1074,7 @@
                                                             <td
                                                                     class="relative whitespace-nowrap py-1 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                                                             >
-                                                                <!-- Move Up Button -->
+                                                                <!-- Move Up -->
                                                                 <button
                                                                         type="button"
                                                                         on:click={() => moveSpecUp(idx)}
@@ -1043,8 +1097,7 @@
                                                                         />
                                                                     </svg>
                                                                 </button>
-
-                                                                <!-- Move Down Button -->
+                                                                <!-- Move Down -->
                                                                 <button
                                                                         type="button"
                                                                         on:click={() => moveSpecDown(idx)}
@@ -1067,8 +1120,7 @@
                                                                         />
                                                                     </svg>
                                                                 </button>
-
-                                                                <!-- Trash Button -->
+                                                                <!-- Remove -->
                                                                 <button
                                                                         type="button"
                                                                         on:click={() => removeLoadSpecification(idx)}
@@ -1091,26 +1143,22 @@
                                                         </tr>
                                                     {/each}
                                                     </tbody>
-                                                    <!-- New footer row summing up VA & Amp Load -->
                                                     <tfoot class="bg-gray-100">
                                                     <tr>
-                                                        <!-- 9 columns total (Category, Name, UnitLoad, Q, VA, Phase, Volts, Amp, Actions) -->
+                                                        <!-- 9 columns total -->
                                                         <td colspan="4" class="text-right font-semibold py-2 px-3">
                                                             Totals:
                                                         </td>
                                                         <td class="py-2 px-3 text-sm text-gray-800">
                                                             <code>{totalOfAllVA.toFixed(2)}</code>
                                                         </td>
-                                                        <!-- Phase column empty in footer -->
                                                         <td></td>
-                                                        <!-- Volts (we could show the user setting or blank) -->
                                                         <td class="py-2 px-3 text-sm text-gray-800">
                                                             <code>{volts}</code>
                                                         </td>
                                                         <td class="py-2 px-3 text-sm text-gray-800">
                                                             <code>{totalOfAllAmp.toFixed(2)}</code>
                                                         </td>
-                                                        <!-- Actions cell empty -->
                                                         <td></td>
                                                     </tr>
                                                     </tfoot>
@@ -1123,8 +1171,14 @@
                         </div>
                     </div>
                 {/if}
+
+                <!-- For quick debugging: show CSV data as JSON -->
+                <pre class="mt-4 bg-white p-2 rounded">
+{JSON.stringify($csvData, null, 2)}
+                </pre>
             </div>
         </main>
+
         <aside class="transition-all h-full duration-500 bg-white {showConsole ? 'w-1/3' : 'hidden'}">
             <div class="container-fluid m-2 pl-4">
                 <div class="h-20 py-4">
@@ -1161,4 +1215,6 @@
     </div>
 </div>
 
-<style></style>
+<style>
+    /* Minimal custom styling */
+</style>
