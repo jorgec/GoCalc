@@ -10,7 +10,7 @@ import {
     selectedAddOnValue,
     selectedTypeValue
 } from './dataStore';
-import { determineWireSizeAndType, determineConduitSize } from '../utils/calculations';
+import {determineWireSizeAndType, determineConduitSize, wireData} from '../utils/calculations';
 
 // Derived store for the CSV data
 export const csvData = derived(
@@ -48,6 +48,7 @@ export const csvData = derived(
                 AmpLoadABC: '',
                 WireSize: wireSize || '', // Use calculated wire size or empty string
                 WireType: (wireType && wireType.length > 0) ? wireType.join(', ') : '',
+                WireSizeAndType: wireData(wireSize, wireType),
                 ConduitSize: conduitSize || '',
             };
 
