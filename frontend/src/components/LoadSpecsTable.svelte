@@ -19,16 +19,7 @@
 </script>
 
 <div class="my-4">
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <button
-                    class="rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500"
-                    on:click={() => showLoadSpecs.update(v => !v)}
-            >
-                Show Load Specifications
-            </button>
-        </div>
-    </div>
+
 
     {#if $showLoadSpecs}
         <div class="m-2 flow-root">

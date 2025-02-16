@@ -1,0 +1,39 @@
+{
+  "floorArea": 0,
+  "loadSpecifications": [
+    {
+      "abc": false,
+      "category": "Lighting",
+      "conduitSize": "15 mm Ø PVC",
+      "horsepower": "0.66",
+      "lightingLoads": [
+        {
+          "quantity": 5,
+          "type": "Fluorescent Lamp",
+          "wattage": 50
+        },
+        {
+          "quantity": 10,
+          "type": "CFL",
+          "wattage": 24
+        }
+      ],
+      "name": "Multiple Lighting Loads (2 rows)",
+      "quantity": 1,
+      "ratings": "-",
+      "sizeOfWire": 2,
+      "subtotal": "490.00",
+      "wattage": 490,
+      "wireType": [
+        "THHN",
+        "THWN-2"
+      ]
+    }
+  ],
+  "projectName": "Testspx",
+  "selectedAddOnValue": null,
+  "selectedOccupancyValue": 0,
+  "selectedTypeValue": 0,
+  "systemPhaseType": 0,
+  "volts": 220
+}

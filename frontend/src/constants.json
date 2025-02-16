@@ -340,5 +340,87 @@
     [[50000, 40], [null, 20]],
     [[20000, 50], [100000, 40], [null, 30]],
     [[12500, 100], [null, 50]]
-  ]
+  ],
+  "wireSizingData": {
+    "entries": [
+      {
+        "Load Type": "Lighting",
+        "Amp": 15.0,
+        "Wire Size": 2.0,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Convenience outlet",
+        "Amp": 20.0,
+        "Wire Size": 3.5,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Small Appliance Circuits",
+        "Amp": 25.0,
+        "Wire Size": 5.5,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Air-Conditioning Unit",
+        "Amp": 30.0,
+        "Wire Size": 8.0,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Water Heater",
+        "Amp": 30.0,
+        "Wire Size": 8.0,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Electric Range",
+        "Amp": 50.0,
+        "Wire Size": 14.0,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Electric Oven",
+        "Amp": 50.0,
+        "Wire Size": 14.0,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Tonner ACU",
+        "Amp": 60.0,
+        "Wire Size": 22.0,
+        "Wire Type": ["THHN", "THWN-2"]
+      },
+      {
+        "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
+        "Amp": 20.0,
+        "Wire Size": 5.5,
+        "Wire Type": ["THHN", "THWN-2", "RHW-2"]
+      },
+      {
+        "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
+        "Amp": 40.0,
+        "Wire Size": 14.0,
+        "Wire Type": ["THHN", "THWN-2", "RHW-2"]
+      },
+      {
+        "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
+        "Amp": 80.0,
+        "Wire Size": 38.0,
+        "Wire Type": ["THHN", "THWN-2", "RHW-2"]
+      }
+    ]
+  },
+  "conduitSizing": {
+    "entries": {
+      "2": 15,
+      "3.5": 15,
+      "5.5": 20,
+      "8": 25,
+      "14": 32,
+      "22": 38,
+      "38": 50
+    }
+  }
+
 }

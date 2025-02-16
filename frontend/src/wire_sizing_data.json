@@ -1,0 +1,72 @@
+{
+  "wireSizingData": {
+    "entries": [
+      {
+        "Load Type": "Lighting",
+        "Current (Amps)": "10-15 A",
+        "Wire Size": "2.0",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Convenience outlet",
+        "Current (Amps)": "15-20 A",
+        "Wire Size": "3.5",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Small Appliance Circuits",
+        "Current (Amps)": "20-25 A",
+        "Wire Size": "5.5",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Air-Conditioning Unit",
+        "Current (Amps)": "20-30 A",
+        "Wire Size": "5.5-8.0",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Water Heater",
+        "Current (Amps)": "25-30 A",
+        "Wire Size": "5.5-8.0",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Electric Range",
+        "Current (Amps)": "30-50 A",
+        "Wire Size": "8.0-14.0",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Electric Oven",
+        "Current (Amps)": "30-50 A",
+        "Wire Size": "8.0-14.0",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Tonner ACU",
+        "Current (Amps)": "30-60 A",
+        "Wire Size": "8.0-22.0",
+        "Wire Type": "THHN, THWN-2"
+      },
+      {
+        "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
+        "Current (Amps)": "10-20 A",
+        "Wire Size": "2.0-3.5",
+        "Wire Type": "THHN, THWN-2, RHW-2"
+      },
+      {
+        "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
+        "Current (Amps)": "25-40 A",
+        "Wire Size": "5.5-14.0",
+        "Wire Type": "THHN, THWN-2, RHW-2"
+      },
+      {
+        "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
+        "Current (Amps)": "50-80 A",
+        "Wire Size": "22.0-38.0",
+        "Wire Type": "THHN, THWN-2, RHW-2"
+      }
+    ]
+  }
+}

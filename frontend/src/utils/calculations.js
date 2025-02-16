@@ -1,14 +1,15 @@
 // src/utils/calculations.js
 import { get } from 'svelte/store';
 import { constants } from '../stores/constantsStore';
-import { selectedLightingDemandFactorID } from '../stores/dataStore';
+import { selectedLightingDemandFactorID, volts } from '../stores/dataStore'; // Import volts
+
 /**
  * Calculate lighting demand factor based on
  * "lightingDemandFactors" rules from constants.json
  */
 export function calculateDemandFactor(value) {
     const dfID = get(selectedLightingDemandFactorID);
-    if (dfID !== null) {
+    if (dfID !== null && constants.lightingDemandFactors && constants.lightingDemandFactors[dfID]) {
         const rules = constants.lightingDemandFactors[dfID];
         let remainder = value;
         let total = 0;
@@ -18,7 +19,6 @@ export function calculateDemandFactor(value) {
             let applicableValue = 0;
 
             if (max === null) {
-                // no upper limit
                 applicableValue = remainder;
             } else if (remainder > max) {
                 applicableValue = max - (rules[i - 1] ? rules[i - 1][0] : 0);
@@ -85,3 +85,123 @@ export function getSumOfSpecifications(items) {
         applicationDemandFactor: finalLightingPlusConvenience
     };
 }
+
+// --- determineWireSizeAndType ---
+export function determineWireSizeAndType(loadSpec) {
+    console.log(loadSpec);
+    if (!constants.wireSizingData) { // Safety check
+        return { wireSize: null, wireType: [] };
+    }
+    const wireSizingData = constants.wireSizingData.entries;
+    const $volts = get(volts); // Get current volts value
+
+    let loadType = loadSpec.category;
+    let amperage = 0;
+
+    if (loadSpec.subtotal && loadSpec.subtotal > 0 && $volts > 0) {
+        amperage = parseFloat(loadSpec.subtotal) / parseFloat($volts)
+    }
+
+    if (loadType === "Lighting") {
+        loadType = "Lighting";
+    } else if (loadType === "Convenience outlet") {
+        loadType = "Convenience outlet";
+    } else if (loadType === "Kitchen Load") {
+        if (loadSpec.name.includes("Oven")) {
+            loadType = "Electric Oven";
+        } else if (loadSpec.name.includes("Range")) {
+            loadType = "Electric Range";
+        } else {
+            loadType = "Small Appliance Circuits";
+        }
+    } else if (loadType === "Motor") {
+        if (loadSpec.name.includes("Air-Conditioning Unit") || loadSpec.name.includes("Tonner ACU") ) {
+            loadType = "Air-Conditioning Unit";
+            if (loadSpec.name.includes("Tonner ACU")) {
+                loadType = "Tonner ACU"
+            }
+        } else if (loadSpec.name.includes("Water Heater")) {
+            loadType = "Water Heater"
+        }
+        else if (loadSpec.horsepower) {
+            const hp = parseFloat(loadSpec.horsepower);
+            if (hp >= 1 && hp <= 3) {
+                loadType = "Motor Load (1 HP - 3 HP, 230V)";
+            } else if (hp >= 5 && hp <= 10) {
+                loadType = "Motor Load (5 HP - 10 HP, 230V)";
+            } else if (hp >= 15 && hp <= 20) {
+                loadType = "Motor Load (15 HP - 20 HP, 230V)";
+            } else {
+                loadType = "Motor Load (Other)";
+            }
+        }
+        else {
+            loadType = "Motor Load (Other)";
+        }
+    } else {
+        loadType = "Other Loads"
+    }
+
+    console.log("Load Type:")
+    console.log(loadType);
+
+    let matchedEntry = null;
+    for (const entry of wireSizingData) {
+        if (entry["Load Type"] === loadType) {
+            matchedEntry = entry;
+            console.log("Found " + JSON.stringify(entry));
+            break;
+        }
+    }
+
+    if (!matchedEntry) {
+        for (const entry of wireSizingData) {
+            const entryAmp = parseFloat(entry.Amp);
+            if(amperage <= entryAmp) {
+                matchedEntry = entry;
+                break;
+            }
+        }
+    }
+
+    if (matchedEntry) {
+        console.log(matchedEntry);
+        return {
+            wireSize: matchedEntry["Wire Size"],
+            wireType: matchedEntry["Wire Type"]
+        };
+    } else {
+        return {
+            wireSize: null,
+            wireType: []
+        };
+    }
+}
+
+export function wireData(wireSize, wireType) {
+
+    return `${wireSize} mm² ${wireType}`;
+}
+
+export function determineConduitSize(wireSize) {
+    let retVal = "";
+    console.log("Wire size: " + wireSize);
+    if (!constants.conduitSizing || !constants.conduitSizing.entries) {
+        return retVal; // Or a suitable default, like "N/A"
+    }
+
+    const conduitSizes = constants.conduitSizing.entries;
+
+    // Convert wireSize to a string to match the keys in conduitSizes
+    const wireSizeStr = String(wireSize);
+
+    // Direct lookup
+    if (conduitSizes.hasOwnProperty(wireSizeStr)) {
+        retVal = `${conduitSizes[wireSizeStr]} mm Ø PVC`;
+    }
+
+    return retVal; // Or a suitable default value
+}
+
+window.calcWireSize = determineWireSizeAndType;
+window.wireData = wireData;

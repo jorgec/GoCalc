@@ -1,55 +1,62 @@
-<!-- src/MainForm.svelte -->
 <script>
     import Header from "./components/Header.svelte";
     import BasicForm from "./components/BasicForm.svelte";
     import SpecForm from "./components/SpecForm.svelte";
-    import LoadSpecsTable from "./components/LoadSpecsTable.svelte";
+    import LoadSpecsTable from "./components/LoadSpecsTable.svelte"; // This can now be removed
     import SidePanel from "./components/SidePanel.svelte";
+    import CsvDataTable from "./components/CsvDataTable.svelte";
 
-    import { showConsole } from "./stores/uiStore";
-
-    /**
-     * In your original code, you had a derived CSV store or
-     * code generating CSV data. We'll place that in a derived store
-     * named "csvData". If you haven't set it up, replicate your
-     * original logic or just remove this debug panel.
-     */
+    import {showConsole, showCsvTable, showLoadSpecs, showSpecForm, statusMessage} from "./stores/uiStore"; // Import statusMessage and showLoadSpecs/showSpecForm
+    import { systemPhaseType } from "./stores/dataStore";
     import { csvData } from "./stores/derivedStore";
+
+    // Function to get the appropriate CSS class based on message type
+    function getStatusClass(type) {
+        switch (type) {
+            case 'info':
+                return 'bg-blue-100 border-blue-500 text-blue-700';
+            case 'warning':
+                return 'bg-yellow-100 border-yellow-500 text-yellow-700';
+            case 'error':
+                return 'bg-red-100 border-red-500 text-red-700';
+            default:
+                return ''; // No specific styling
+        }
+    }
 </script>
 
 <div class="flex flex-col h-screen">
-    <!-- Top header area -->
     <Header />
 
-    <div class="flex flex-1 bg-gray-200">
-        <!-- Main content area, shrinks to 2/3 if console is open -->
+    <div class="flex flex-1 bg-gray-200 overflow-auto">
         <main class="{`transition-all h-full duration-500 ${$showConsole ? 'w-2/3' : 'w-full'}`}">
             <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
-                <!-- Basic Occupancy/Phase Form -->
                 <BasicForm />
 
-                <!-- Category-based specification Form -->
-                <SpecForm />
+                {#if $showSpecForm}
+                    <SpecForm />
+                {/if}
 
-                <!-- Table of load specs -->
-                <LoadSpecsTable />
+                {#if $showLoadSpecs}
+                    <LoadSpecsTable/>
+                {/if}
 
-                <!-- For debugging: show CSV data as JSON -->
-                <pre class="mt-4 bg-white p-2 rounded">
-{JSON.stringify($csvData, null, 2)}
-        </pre>
+                {#if $showCsvTable}
+                    <CsvDataTable csvData={$csvData} systemPhaseType={$systemPhaseType}/>
+                {/if}
             </div>
         </main>
 
-        <!-- SidePanel toggled by showConsole -->
         {#if $showConsole}
             <aside class="transition-all h-full duration-500 bg-white w-1/3">
                 <SidePanel />
             </aside>
         {/if}
     </div>
-</div>
 
-<style>
-    /* Minimal styling if needed. Otherwise you can rely on Tailwind. */
-</style>
+    {#if $statusMessage.text}
+        <footer class="sticky bottom-0 p-4 {getStatusClass($statusMessage.type)} border-t">
+            <p>{$statusMessage.text}</p>
+        </footer>
+    {/if}
+</div>

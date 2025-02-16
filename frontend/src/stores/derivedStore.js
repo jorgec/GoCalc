@@ -1,23 +1,32 @@
 // src/stores/derivedStore.js
 import { derived } from 'svelte/store';
-import { loadSpecifications, volts, systemPhaseType } from './dataStore';
+import {
+    loadSpecifications,
+    volts,
+    systemPhaseType,
+    projectName,
+    floorArea,
+    selectedOccupancyValue,
+    selectedAddOnValue,
+    selectedTypeValue
+} from './dataStore';
+import { determineWireSizeAndType, determineConduitSize } from '../utils/calculations';
 
-/**
- * 1) CSV Data:
- *    This precisely replicates your original logic for building
- *    a CSV-like array, including the pairing logic for 3-phase loads.
- */
+// Derived store for the CSV data
 export const csvData = derived(
     [loadSpecifications, volts, systemPhaseType],
     ([$loadSpecifications, $volts, $phase]) => {
         const result = [];
-        let pairIndex = 0; // increments for each non-ABC spec, 2 specs per "group"
+        let pairIndex = 0;
 
         for (let i = 0; i < $loadSpecifications.length; i++) {
             const spec = $loadSpecifications[i];
             const CRKTno = i + 1;
 
-            // Build the "Load" column
+            // Calculate wire size and type
+            let { wireSize, wireType } = determineWireSizeAndType({ ...spec, volts: $volts });
+            let conduitSize = determineConduitSize(wireSize);
+
             let loadStr = spec.name;
             if (spec.category === 'Lighting' && spec.lightingLoads) {
                 const combos = spec.lightingLoads.map(
@@ -26,7 +35,6 @@ export const csvData = derived(
                 loadStr = combos.join('; ');
             }
 
-            // Initialize each row object with the desired columns
             let rowObj = {
                 CRKTno,
                 Load: loadStr,
@@ -38,25 +46,20 @@ export const csvData = derived(
                 AmpLoadBC: '',
                 AmpLoadCA: '',
                 AmpLoadABC: '',
-                SizeOfWire: spec.sizeOfWire || '',
-                ConduitSize: spec.conduitSize || ''
+                WireSize: wireSize || '', // Use calculated wire size or empty string
+                WireType: (wireType && wireType.length > 0) ? wireType.join(', ') : '',
+                ConduitSize: conduitSize || '',
             };
 
-            // Compute numeric amp
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
 
             if ($phase === 0) {
-                // Single-phase => use AmpLoadSingle
                 rowObj.AmpLoadSingle = ampLoadValue.toFixed(2);
             } else {
-                // 3-phase logic
                 if (spec.abc) {
-                    // If user checked ABC, put it in AmpLoadABC
                     rowObj.AmpLoadABC = ampLoadValue.toFixed(2);
-                    // Do NOT increment pairIndex => next spec uses same group
                 } else {
-                    // Pairing logic => 2 specs per group => group = floor(pairIndex / 2) mod 3
                     const group = Math.floor(pairIndex / 2) % 3;
                     if (group === 0) {
                         rowObj.AmpLoadAB = ampLoadValue.toFixed(2);
@@ -76,30 +79,62 @@ export const csvData = derived(
     }
 );
 
-/**
- * 2) Totals for the table footer:
- *    totalOfAllVA => sum of all 'subtotal'
- *    totalOfAllAmp => sum of all 'subtotal/volts'
- */
+// Derived store for the total VA
 export const totalOfAllVA = derived(
     [loadSpecifications, volts],
-    ([$specs, $volts]) => {
+    ([$loadSpecifications, $volts]) => {
         let vaSum = 0;
-        for (const spec of $specs) {
+        for (const spec of $loadSpecifications) {
             vaSum += parseFloat(spec.subtotal) || 0;
         }
         return vaSum;
     }
 );
 
+// Derived store for the total Amp load
 export const totalOfAllAmp = derived(
     [loadSpecifications, volts],
-    ([$specs, $volts]) => {
+    ([$loadSpecifications, $volts]) => {
         let ampSum = 0;
-        for (const spec of $specs) {
+        for (const spec of $loadSpecifications) {
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             ampSum += $volts > 0 ? numericSubtotal / $volts : 0;
         }
         return ampSum;
+    }
+);
+
+// Derived store for the entire project data (for saving)
+export const projectData = derived(
+    [
+        projectName,
+        floorArea,
+        selectedOccupancyValue,
+        selectedAddOnValue,
+        selectedTypeValue,
+        systemPhaseType,
+        volts,
+        loadSpecifications
+    ],
+    ([
+         $projectName,
+         $floorArea,
+         $selectedOccupancyValue,
+         $selectedAddOnValue,
+         $selectedTypeValue,
+         $systemPhaseType,
+         $volts,
+         $loadSpecifications
+     ]) => {
+        return {
+            projectName: $projectName,
+            floorArea: $floorArea,
+            selectedOccupancyValue: $selectedOccupancyValue,
+            selectedAddOnValue: $selectedAddOnValue,
+            selectedTypeValue: $selectedTypeValue,
+            systemPhaseType: $systemPhaseType,
+            volts: $volts,
+            loadSpecifications: $loadSpecifications,
+        };
     }
 );
