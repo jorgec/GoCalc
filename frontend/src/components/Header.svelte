@@ -1,6 +1,6 @@
 <script>
-    import { projectName } from "../stores/dataStore";
-    import { showConsole, showLoadSpecs, showCsvTable, statusMessage } from "../stores/uiStore";
+    import {projectName} from "../stores/dataStore";
+    import {showConsole, showCsvTable, showLoadSpecs, showMaterialsInventory, statusMessage} from "../stores/uiStore";
     import LoadProjectModal from "./LoadProjectModal.svelte";
     import SaveProjectModal from "./SaveProjectModal.svelte";
 
@@ -18,13 +18,20 @@
 
     function openSaveModal() {
         if (!$projectName) {
-            statusMessage.set({ text: "Project Name cannot be empty!", type: 'error' });
+            statusMessage.set({text: "Project Name cannot be empty!", type: 'error'});
             return;
         }
         showSaveModal = true;
     }
+
     function closeSaveModal() {
         showSaveModal = false;
+    }
+
+    let showInventory = false;
+
+    function toggleInventory() {
+        showMaterialsInventory.update(v => !v);
     }
 
 </script>
@@ -49,28 +56,44 @@
     </div>
 
     <div class="flex-1 flex justify-end items-center gap-2">
-        <button
-                class="bg-orange-500 hover:bg-orange-700 text-white p-2 rounded"
-                on:click={() => showLoadSpecs.update(v => !v)}
-
-        >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 14v4h4l11-11-4-4-11 11zm3 2h-1v-1l10-10 1 1-10 10zm11.5-11.5l1.5-1.5-1-1-1.5 1.5 1 1z"/>
+        <button on:click={toggleInventory}
+                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                <path d="M14.7 6.3a3.3 3.3 0 0 0-4.7 0L4 12.3V16h3.7l6-6a3.3 3.3 0 0 0 0-4.7z"></path>
+                <path d="M16 3l5 5-2 2-5-5z"></path>
             </svg>
         </button>
+        {#if !$showMaterialsInventory}
+            <button
+                    class="bg-orange-500 hover:bg-orange-700 text-white p-2 rounded"
+                    on:click={() => showLoadSpecs.update(v => !v)}
+            >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 14v4h4l11-11-4-4-11 11zm3 2h-1v-1l10-10 1 1-10 10zm11.5-11.5l1.5-1.5-1-1-1.5 1.5 1 1z"/>
+                </svg>
+            </button>
 
-        <button
-                class="bg-gray-500 hover:bg-gray-700 text-white p-2 rounded"
-                on:click={() => showCsvTable.update(v => !v)}
-        >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4.5c-5 0-9 4.5-9 4.5s4 4.5 9 4.5 9-4.5 9-4.5-4-4.5-9-4.5zm0 7.5a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
-            </svg>
+            <button
+                    class="bg-gray-500 hover:bg-gray-700 text-white p-2 rounded"
+                    on:click={() => showCsvTable.update(v => !v)}
+            >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4.5c-5 0-9 4.5-9 4.5s4 4.5 9 4.5 9-4.5 9-4.5-4-4.5-9-4.5zm0 7.5a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                </svg>
 
-        </button>
-
+            </button>
+        {/if}
 
         <button
                 on:click={openSaveModal}
@@ -107,9 +130,9 @@
     </div>
 </header>
 {#if showLoadModal}
-    <LoadProjectModal on:close={closeLoadModal} />
+    <LoadProjectModal on:close={closeLoadModal}/>
 {/if}
 
 {#if showSaveModal}
-    <SaveProjectModal on:close={closeSaveModal} />
+    <SaveProjectModal on:close={closeSaveModal}/>
 {/if}

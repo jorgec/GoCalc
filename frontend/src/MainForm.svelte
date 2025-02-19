@@ -5,10 +5,19 @@
     import LoadSpecsTable from "./components/LoadSpecsTable.svelte"; // This can now be removed
     import SidePanel from "./components/SidePanel.svelte";
     import CsvDataTable from "./components/CsvDataTable.svelte";
+    import MaterialsInventory from './components/MaterialsInventory.svelte';
 
-    import {showConsole, showCsvTable, showLoadSpecs, showSpecForm, statusMessage} from "./stores/uiStore"; // Import statusMessage and showLoadSpecs/showSpecForm
-    import { systemPhaseType } from "./stores/dataStore";
-    import { csvData } from "./stores/derivedStore";
+
+    import {
+        showConsole,
+        showCsvTable,
+        showLoadSpecs,
+        showMaterialsInventory,
+        showSpecForm,
+        statusMessage
+    } from "./stores/uiStore"; // Import statusMessage and showLoadSpecs/showSpecForm
+    import {systemPhaseType} from "./stores/dataStore";
+    import {csvData} from "./stores/derivedStore";
 
     // Function to get the appropriate CSS class based on message type
     function getStatusClass(type) {
@@ -23,37 +32,43 @@
                 return ''; // No specific styling
         }
     }
+
+    function handleGoBack() {
+        showMaterialsInventory.set(false);
+    }
 </script>
 
 <div class="flex flex-col h-screen">
-    <Header />
+    <Header/>
+    {#if $showMaterialsInventory}
+        <MaterialsInventory on:goBack={handleGoBack}/>
+    {:else}
+        <div class="flex flex-1 bg-gray-200 overflow-auto">
+            <main class="{`transition-all h-full duration-500 ${$showConsole ? 'w-2/3' : 'w-full'}`}">
+                <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
+                    <BasicForm/>
 
-    <div class="flex flex-1 bg-gray-200 overflow-auto">
-        <main class="{`transition-all h-full duration-500 ${$showConsole ? 'w-2/3' : 'w-full'}`}">
-            <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
-                <BasicForm />
+                    {#if $showSpecForm}
+                        <SpecForm/>
+                    {/if}
 
-                {#if $showSpecForm}
-                    <SpecForm />
-                {/if}
+                    {#if $showLoadSpecs}
+                        <LoadSpecsTable/>
+                    {/if}
 
-                {#if $showLoadSpecs}
-                    <LoadSpecsTable/>
-                {/if}
+                    {#if $showCsvTable}
+                        <CsvDataTable csvData={$csvData} systemPhaseType={$systemPhaseType}/>
+                    {/if}
+                </div>
+            </main>
 
-                {#if $showCsvTable}
-                    <CsvDataTable csvData={$csvData} systemPhaseType={$systemPhaseType}/>
-                {/if}
-            </div>
-        </main>
-
-        {#if $showConsole}
-            <aside class="transition-all h-full duration-500 bg-white w-1/3">
-                <SidePanel />
-            </aside>
-        {/if}
-    </div>
-
+            {#if $showConsole}
+                <aside class="transition-all h-full duration-500 bg-white w-1/3">
+                    <SidePanel/>
+                </aside>
+            {/if}
+        </div>
+    {/if}
     {#if $statusMessage.text}
         <footer class="sticky bottom-0 p-4 {getStatusClass($statusMessage.type)} border-t">
             <p>{$statusMessage.text}</p>
