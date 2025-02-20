@@ -134,5 +134,44 @@
       ],
       "conduitSize": "38 mm Ø PVC"
     }
-  ]
+  ],
+  "inventory": {
+    "Wire and Cable": [
+      {
+        "slug": "2_0-mm-thhn",
+        "Unit": "m",
+        "Description": "2.0 mm² THHN",
+        "Unit Price": "20.00",
+        "Brand": "Blue Eagle",
+        "Quantity": 12,
+        "Subtotal": "240.00"
+      },
+      {
+        "slug": "3_5-mm-thhn",
+        "Unit": "m",
+        "Description": "3.5 mm² THHN",
+        "Unit Price": "33.00",
+        "Brand": "Koten",
+        "Quantity": 124,
+        "Subtotal": "4092.00"
+      }
+    ],
+    "Conduit Raceway": [
+      {
+        "slug": "15-mm-pvc",
+        "Unit": "m",
+        "Description": "15 mm Ø PVC",
+        "Unit Price": "28.00",
+        "Brand": "Blue Eagle",
+        "Quantity": 12,
+        "Subtotal": "336.00"
+      }
+    ]
+  },
+  "labor": 0.7,
+  "logistics": 5000.00,
+  "totalInventoryCost": "25000.00",
+  "materialsCost": "31250.00",
+  "laborCost": "17500.00",
+  "totalProjectCost": "53750.00"
 }

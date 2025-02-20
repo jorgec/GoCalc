@@ -1,5 +1,5 @@
 // src/utils/mutators.js
-import { get } from 'svelte/store';
+import {get} from 'svelte/store';
 import {
     lightingRows,
     loadSpecifications,
@@ -29,15 +29,21 @@ import {
     statusMessage
 } from '../stores/uiStore';
 
-import { constants } from '../stores/constantsStore';
-import { determineWireSizeAndType, getSumOfSpecifications, determineConduitSize } from './calculations';
+import {
+    inventory,
+    laborPercentage,
+    logisticsCost
+} from '../stores/materialInventoryStore';
+
+import {constants} from '../stores/constantsStore';
+import {determineWireSizeAndType, getSumOfSpecifications, determineConduitSize} from './calculations';
 
 // --- Helper Functions (Internal) ---
 
 /** Recompute sums & demand factors after changes to loadSpecifications */
 function recalcSpecifications() {
     const items = get(loadSpecifications);
-    const { sumOfSpecs, totalSumOfSpecs: total, applicationDemandFactor: adf } =
+    const {sumOfSpecs, totalSumOfSpecs: total, applicationDemandFactor: adf} =
         getSumOfSpecifications(items);
 
     sumOfSpecifications.set(sumOfSpecs);
@@ -82,7 +88,7 @@ export function addAnotherLightingRow() {
     showLightingInput.set(true); // Show the lighting input section
     lightingRows.update(rows => [
         ...rows,
-        { typeValue: null, wattage: 0, quantity: 1 } // Default values for new row
+        {typeValue: null, wattage: 0, quantity: 1} // Default values for new row
     ]);
 }
 
@@ -214,8 +220,8 @@ export function addLoadSpecification() {
 
     // Add the new specification to the store, calculating wire/conduit size.
     loadSpecifications.update(current => {
-        const newSpec = { ...details };
-        const { wireSize, wireType } = determineWireSizeAndType({ ...newSpec, volts: get(volts) });
+        const newSpec = {...details};
+        const {wireSize, wireType} = determineWireSizeAndType({...newSpec, volts: get(volts)});
         newSpec.sizeOfWire = wireSize;
         newSpec.wireType = wireType;
         newSpec.conduitSize = determineConduitSize(wireSize); // Calculate conduit
@@ -243,7 +249,8 @@ export function loadProjectData(projectData) {
         selectedOccupancyValue.set(projectData.selectedOccupancyValue ?? null);
         selectedAddOnValue.set(projectData.selectedAddOnValue ?? null);
         selectedTypeValue.set(projectData.selectedTypeValue ?? null);
-
+        laborPercentage.set(projectData.labor || 0.70);
+        logisticsCost.set(projectData.logistics || 0.00);
 
         // Load Specifications (Crucially, *replace* the existing array)
         if (Array.isArray(projectData.loadSpecifications)) {
@@ -251,8 +258,22 @@ export function loadProjectData(projectData) {
         } else {
             // Handle the case where loadSpecifications is missing or invalid.
             loadSpecifications.set([]); // Set to an empty array
-            statusMessage.set({ text: "Warning: Invalid loadSpecifications data. Loading empty array.", type: "warning" });
+            statusMessage.set({
+                text: "Warning: Invalid loadSpecifications data. Loading empty array.",
+                type: "warning"
+            });
         }
+
+        if (projectData.inventory) {
+            inventory.set(projectData.inventory);
+        } else {
+            inventory.set({});
+            statusMessage.set({text: "Warning: No inventory data found.", type: "warning"});
+        }
+
+        // Load labor and logistics values
+        laborPercentage.set(projectData.labor ?? 0.70);
+        logisticsCost.set(projectData.logistics ?? 0.00);
 
         // Reset other stores (important for consistent state):
         selectedCategoryIndex.set(null);
@@ -269,11 +290,11 @@ export function loadProjectData(projectData) {
 
         // Recalculate derived values. VERY important after loading.
         recalcSpecifications();
-        statusMessage.set({ text: "Project loaded successfully!", type: 'info' });
+        statusMessage.set({text: "Project loaded successfully!", type: 'info'});
         setTimeout(() => statusMessage.set({text: '', type: ''}), 5000);
 
     } catch (error) {
         console.error("Error loading project:", error);  // Log the full error
-        statusMessage.set({ text: `Error loading project: ${error}`, type: 'error' });
+        statusMessage.set({text: `Error loading project: ${error}`, type: 'error'});
     }
 }

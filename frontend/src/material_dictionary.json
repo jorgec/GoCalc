@@ -1,0 +1,211 @@
+{
+  "brands": [
+    "Armak",
+    "Blue Eagle",
+    "Firefly",
+    "Koten",
+    "Neltex",
+    "Philflex",
+    "Royu",
+    "Sandflex",
+    "Sherman",
+    "Screwking",
+    "Stanley",
+    "Steelworld"
+  ],
+  "Inventory": {
+    "Wire and Cable": [
+      {
+        "slug": "2_0-mm-thhn",
+        "Unit": "m",
+        "Description": "2.0 mm² THHN",
+        "Unit Price": 20.00
+      },
+      {
+        "slug": "3_5-mm-thhn",
+        "Unit": "m",
+        "Description": "3.5 mm² THHN",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "125-mm-thhn",
+        "Unit": "m",
+        "Description": "125 mm² THHN",
+        "Unit Price": 1150.00
+      },
+      {
+        "slug": "150-mm-thhn",
+        "Unit": "m",
+        "Description": "150 mm² THHN",
+        "Unit Price": 1375.00
+      },
+      {
+        "slug": "250-mm-thhn",
+        "Unit": "m",
+        "Description": "250 mm² THHN",
+        "Unit Price": 2248.00
+      }
+    ],
+    "Circuit Breaker": [
+      {
+        "slug": "15-amperes",
+        "Unit": "pcs",
+        "Description": "15 Amperes",
+        "Unit Price": 369.00
+      },
+      {
+        "slug": "20-amperes",
+        "Unit": "pcs",
+        "Description": "20 Amperes",
+        "Unit Price": 369.00
+      }
+
+    ],
+    "Casing": [
+      {
+        "slug": "12-branch-circuit",
+        "Unit": "pcs",
+        "Description": "12 Branch Circuit",
+        "Unit Price": 4349.00
+      }
+    ],
+    "Conduit Raceway": [
+      {
+        "slug": "15-mm-pvc",
+        "Unit": "m",
+        "Description": "15 mm Ø PVC",
+        "Unit Price": 28.00
+      },
+      {
+        "slug": "20-mm-pvc",
+        "Unit": "m",
+        "Description": "20 mm Ø PVC",
+        "Unit Price": 32.60
+      }
+    ],
+    "Boxes Fittings and Wire Fixtures": [
+      {
+        "slug": "25w-lighting-bulb",
+        "Unit": "pcs",
+        "Description": "25w lighting bulb",
+        "Unit Price": 650.00
+      },
+      {
+        "slug": "50w-lighting-bulb",
+        "Unit": "pcs",
+        "Description": "50w lighting bulb",
+        "Unit Price": 260.00
+      },
+      {
+        "slug": "ceiling-receptacle",
+        "Unit": "pcs",
+        "Description": "Ceiling receptacle",
+        "Unit Price": 35.00
+      },
+      {
+        "slug": "bulb-casing",
+        "Unit": "pcs",
+        "Description": "Bulb Casing",
+        "Unit Price": 129.99
+      },
+      {
+        "slug": "2-x-4-x-2-1_2-in-utility-box",
+        "Unit": "pcs",
+        "Description": "2 x 4 x 2 1/2 in. Utility Box",
+        "Unit Price": 24.00
+      },
+      {
+        "slug": "4-x-4-x-2-1_2-in-junction-box",
+        "Unit": "pcs",
+        "Description": "4 x 4 x 2 1/2 in. Junction Box",
+        "Unit Price": 24.00
+      },
+      {
+        "slug": "1-gang-aircon-outlet",
+        "Unit": "set",
+        "Description": "1 Gang Aircon Outlet",
+        "Unit Price": 120.00
+      },
+      {
+        "slug": "2-gang-convenience-outlet",
+        "Unit": "set",
+        "Description": "2 Gang Convenience Outlet",
+        "Unit Price": 127.00
+      },
+      {
+        "slug": "1-gang-switch-3-gang-convenience-outlet",
+        "Unit": "set",
+        "Description": "1 Gang Switch + 3 Gang Convenience Outlet",
+        "Unit Price": 170.00
+      },
+      {
+        "slug": "1-gang-switch",
+        "Unit": "set",
+        "Description": "1 Gang Switch",
+        "Unit Price": 78.00
+      },
+      {
+        "slug": "2-gang-switch",
+        "Unit": "set",
+        "Description": "2 Gang Switch",
+        "Unit Price": 127.00
+      },
+      {
+        "slug": "3-gang-switch",
+        "Unit": "set",
+        "Description": "3 Gang Switch",
+        "Unit Price": 176.00
+      }
+    ],
+    "Miscellaneous": [
+      {
+        "slug": "solvent-cement-500-cc",
+        "Unit": "can",
+        "Description": "Solvent Cement 500 cc",
+        "Unit Price": 137.00
+      },
+      {
+        "slug": "electrical-tape-16m",
+        "Unit": "pcs",
+        "Description": "Electrical Tape (16m)",
+        "Unit Price": 45.00
+      },
+      {
+        "slug": "rubber-tape-8m",
+        "Unit": "pcs",
+        "Description": "Rubber Tape (8m)",
+        "Unit Price": 105.00
+      },
+      {
+        "slug": "hacksaw-blade",
+        "Unit": "pcs",
+        "Description": "Hacksaw Blade",
+        "Unit Price": 30.00
+      },
+      {
+        "slug": "plier",
+        "Unit": "pcs",
+        "Description": "Plier",
+        "Unit Price": 500.00
+      },
+      {
+        "slug": "philips-screw",
+        "Unit": "box",
+        "Description": "Philips Screw",
+        "Unit Price": 250.00
+      },
+      {
+        "slug": "hard-hat",
+        "Unit": "box",
+        "Description": "Hard Hat",
+        "Unit Price": 50.00
+      },
+      {
+        "slug": "16-gi-wire",
+        "Unit": "kg",
+        "Description": "#16 GI Wire",
+        "Unit Price": 40.00
+      }
+    ]
+  }
+}
