@@ -11,3 +11,6 @@ export const showCsvTable = writable(false);
 export const showLightingInput = writable(false);
 
 export const statusMessage = writable({ text: '', type: '' }); // { text: string, type: 'info' | 'warning' | 'error' | '' }
+
+export const showMaterialsInventory = writable(false);
+

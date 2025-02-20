@@ -1,5 +1,5 @@
 // src/stores/derivedStore.js
-import { derived } from 'svelte/store';
+import {derived} from 'svelte/store';
 import {
     loadSpecifications,
     volts,
@@ -24,7 +24,7 @@ export const csvData = derived(
             const CRKTno = i + 1;
 
             // Calculate wire size and type
-            let { wireSize, wireType } = determineWireSizeAndType({ ...spec, volts: $volts });
+            let {wireSize, wireType} = determineWireSizeAndType({...spec, volts: $volts});
             let conduitSize = determineConduitSize(wireSize);
 
             let loadStr = spec.name;
@@ -104,6 +104,15 @@ export const totalOfAllAmp = derived(
         return ampSum;
     }
 );
+import {
+    inventory,
+    laborPercentage,
+    logisticsCost,
+    totalInventoryCost,
+    materialsCost,
+    laborCost,
+    totalProjectCost
+} from './materialInventoryStore'; // Include inventory store
 
 // Derived store for the entire project data (for saving)
 export const projectData = derived(
@@ -115,7 +124,14 @@ export const projectData = derived(
         selectedTypeValue,
         systemPhaseType,
         volts,
-        loadSpecifications
+        loadSpecifications,
+        inventory,
+        laborPercentage,
+        logisticsCost,
+        totalInventoryCost,
+        materialsCost,
+        laborCost,
+        totalProjectCost
     ],
     ([
          $projectName,
@@ -125,17 +141,34 @@ export const projectData = derived(
          $selectedTypeValue,
          $systemPhaseType,
          $volts,
-         $loadSpecifications
+         $loadSpecifications,
+         $inventory,
+         $laborPercentage,
+         $logisticsCost,
+         $totalInventoryCost,
+         $materialsCost,
+         $laborCost,
+         $totalProjectCost
+
      ]) => {
         return {
-            projectName: $projectName,
-            floorArea: $floorArea,
-            selectedOccupancyValue: $selectedOccupancyValue,
-            selectedAddOnValue: $selectedAddOnValue,
-            selectedTypeValue: $selectedTypeValue,
-            systemPhaseType: $systemPhaseType,
-            volts: $volts,
-            loadSpecifications: $loadSpecifications,
+            $projectName,
+            $floorArea,
+            $selectedOccupancyValue,
+            $selectedAddOnValue,
+            $selectedTypeValue,
+            $systemPhaseType,
+            $volts,
+            $loadSpecifications,
+            $inventory,
+            $laborPercentage,
+            $logisticsCost,
+            $totalInventoryCost,
+            $materialsCost,
+            $laborCost,
+            $totalProjectCost
+
         };
     }
 );
+
