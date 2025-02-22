@@ -152,21 +152,21 @@ export const projectData = derived(
 
      ]) => {
         return {
-            $projectName,
-            $floorArea,
-            $selectedOccupancyValue,
-            $selectedAddOnValue,
-            $selectedTypeValue,
-            $systemPhaseType,
-            $volts,
-            $loadSpecifications,
-            $inventory,
-            $laborPercentage,
-            $logisticsCost,
-            $totalInventoryCost,
-            $materialsCost,
-            $laborCost,
-            $totalProjectCost
+            projectName: $projectName,
+            floorArea: $floorArea,
+            selectedOccupancyValue: $selectedOccupancyValue,
+            selectedAddOnValue: $selectedAddOnValue,
+            selectedTypeValue: $selectedTypeValue,
+            systemPhaseType: $systemPhaseType,
+            volts: $volts,
+            loadSpecifications: $loadSpecifications,
+            inventory: $inventory,
+            labor: $laborPercentage,
+            logistics: $logisticsCost,
+            totalInventoryCost: $totalInventoryCost,
+            materialsCost: $materialsCost,
+            laborCost: $laborCost,
+            totalProjectCost: $totalProjectCost
 
         };
     }

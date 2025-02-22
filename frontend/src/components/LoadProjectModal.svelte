@@ -1,6 +1,8 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
-    import { loadProjectData } from '../utils/mutators'; // Import
+    import {createEventDispatcher} from 'svelte';
+    import {loadProjectData} from '../utils/mutators'; // Import
+    import {LoadJSONFile} from '../../wailsjs/go/main/App.js';
+
 
     const dispatch = createEventDispatcher();
 
@@ -20,6 +22,13 @@
 
     function handleCancel() {
         dispatch('close');
+    }
+    async function handleOpenFile() {
+        try {
+            projectDataJson = await LoadJSONFile();
+        } catch (err) {
+            console.error("Failed to read file:", err);
+        }
     }
 </script>
 
@@ -57,10 +66,19 @@
                 <button
                         type="button"
                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                        on:click={handleOpenFile}
+                >
+                    Load from File
+                </button>
+                {#if projectDataJson !== ""}
+                <button
+                        type="button"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                         on:click={handleLoad}
                 >
-                    Load
+                    Parse
                 </button>
+                {/if }
                 <button
                         type="button"
                         class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
