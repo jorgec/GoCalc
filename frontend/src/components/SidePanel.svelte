@@ -1,12 +1,19 @@
 <!-- src/components/SidePanel.svelte -->
 <script>
     import {
-        totalLoad,
+        applicationDemandFactor,
         loadByOccupancy,
         sumOfSpecifications,
-        applicationDemandFactor,
-        totalSumOfSpecs
+        totalLoad,
+        totalSumOfSpecs,
+        volts
     } from "../stores/dataStore";
+    
+    import {loadCurrentIFL} from "../utils/calculations.js";
+
+    import {derivedHighestNonTrivialLoad, serviceEntranceAmpacity, totalOfAllAmp} from "../stores/derivedStore";
+
+    import {formatWithCommas} from "../utils/misc.js";
 </script>
 
 <div class="container-fluid m-2 pl-4">
@@ -23,20 +30,51 @@
                     {category} ({data.count})
                 </div>
                 <div class="p-0 m-0">
-                    <code>{data.sum}</code>
+                    <code>{formatWithCommas(data.sum)}</code>
                 </div>
             </div>
         {/each}
 
-        <div class="my-4 p-2 px-3 bg-teal-300 text-teal-950">
+        <div class="my-4 p-2 px-3">
             <p>
                 <span class="font-semibold">Application Demand Factor:</span>
-                <code>{$applicationDemandFactor} VA</code>
+                <code>{formatWithCommas($applicationDemandFactor)} VA</code>
             </p>
             <p>
                 <span class="font-bold">Total:</span>
-                <code>{$totalSumOfSpecs} VA</code>
+                <code>{formatWithCommas($totalSumOfSpecs)} VA</code>
             </p>
+            <p>
+                <span class="font-bold">Total Amp:</span>
+                <code>{formatWithCommas($totalOfAllAmp)}</code>
+            </p>
+            <p>
+                <span class="font-bold">Service Entrance Ampacity:</span>
+                <code>{formatWithCommas($serviceEntranceAmpacity)}</code>
+            </p>
+            <p>
+                // wire recommendation logic
+            </p>
+
+            <p>
+                <span class="font-bold">Computation at 80% Demand Factor:</span>
+                <code>{formatWithCommas(loadCurrentIFL($volts, $derivedHighestNonTrivialLoad, $totalLoad))}</code>
+            </p>
+            <dl>
+                <div class="max-w-md mx-auto grid grid-cols-2 gap-4 text-sm p-0 m-0">
+                    <dt class="p-0 m-0 font-bold">Volts</dt>
+                    <dd class="p-0 m-0">{$volts}</dd>
+                </div>
+                <div class="max-w-md mx-auto grid grid-cols-2 gap-4 text-sm p-0 m-0">
+                    <dt class="p-0 m-0 font-bold">Highest Motor Load</dt>
+                    <dd class="p-0 m-0">{$derivedHighestNonTrivialLoad}</dd>
+                </div>
+                <div class="max-w-md mx-auto grid grid-cols-2 gap-4 text-sm p-0 m-0">
+                    <dt class="p-0 m-0 font-bold">Total VA</dt>
+                    <dd class="p-0 m-0">{$totalLoad}</dd>
+                </div>
+            </dl>
         </div>
+
     </div>
 </div>

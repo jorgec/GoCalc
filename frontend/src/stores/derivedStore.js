@@ -1,16 +1,25 @@
 // src/stores/derivedStore.js
 import {derived} from 'svelte/store';
 import {
-    loadSpecifications,
-    volts,
-    systemPhaseType,
-    projectName,
     floorArea,
-    selectedOccupancyValue,
+    loadSpecifications,
+    projectName,
     selectedAddOnValue,
-    selectedTypeValue
+    selectedOccupancyValue,
+    selectedTypeValue,
+    systemPhaseType,
+    volts
 } from './dataStore';
-import {determineWireSizeAndType, determineConduitSize, wireData} from '../utils/calculations';
+import {determineConduitSize, determineWireSizeAndType, wireData} from '../utils/calculations';
+import {
+    inventory,
+    laborCost,
+    laborPercentage,
+    logisticsCost,
+    materialsCost,
+    totalInventoryCost,
+    totalProjectCost
+} from './materialInventoryStore'; // Include inventory store
 
 // Derived store for the CSV data
 export const csvData = derived(
@@ -54,6 +63,7 @@ export const csvData = derived(
 
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
+
 
             if ($phase === 0) {
                 rowObj.AmpLoadSingle = ampLoadValue.toFixed(2);
@@ -104,15 +114,37 @@ export const totalOfAllAmp = derived(
         return ampSum;
     }
 );
-import {
-    inventory,
-    laborPercentage,
-    logisticsCost,
-    totalInventoryCost,
-    materialsCost,
-    laborCost,
-    totalProjectCost
-} from './materialInventoryStore'; // Include inventory store
+
+export const serviceEntranceAmpacity = derived(
+    totalOfAllAmp,
+    ($totalOfAllAmp) => $totalOfAllAmp * 1.25
+);
+
+export const derivedHighestNonTrivialLoad = derived(
+    [loadSpecifications, volts],
+    ([$loadSpecifications, $volts]) => {
+        if ($loadSpecifications.length > 0) {
+            let highestNonTrivialLoad = [-1, 0];
+            for (let i = 0; i < $loadSpecifications.length; i++) {
+                const spec = $loadSpecifications[i];
+                // Change to motor if it should be just motor category specifically
+                if (spec.category === 'Motor') {
+                    let currentAmpLoad = $volts > 0 ? parseFloat(spec.subtotal) || 0 / $volts : 0;
+                    console.log(spec, currentAmpLoad);
+                    if (currentAmpLoad > highestNonTrivialLoad[1]) {
+                        highestNonTrivialLoad = [i, currentAmpLoad];
+                    }
+                }
+            }
+            if (highestNonTrivialLoad[0] >= 0) {
+                return highestNonTrivialLoad[1];
+            }
+            return 0;
+
+        }
+        return 0;
+    }
+)
 
 // Derived store for the entire project data (for saving)
 export const projectData = derived(

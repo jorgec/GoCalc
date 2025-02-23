@@ -1,7 +1,8 @@
 // src/utils/calculations.js
 import { get } from 'svelte/store';
 import { constants } from '../stores/constantsStore';
-import { selectedLightingDemandFactorID, volts } from '../stores/dataStore'; // Import volts
+import {loadSpecifications, selectedLightingDemandFactorID, volts} from '../stores/dataStore'; // Import volts
+import {totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore.js";
 
 /**
  * Calculate lighting demand factor based on
@@ -88,7 +89,6 @@ export function getSumOfSpecifications(items) {
 
 // --- determineWireSizeAndType ---
 export function determineWireSizeAndType(loadSpec) {
-    console.log(loadSpec);
     if (!constants.wireSizingData) { // Safety check
         return { wireSize: null, wireType: [] };
     }
@@ -142,14 +142,11 @@ export function determineWireSizeAndType(loadSpec) {
         loadType = "Other Loads"
     }
 
-    console.log("Load Type:")
-    console.log(loadType);
 
     let matchedEntry = null;
     for (const entry of wireSizingData) {
         if (entry["Load Type"] === loadType) {
             matchedEntry = entry;
-            console.log("Found " + JSON.stringify(entry));
             break;
         }
     }
@@ -165,7 +162,6 @@ export function determineWireSizeAndType(loadSpec) {
     }
 
     if (matchedEntry) {
-        console.log(matchedEntry);
         return {
             wireSize: matchedEntry["Wire Size"],
             wireType: matchedEntry["Wire Type"]
@@ -185,7 +181,6 @@ export function wireData(wireSize, wireType) {
 
 export function determineConduitSize(wireSize) {
     let retVal = "";
-    console.log("Wire size: " + wireSize);
     if (!constants.conduitSizing || !constants.conduitSizing.entries) {
         return retVal; // Or a suitable default, like "N/A"
     }
@@ -202,6 +197,11 @@ export function determineConduitSize(wireSize) {
 
     return retVal; // Or a suitable default value
 }
+
+export function loadCurrentIFL(volts, load, totalVA) {
+    return (totalVA + ((load * .8)*.5)) / volts;
+}
+
 
 window.calcWireSize = determineWireSizeAndType;
 window.wireData = wireData;

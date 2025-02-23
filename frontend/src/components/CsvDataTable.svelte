@@ -62,4 +62,5 @@
     {:else}
         <p>No load specifications added yet.</p>
     {/if}
+
 </div>
