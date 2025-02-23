@@ -191,6 +191,11 @@
           "unit_load": 1
         },
         {
+          "label": "Lighting",
+          "value": 7,
+          "unit_load": 1
+        },
+        {
           "label": "Others",
           "value": 6,
           "unit_load": 1

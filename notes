@@ -30,3 +30,7 @@ Add material cost data entry
 -- labor = 70% (adjustable) of total cost
 -- logistics = data entry
 -- project cost = material + labor + logistics
+
+
+Feb 23
+Add select to csv table to change wire

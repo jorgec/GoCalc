@@ -87,7 +87,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
                             {#each $loadSpecifications as spec, idx}
-                                <tr>
+                                <tr class="hover:bg-gray-200 transition-colors duration-200">
                                     <td
                                             class="whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                                     >
