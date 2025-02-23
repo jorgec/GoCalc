@@ -11,7 +11,7 @@
     
     import {loadCurrentIFL} from "../utils/calculations.js";
 
-    import {derivedHighestNonTrivialLoad, serviceEntranceAmpacity, totalOfAllAmp} from "../stores/derivedStore";
+    import {derivedHighestNonTrivialLoad, serviceEntranceAmpacity, totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore";
 
     import {formatWithCommas} from "../utils/misc.js";
 </script>
@@ -58,7 +58,7 @@
 
             <p>
                 <span class="font-bold">Computation at 80% Demand Factor:</span>
-                <code>{formatWithCommas(loadCurrentIFL($volts, $derivedHighestNonTrivialLoad, $totalLoad))}</code>
+                <code>{formatWithCommas(loadCurrentIFL($volts, $derivedHighestNonTrivialLoad, $totalOfAllVA))}</code>
             </p>
             <dl>
                 <div class="max-w-md mx-auto grid grid-cols-2 gap-4 text-sm p-0 m-0">
@@ -71,7 +71,7 @@
                 </div>
                 <div class="max-w-md mx-auto grid grid-cols-2 gap-4 text-sm p-0 m-0">
                     <dt class="p-0 m-0 font-bold">Total VA</dt>
-                    <dd class="p-0 m-0">{$totalLoad}</dd>
+                    <dd class="p-0 m-0">{$totalOfAllVA}</dd>
                 </div>
             </dl>
         </div>

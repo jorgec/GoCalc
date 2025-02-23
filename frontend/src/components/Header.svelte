@@ -58,18 +58,8 @@
     <div class="flex-1 flex justify-end items-center gap-2">
         <button on:click={toggleInventory}
                 class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
-                <path d="M14.7 6.3a3.3 3.3 0 0 0-4.7 0L4 12.3V16h3.7l6-6a3.3 3.3 0 0 0 0-4.7z"></path>
-                <path d="M16 3l5 5-2 2-5-5z"></path>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-5 9 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z M9 22V12h6v10"/>
             </svg>
         </button>
         {#if !$showMaterialsInventory}
@@ -77,9 +67,15 @@
                     class="bg-orange-500 hover:bg-orange-700 text-white p-2 rounded"
                     on:click={() => showLoadSpecs.update(v => !v)}
             >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 14v4h4l11-11-4-4-11 11zm3 2h-1v-1l10-10 1 1-10 10zm11.5-11.5l1.5-1.5-1-1-1.5 1.5 1 1z"/>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Outline of the spreadsheet -->
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <!-- Horizontal grid lines -->
+                    <line x1="3" y1="8" x2="21" y2="8" />
+                    <line x1="3" y1="13" x2="21" y2="13" />
+                    <!-- Vertical grid lines -->
+                    <line x1="8" y1="3" x2="8" y2="21" />
+                    <line x1="13" y1="3" x2="13" y2="21" />
                 </svg>
             </button>
 
