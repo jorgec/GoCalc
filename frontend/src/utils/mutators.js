@@ -226,7 +226,10 @@ export function addLoadSpecification() {
     loadSpecifications.update(current => {
         const newSpec = {...details};
         const {wireSize, wireType} = determineWireSizeAndType({...newSpec, volts: get(volts)});
-        newSpec.sizeOfWire = wireSize;
+
+        newSpec.wireSize = wireSize;
+        newSpec.wireType = wireType;
+        newSpec.wireTypeSelection = wireType;
         newSpec.wireType = wireType;
         newSpec.conduitSize = determineConduitSize(wireSize); // Calculate conduit
 
@@ -297,9 +300,10 @@ export function loadProjectData(projectData) {
 
 
         // Recalculate derived values. VERY important after loading.
+
+        setTimeout(() => statusMessage.set({text: '', type: ''}), 5000);
         recalcSpecifications();
         statusMessage.set({text: "Project loaded successfully!", type: 'info'});
-        setTimeout(() => statusMessage.set({text: '', type: ''}), 5000);
 
     } catch (error) {
         console.error("Error loading project:", error);  // Log the full error

@@ -2,6 +2,7 @@
     import {onMount} from 'svelte';
     import {brands, inventory, materialDictionary, totalInventoryCost,  laborPercentage, logisticsCost, materialsCost, laborCost, totalProjectCost } from '../stores/materialInventoryStore';
     import {writable} from 'svelte/store';
+    import {statusMessage} from "../stores/uiStore.js";
 
     // Form state
     const selectedCategory = writable('');
@@ -83,6 +84,7 @@
         selectedBrand.set('');
         quantity.set(1);
     }
+
 </script>
 
 <style>

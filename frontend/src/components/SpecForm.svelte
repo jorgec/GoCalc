@@ -51,7 +51,6 @@
             ]);
 
             chosenCategory = constants.loadSpecificationCategories[cat];
-            console.log(chosenCategory);
             addCustomMotorFlag = false;
             newMotorName = '';
         }

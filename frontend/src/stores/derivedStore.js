@@ -34,8 +34,8 @@ export const csvData = derived(
             const CRKTno = i + 1;
 
             // Calculate wire size and type
-            let {wireSize, wireType} = determineWireSizeAndType({...spec, volts: $volts});
-            let conduitSize = determineConduitSize(wireSize);
+            let {localWireSize, localWireType} = determineWireSizeAndType({...spec, volts: $volts});
+            let conduitSize = determineConduitSize(localWireSize);
 
             let loadStr = spec.name;
             if (spec.category === 'Lighting' && spec.lightingLoads) {
@@ -56,9 +56,9 @@ export const csvData = derived(
                 AmpLoadBC: '',
                 AmpLoadCA: '',
                 AmpLoadABC: '',
-                WireSize: wireSize || '', // Use calculated wire size or empty string
-                WireType: (wireType && wireType.length > 0) ? wireType.join(', ') : '',
-                WireSizeAndType: wireData(wireSize, wireType),
+                WireSize: spec.wireSize || '', // Use calculated wire size or empty string
+                WireType: spec.wireType,
+                WireSizeAndType: wireData(spec.wireSize, spec.wireType),
                 ConduitSize: conduitSize || '',
             };
 
@@ -95,10 +95,16 @@ export const csvData = derived(
 export const totalOfAllVA = derived(
     [loadSpecifications, volts],
     ([$loadSpecifications, $volts]) => {
+        console.log("Debug: $loadSpecifications =", $loadSpecifications);
+
         let vaSum = 0;
-        for (const spec of $loadSpecifications) {
-            vaSum += parseFloat(spec.subtotal) || 0;
+
+        if (Array.isArray($loadSpecifications) && $loadSpecifications.length > 0) {
+            for (const spec of $loadSpecifications) {
+                vaSum += parseFloat(spec.subtotal) || 0;
+            }
         }
+
         return vaSum;
     }
 );
@@ -107,12 +113,14 @@ export const totalOfAllVA = derived(
 export const totalOfAllAmp = derived(
     [loadSpecifications, volts],
     ([$loadSpecifications, $volts]) => {
-        let ampSum = 0;
-        for (const spec of $loadSpecifications) {
-            const numericSubtotal = parseFloat(spec.subtotal) || 0;
-            ampSum += $volts > 0 ? numericSubtotal / $volts : 0;
+        if (Array.isArray($loadSpecifications) && $loadSpecifications.length > 0) {
+            let ampSum = 0;
+            for (const spec of $loadSpecifications) {
+                const numericSubtotal = parseFloat(spec.subtotal) || 0;
+                ampSum += $volts > 0 ? numericSubtotal / $volts : 0;
+            }
+            return ampSum;
         }
-        return ampSum;
     }
 );
 

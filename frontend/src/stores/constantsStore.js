@@ -520,33 +520,32 @@ const defaultConstants = {
 }
 const constantsStore = writable(defaultConstants);
 
-// 🔄 Fetch and update constants dynamically at runtime
-// async function loadConstants() {
-//     try {
-//         const response = await fetch('/constants.json'); // Load dynamically
-//         if (!response.ok) throw new Error('Failed to load constants.json');
-//         const data = await response.json();
-//         constantsStore.set({ ...defaultConstants, ...data });
-//     } catch (error) {
-//         console.error('Error loading constants:', error);
-//     }
-// }
-
 async function loadConstants() {
     try {
-        const data = await LoadConstants();
-        if (data) {
-            constantsStore.set({ ...defaultConstants, ...data });
-        }
+        const response = await fetch('/constants.json'); // Load dynamically
+        if (!response.ok) throw new Error('Failed to load constants.json');
+        const data = await response.json();
+        constantsStore.set({ ...defaultConstants, ...data });
     } catch (error) {
-        console.error("Error loading constants:", error);
+        console.error('Error loading constants:', error);
     }
 }
 
-// ✅ Load constants on startup
+// async function loadConstants() {
+//     try {
+//         const data = await LoadConstants();
+//         if (data) {
+//             constantsStore.set({ ...defaultConstants, ...data });
+//         }
+//     } catch (error) {
+//         console.error("Error loading constants:", error);
+//     }
+// }
+
+
 loadConstants();
 
-// ✅ Proxy to allow `constants.key` access directly
+
 export const constants = new Proxy({}, {
     get: (_, key) => {
         let value = undefined;
@@ -557,7 +556,6 @@ export const constants = new Proxy({}, {
     }
 });
 
-// ✅ Function to update constants
 export function updateConstant(path, value) {
     constantsStore.update(current => {
         const keys = path.split('.');

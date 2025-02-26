@@ -16,13 +16,7 @@ type App struct {
 }
 
 func checkDevMode() bool {
-	args := os.Args // Get command-line arguments
-	for _, arg := range args {
-		if arg == "--dev" {
-			return true
-		}
-	}
-	return false
+	return true
 }
 
 // NewApp creates a new App application struct
@@ -102,7 +96,6 @@ func (a *App) SaveFile(content string) (string, error) {
 func (a *App) LoadConstants() (map[string]interface{}, error) {
 	var filePath string
 
-	// ✅ Use the --dev flag to determine load location
 	if a.isDev {
 		filePath = filepath.Join("frontend", "public", "constants.json")
 	} else {
@@ -113,18 +106,15 @@ func (a *App) LoadConstants() (map[string]interface{}, error) {
 		filePath = filepath.Join(filepath.Dir(execPath), "constants.json")
 	}
 
-	// ✅ Check if the file exists
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return nil, nil // No file yet, return nil
+		return nil, err // No file yet, return nil
 	}
 
-	// ✅ Read the file
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	// ✅ Unmarshal JSON
 	var constants map[string]interface{}
 	err = json.Unmarshal(data, &constants)
 	if err != nil {

@@ -34,8 +34,7 @@
       "abc": false,
       "wireSize": 2,
       "wireType": [
-        "THHN",
-        "THWN-2"
+        "THHN"
       ],
       "wireTypeSelection": [
         "THHN",
@@ -61,8 +60,7 @@
       "abc": false,
       "wireSize": 2,
       "wireType": [
-        "THHN",
-        "THWN-2"
+        "THHN"
       ],
       "wireTypeSelection": [
         "THHN",
@@ -606,8 +604,6 @@
       "abc": false,
       "wireSize": 5.5,
       "wireType": [
-        "THHN",
-        "THWN-2",
         "RHW-2"
       ],
       "wireTypeSelection": [

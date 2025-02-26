@@ -1,5 +1,6 @@
 // src/stores/dataStore.js
 import { writable } from 'svelte/store';
+import {SaveConstants} from "../../wailsjs/go/main/App.js";
 
 // Basic fields
 export const projectName = writable('');
@@ -47,3 +48,25 @@ export const totalSumOfSpecs = writable(0);
 export const selectedLightingDemandFactorID = writable(null);
 export const applicationDemandFactor = writable(0);
 
+export function updateLoadSpecifications(path, value) {
+    loadSpecifications.update(current => {
+        console.log("DEBUG: ", value);
+
+        const keys = path.split('.');
+        let obj = JSON.parse(JSON.stringify(current));
+        let ref = obj;
+
+        for (let i = 0; i < keys.length - 1; i++) {
+            const key = keys[i];
+
+            if (!ref[key]) ref[key] = {}; // Ensure path exists
+            else ref[key] = { ...ref[key] };
+
+            ref = ref[key]; // Move deeper
+        }
+
+        ref[keys[keys.length - 1]] = value;
+
+        return obj;
+    });
+}
