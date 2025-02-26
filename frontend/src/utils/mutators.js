@@ -21,6 +21,10 @@ import {
     selectedTypeValue,
     floorArea,
     projectName,
+    projectOwner,
+    projectDate,
+    projectLocation,
+    projectInCharge,
     volts,
 } from '../stores/dataStore';
 
@@ -251,6 +255,10 @@ export function loadProjectData(projectData) {
         selectedTypeValue.set(projectData.selectedTypeValue ?? null);
         laborPercentage.set(projectData.labor || 0.70);
         logisticsCost.set(projectData.logistics || 0.00);
+        projectOwner.set(projectData.projectOwner || '');
+        projectDate.set(projectData.projectDate || '');
+        projectLocation.set(projectData.projectLocation || '');
+        projectInCharge.set(projectData.projectInCharge || '');
 
         // Load Specifications (Crucially, *replace* the existing array)
         if (Array.isArray(projectData.loadSpecifications)) {
