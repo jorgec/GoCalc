@@ -19,7 +19,8 @@ import {
     materialsCost,
     totalInventoryCost,
     totalProjectCost
-} from './materialInventoryStore'; // Include inventory store
+} from './materialInventoryStore';
+import {formatInt} from "../utils/misc.js"; // Include inventory store
 
 // Derived store for the CSV data
 export const csvData = derived(
@@ -48,7 +49,7 @@ export const csvData = derived(
                 CRKTno,
                 Load: loadStr,
                 Ratings: spec.ratings || '-',
-                'Volt Ampere': spec.subtotal,
+                'Volt Ampere': formatInt(spec.subtotal),
                 Volts: $volts,
                 AmpLoadSingle: '',
                 AmpLoadAB: '',

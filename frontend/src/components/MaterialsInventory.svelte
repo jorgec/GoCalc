@@ -91,6 +91,28 @@
 <!-- Inventory Form -->
 <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
     <h2 class="text-lg font-semibold text-gray-800 mb-3">Add New Inventory Item</h2>
+    <!-- Adjustments -->
+    <div class="bg-white shadow-sm rounded-lg p-4 border border-gray-200 mt-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Project Cost Adjustments</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Labor Input -->
+            <div class="flex flex-col">
+                <label for="labor" class="text-sm font-medium text-gray-700 mb-1">Labor (%)</label>
+                <input id="labor" type="number" step="0.01" min="0" max="100" bind:value={$laborPercentage}
+
+                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+            </div>
+
+            <!-- Logistics Input -->
+            <div class="flex flex-col">
+                <label for="logistics" class="text-sm font-medium text-gray-700 mb-1">Logistics Cost (₱)</label>
+                <input id="logistics" type="number" step="0.01" min="0" bind:value={$logisticsCost}
+                       on:input={(e) => logisticsCost.set(Number(e.target.value))}
+                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+            </div>
+        </div>
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <!-- Category Dropdown -->
@@ -142,29 +164,6 @@
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-all">
                 Add Item
             </button>
-        </div>
-    </div>
-
-    <!-- Adjustments -->
-    <div class="bg-white shadow-sm rounded-lg p-4 border border-gray-200 mt-6">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Project Cost Adjustments</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Labor Input -->
-            <div class="flex flex-col">
-                <label for="labor" class="text-sm font-medium text-gray-700 mb-1">Labor (%)</label>
-                <input id="labor" type="number" step="0.01" min="0" max="100" bind:value={$laborPercentage}
-
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-            </div>
-
-            <!-- Logistics Input -->
-            <div class="flex flex-col">
-                <label for="logistics" class="text-sm font-medium text-gray-700 mb-1">Logistics Cost (₱)</label>
-                <input id="logistics" type="number" step="0.01" min="0" bind:value={$logisticsCost}
-                       on:input={(e) => logisticsCost.set(Number(e.target.value))}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-            </div>
         </div>
     </div>
 

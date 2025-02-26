@@ -16,6 +16,7 @@
      * you have derived stores named "totalOfAllVA" and "totalOfAllAmp".
      */
     import { totalOfAllVA, totalOfAllAmp } from "../stores/derivedStore";
+    import {formatInt, formatWithCommas} from "../utils/misc.js";
 </script>
 
 <div class="my-4">
@@ -45,7 +46,7 @@
                                         scope="col"
                                         class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                 >
-                                    Unit Load (W/HP or VA)
+                                    Unit Load
                                 </th>
                                 <th
                                         scope="col"
@@ -111,7 +112,7 @@
                                             </ul>
                                         {:else}
                                             <code>
-                                                {spec.wattage}W | {spec.horsepower}HP
+                                                {spec.wattage}W <!-- | {spec.horsepower}HP-->
                                             </code>
                                         {/if}
                                     </td>
@@ -123,7 +124,7 @@
                                     <td
                                             class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
                                     >
-                                        <code>{spec.subtotal}</code>
+                                        <code>{formatWithCommas(formatInt(spec.subtotal))}</code>
                                     </td>
                                     <td
                                             class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
@@ -228,14 +229,14 @@
                                     Totals:
                                 </td>
                                 <td class="py-2 px-3 text-sm text-gray-800">
-                                    <code>{$totalOfAllVA.toFixed(2)}</code>
+                                    <code>{formatWithCommas(formatInt($totalOfAllVA.toFixed(2)))}</code>
                                 </td>
                                 <td></td>
                                 <td class="py-2 px-3 text-sm text-gray-800">
                                     <code>{$volts}</code>
                                 </td>
                                 <td class="py-2 px-3 text-sm text-gray-800">
-                                    <code>{$totalOfAllAmp.toFixed(2)}</code>
+                                    <code>{formatWithCommas($totalOfAllAmp.toFixed(2))}</code>
                                 </td>
                                 <td></td>
                             </tr>

@@ -248,7 +248,7 @@ export function loadProjectData(projectData) {
         // Basic fields (with default values if missing):
         projectName.set(projectData.projectName || '');
         floorArea.set(projectData.floorArea || 0);
-        volts.set(projectData.volts || 220);  // Default to 220V
+        volts.set(projectData.volts || 230);  // Default to 220V
         systemPhaseType.set(projectData.systemPhaseType ?? null); // Use nullish coalescing
         selectedOccupancyValue.set(projectData.selectedOccupancyValue ?? null);
         selectedAddOnValue.set(projectData.selectedAddOnValue ?? null);

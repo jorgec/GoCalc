@@ -18,7 +18,7 @@ export const selectedTypeValue = writable(null);
 
 // System Phase & Voltage
 export const systemPhaseType = writable(null); // 0=single-phase, 1=three-phase
-export const volts = writable(220);
+export const volts = writable(230);
 
 // For category-based specs
 export const selectedCategoryIndex = writable(null);
