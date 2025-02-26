@@ -33,6 +33,10 @@
         }
     }
 
+
+    function closeErrorModal() {
+        statusMessage.set({text: null, type: null});
+    }
     function handleGoBack() {
         showMaterialsInventory.set(false);
     }
@@ -71,9 +75,28 @@
         {/if}
     </div>
 
+    <!--{#if $statusMessage.text}-->
+    <!--    <footer class="sticky bottom-0 p-4 {getStatusClass($statusMessage.type)} border-t">-->
+    <!--        <p>{$statusMessage.text}</p>-->
+    <!--    </footer>-->
+    <!--{/if}-->
     {#if $statusMessage.text}
-        <footer class="sticky bottom-0 p-4 {getStatusClass($statusMessage.type)} border-t">
-            <p>{$statusMessage.text}</p>
-        </footer>
+        {#if $statusMessage.type === 'error'}
+            <!-- Locking Modal for Errors -->
+            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div class="bg-white p-6 rounded shadow-lg max-w-lg">
+                    <h2 class="text-red-600 text-lg font-bold">Error</h2>
+                    <p>{$statusMessage.text}</p>
+                    <button on:click={closeErrorModal} class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Close
+                    </button>
+                </div>
+            </div>
+        {:else}
+            <!-- Normal Sticky Footer for Other Statuses -->
+            <footer class="sticky bottom-0 p-4 {getStatusClass($statusMessage.type)} border-t">
+                <p>{$statusMessage.text}</p>
+            </footer>
+        {/if}
     {/if}
 </div>

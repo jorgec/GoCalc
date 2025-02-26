@@ -2,8 +2,8 @@
 import {derived} from 'svelte/store';
 import {
     floorArea,
-    loadSpecifications,
-    projectName,
+    loadSpecifications, projectDate, projectInCharge, projectLocation,
+    projectName, projectOwner,
     selectedAddOnValue,
     selectedOccupancyValue,
     selectedTypeValue,
@@ -150,6 +150,10 @@ export const derivedHighestNonTrivialLoad = derived(
 export const projectData = derived(
     [
         projectName,
+        projectDate,
+        projectLocation,
+        projectOwner,
+        projectInCharge,
         floorArea,
         selectedOccupancyValue,
         selectedAddOnValue,
@@ -167,6 +171,10 @@ export const projectData = derived(
     ],
     ([
          $projectName,
+         $projectDate,
+         $projectLocation,
+         $projectOwner,
+         $projectInCharge,
          $floorArea,
          $selectedOccupancyValue,
          $selectedAddOnValue,
@@ -185,6 +193,10 @@ export const projectData = derived(
      ]) => {
         return {
             projectName: $projectName,
+            projectDate: $projectDate,
+            projectLocation: $projectLocation,
+            projectOwner: $projectOwner,
+            projectInCharge: $projectInCharge,
             floorArea: $floorArea,
             selectedOccupancyValue: $selectedOccupancyValue,
             selectedAddOnValue: $selectedAddOnValue,
