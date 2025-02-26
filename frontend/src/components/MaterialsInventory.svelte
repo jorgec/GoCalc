@@ -1,7 +1,8 @@
 <script>
     import {onMount} from 'svelte';
-    import {brands, inventory, materialDictionary, totalInventoryCost,  laborPercentage, logisticsCost, materialsCost, laborCost, totalProjectCost } from '../stores/materialInventoryStore';
+    import {brands, inventory, materialDictionary, wireTypes, totalInventoryCost,  laborPercentage, logisticsCost, materialsCost, laborCost, totalProjectCost } from '../stores/materialInventoryStore';
     import {writable} from 'svelte/store';
+    import {slugify} from '../utils/misc.js';
     import {statusMessage} from "../stores/uiStore.js";
 
     // Form state
@@ -13,6 +14,7 @@
     // Extract category names from materialDictionary
     let categories = [];
     let items = [];
+
 
     onMount(() => {
         categories = Object.keys(materialDictionary);
@@ -60,11 +62,17 @@
         if (!selectedItemDetails) return;
 
         const subtotal = unitPrice * Number($quantity); // Compute Subtotal
+        let slug = selectedItemDetails.slug;
+        let description = selectedItemDetails.Description;
+        if($selectedCategory === 'Wire and Cable'){
+            slug = slugify(description, selectedWireType);
+            description = `${description} ${selectedWireType}`;
+        }
 
         const newItem = {
-            slug: selectedItemDetails.slug,
+            slug: slug,
             Unit: selectedItemDetails.Unit,
-            Description: selectedItemDetails.Description,
+            Description: description,
             "Unit Price": unitPrice.toFixed(2), // Use stored price
             Brand: $selectedBrand,
             Quantity: Number($quantity),
@@ -84,6 +92,8 @@
         selectedBrand.set('');
         quantity.set(1);
     }
+
+    let selectedWireType = '';
 
 </script>
 
@@ -141,17 +151,28 @@
                 {/each}
             </select>
         </div>
-
+        {#if $selectedCategory === "Wire and Cable"}
+            <div class="h-20 py-4">
+                <label for="item" class="block text-gray-700 text-sm font-bold mb-2">Wire Type</label>
+                <select id="item"
+                        bind:value={selectedWireType}
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:bg-gray-100"
+                        >
+                    <option value="" selected>Select Wire Type</option>
+                    {#each wireTypes as item}
+                        <option value="{item}">{item}</option>
+                    {/each}
+                </select>
+            </div>
+        {/if}
         <!-- Brand Dropdown -->
         <div class="h-20 py-4">
             <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">Brand</label>
-            <select id="brand" bind:value={$selectedBrand}
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="" disabled selected>Select Brand</option>
-                {#each brands as brand}
-                    <option value="{brand}">{brand}</option>
-                {/each}
-            </select>
+            <input
+                    id="brand"
+                    bind:value={$selectedBrand}
+                    class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+
         </div>
 
         <!-- Quantity Input -->

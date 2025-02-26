@@ -13,36 +13,43 @@
     "Stanley",
     "Steelworld"
   ],
+  "Wire Types": [
+    "THHN",
+    "THW",
+    "THWN",
+    "THWN-2",
+    "RHW-2"
+  ],
   "Inventory": {
     "Wire and Cable": [
       {
-        "slug": "2_0-mm-thhn",
+        "slug": "2_0-mm",
         "Unit": "m",
-        "Description": "2.0 mm² THHN",
+        "Description": "2.0 mm²",
         "Unit Price": 20.00
       },
       {
-        "slug": "3_5-mm-thhn",
+        "slug": "3_5-mm",
         "Unit": "m",
-        "Description": "3.5 mm² THHN",
+        "Description": "3.5 mm²",
         "Unit Price": 33.00
       },
       {
-        "slug": "125-mm-thhn",
+        "slug": "125-mm",
         "Unit": "m",
-        "Description": "125 mm² THHN",
+        "Description": "125 mm²",
         "Unit Price": 1150.00
       },
       {
-        "slug": "150-mm-thhn",
+        "slug": "150-mm",
         "Unit": "m",
-        "Description": "150 mm² THHN",
+        "Description": "150 mm²",
         "Unit Price": 1375.00
       },
       {
-        "slug": "250-mm-thhn",
+        "slug": "250-mm",
         "Unit": "m",
-        "Description": "250 mm² THHN",
+        "Description": "250 mm²",
         "Unit Price": 2248.00
       }
     ],

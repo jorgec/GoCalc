@@ -12,6 +12,7 @@ export const inventory = writable({});
 // Store for brands
 export const materialDictionary = materialConstants["Inventory"];
 export const brands = materialConstants["brands"];
+export const wireTypes = materialConstants["Wire Types"];
 
 // Derived store for calculating the total cost of all inventory items
 export const totalInventoryCost = derived(inventory, $inventory => {
