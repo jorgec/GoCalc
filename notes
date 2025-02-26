@@ -34,3 +34,43 @@ Add material cost data entry
 
 Feb 23
 Add select to csv table to change wire
+
+
+February 26, 2024
+Revisions
+-Add Project Date, Location, Owner and Person-in-charge #done
+-Default Volts = 230 #done
+-Remove (W/HP or VA in Unit Load) #done
+-Remove Quantity Column # not necessary
+-Add Circuit No. Column (1st Column before Category) # not necessary
+-remove decimal in VA (Whole numbers ONLY) #done
+-Motor Loads = add DATA ENTRY if not available in Selections
+                      = Ratings: as is DATA entry, no look-up value
+                      #done
+-add Description in upper right ICONS (hovering description, if possible) #done
+- add close and save notif ICON
+
+Project Cost Estimate
+-Add Project Date, Location, Owner and Person-in-charge (or copy from previous project) #done
+Wire & Cable
+- Item = add more option/selection of size of wires (2.0,3.5,5.5,8.0,etc.)
+- Add Item Type (THHN,THW,THWN)
+- Brand = DATA ENTRY instead of option/selection
+Circuit Breaker
+- Item = add more option/selection of CB (15,20,30,40,60,80,100,etc)
+- Add Item Type (Plug-in Type)
+- Brand = DATA ENTRY instead of option/selection
+Casing
+- Item, brand = add DATA ENTRY option
+Conduit Raceway
+- Item = add more option
+- Item Type = PVC, EMT, RSC
+- Brand = add DATA ENTRY option
+Boxes, Fittings & Wire Fixtures
+- Item = add DATA ENTRY option
+- Brand = add DATA ENTRY option
+Miscellaneous
+- Item & Brand = add DATA ENTRY option
+- Add UNIT COST = DATA ENTRY
+- Edit: Labor Cost in PERCANTAGE (WHOLE NUMBER with decimal up to TENTHS digit)
+- Arrange: Item, Brand, Quantity, Unit, Unit Price, Subtotal

@@ -1,148 +1,399 @@
 {
+  "conduitSizing": {
+    "entries": {
+      "14": 32,
+      "2": 15,
+      "22": 38,
+      "3.5": 15,
+      "38": 50,
+      "5.5": 20,
+      "8": 25
+    }
+  },
+  "lightingDemandFactors": [
+    [
+      [
+        3000,
+        100
+      ],
+      [
+        120000,
+        35
+      ],
+      [
+        null,
+        25
+      ]
+    ],
+    [
+      [
+        50000,
+        40
+      ],
+      [
+        null,
+        20
+      ]
+    ],
+    [
+      [
+        20000,
+        50
+      ],
+      [
+        100000,
+        40
+      ],
+      [
+        null,
+        30
+      ]
+    ],
+    [
+      [
+        12500,
+        100
+      ],
+      [
+        null,
+        50
+      ]
+    ]
+  ],
+  "loadSpecificationCategories": [
+    {
+      "label": "Lighting",
+      "types": [
+        {
+          "label": "Fluorescent Lamp",
+          "unit_load": 1,
+          "value": 0
+        },
+        {
+          "label": "CFL",
+          "unit_load": 1,
+          "value": 1
+        },
+        {
+          "label": "PL",
+          "unit_load": 1,
+          "value": 2
+        },
+        {
+          "label": "EL",
+          "unit_load": 1,
+          "value": 3
+        },
+        {
+          "label": "LED",
+          "unit_load": 1,
+          "value": 4
+        },
+        {
+          "label": "Chandelier",
+          "unit_load": 1,
+          "value": 5
+        },
+        {
+          "label": "Lighting",
+          "unit_load": 1,
+          "value": 7
+        },
+        {
+          "label": "Others",
+          "unit_load": 1,
+          "value": 6
+        }
+      ],
+      "value": 0
+    },
+    {
+      "label": "Convenience outlet",
+      "value": 1
+    },
+    {
+      "label": "Kitchen Load",
+      "types": [
+        {
+          "label": "Electric Oven",
+          "unit_load": 1,
+          "value": 0
+        },
+        {
+          "label": "Electric Range",
+          "unit_load": 1,
+          "value": 1
+        },
+        {
+          "label": "Electric Griller",
+          "unit_load": 1,
+          "value": 2
+        }
+      ],
+      "value": 2
+    },
+    {
+      "label": "Motor",
+      "types": [
+        {
+          "label": "Air-Conditioning Unit",
+          "unit_load": 1,
+          "value": 0
+        },
+        {
+          "label": "Tonner ACU",
+          "unit_load": 1,
+          "value": 1
+        },
+        {
+          "label": "Water Pump",
+          "unit_load": 1,
+          "value": 2
+        },
+        {
+          "label": "Booster Pump",
+          "unit_load": 1,
+          "value": 3
+        },
+        {
+          "label": "Transfer Pump",
+          "unit_load": 1,
+          "value": 4
+        },
+        {
+          "label": "Fire Pump",
+          "unit_load": 1,
+          "value": 5
+        },
+        {
+          "label": "Jockey Pump",
+          "unit_load": 1,
+          "value": 6
+        },
+        {
+          "label": "Elevator",
+          "unit_load": 1,
+          "value": 7
+        },
+        {
+          "label": "Freezer",
+          "unit_load": 1,
+          "value": 8
+        },
+        {
+          "label": "Sump Pump",
+          "unit_load": 1,
+          "value": 9
+        },
+        {
+          "label": "Dishwasher",
+          "unit_load": 1,
+          "value": 10
+        },
+        {
+          "label": "Washing Machine",
+          "unit_load": 1,
+          "value": 11
+        },
+        {
+          "label": "Compressor",
+          "unit_load": 1,
+          "value": 12
+        },
+        {
+          "label": "Condenser",
+          "unit_load": 1,
+          "value": 13
+        },
+        {
+          "label": "Blower",
+          "unit_load": 1,
+          "value": 14
+        },
+        {
+          "label": "New Motor",
+          "unit_load": 1,
+          "value": 999
+        }
+      ],
+      "value": 3
+    },
+    {
+      "label": "Spare",
+      "types": null,
+      "value": 4
+    },
+    {
+      "label": "Other Loads",
+      "types": [
+        {
+          "label": "PA",
+          "unit_load": 1,
+          "value": 0
+        },
+        {
+          "label": "CCTV",
+          "unit_load": 1,
+          "value": 1
+        },
+        {
+          "label": "FDAS",
+          "unit_load": 1,
+          "value": 2
+        },
+        {
+          "label": "Water Heater",
+          "unit_load": 1,
+          "value": 3
+        }
+      ],
+      "value": 5
+    }
+  ],
   "occupancyTypes": [
     {
+      "addons": [],
       "label": "Residential",
-      "value": 0,
       "types": [
         {
           "label": "Single Family Dwelling",
-          "value": 0,
+          "lighting_df": 0,
           "unit_load": 24,
-          "lighting_df": 0
+          "value": 0
         },
         {
           "label": "Multiple Family Dwelling",
-          "value": 1,
+          "lighting_df": 0,
           "unit_load": 24,
-          "lighting_df": 0
+          "value": 1
         }
       ],
-      "addons": []
+      "value": 0
     },
     {
-      "label": "Commercial",
-      "value": 1,
-      "types": [
-        {
-          "label": "Armories and Auditoriums",
-          "value": 0,
-          "unit_load": 8,
-          "lighting_df": null
-        },
-        {
-          "label": "Banks",
-          "value": 1,
-          "unit_load": 28,
-          "lighting_df": null
-        },
-        {
-          "label": "Barber shops and beauty parlors",
-          "value": 2,
-          "unit_load": 24,
-          "lighting_df": null
-        },
-        {
-          "label": "Churches",
-          "value": 3,
-          "unit_load": 8,
-          "lighting_df": null
-        },
-        {
-          "label": "Clubs",
-          "value": 4,
-          "unit_load": 16,
-          "lighting_df": null
-        },
-        {
-          "label": "Court Rooms",
-          "value": 5,
-          "unit_load": 16,
-          "lighting_df": null
-        },
-        {
-          "label": "Dwelling Units",
-          "value": 6,
-          "unit_load": 24,
-          "lighting_df": null
-        },
-        {
-          "label": "Garages - commercial (storage)",
-          "value": 7,
-          "unit_load": 4,
-          "lighting_df": null
-        },
-        {
-          "label": "Hospitals",
-          "value": 8,
-          "unit_load": 16,
-          "lighting_df": 1
-        },
-        {
-          "label": "Hotels and motels, no cooking",
-          "value": 9,
-          "unit_load": 16,
-          "lighting_df": 2
-        },
-        {
-          "label": "Industrial commercial (loft) buildings",
-          "value": 10,
-          "unit_load": 16,
-          "lighting_df": null
-        },
-        {
-          "label": "Lodge rooms",
-          "value": 11,
-          "unit_load": 12,
-          "lighting_df": null
-        },
-        {
-          "label": "Office buildings",
-          "value": 12,
-          "unit_load": 28,
-          "lighting_df": null
-        },
-        {
-          "label": "Restaurants",
-          "value": 13,
-          "unit_load": 16,
-          "lighting_df": null
-        },
-        {
-          "label": "Schools",
-          "value": 14,
-          "unit_load": 24,
-          "lighting_df": null
-        },
-        {
-          "label": "Stores",
-          "value": 15,
-          "unit_load": 24,
-          "lighting_df": null
-        },
-        {
-          "label": "Warehouses (storage)",
-          "value": 16,
-          "unit_load": 2,
-          "lighting_df": 3
-        }
-      ],
       "addons": [
         {
           "label": "Assembly halls and auditoriums",
-          "value": 0,
-          "unit_load": 8
+          "unit_load": 8,
+          "value": 0
         },
         {
           "label": "Halls, corridors, closets, stairways",
-          "value": 1,
-          "unit_load": 4
+          "unit_load": 4,
+          "value": 1
         },
         {
           "label": "Storage spaces",
-          "value": 2,
-          "unit_load": 2
+          "unit_load": 2,
+          "value": 2
         }
-      ]
+      ],
+      "label": "Commercial",
+      "types": [
+        {
+          "label": "Armories and Auditoriums",
+          "lighting_df": null,
+          "unit_load": 8,
+          "value": 0
+        },
+        {
+          "label": "Banks",
+          "lighting_df": null,
+          "unit_load": 28,
+          "value": 1
+        },
+        {
+          "label": "Barber shops and beauty parlors",
+          "lighting_df": null,
+          "unit_load": 24,
+          "value": 2
+        },
+        {
+          "label": "Churches",
+          "lighting_df": null,
+          "unit_load": 8,
+          "value": 3
+        },
+        {
+          "label": "Clubs",
+          "lighting_df": null,
+          "unit_load": 16,
+          "value": 4
+        },
+        {
+          "label": "Court Rooms",
+          "lighting_df": null,
+          "unit_load": 16,
+          "value": 5
+        },
+        {
+          "label": "Dwelling Units",
+          "lighting_df": null,
+          "unit_load": 24,
+          "value": 6
+        },
+        {
+          "label": "Garages - commercial (storage)",
+          "lighting_df": null,
+          "unit_load": 4,
+          "value": 7
+        },
+        {
+          "label": "Hospitals",
+          "lighting_df": 1,
+          "unit_load": 16,
+          "value": 8
+        },
+        {
+          "label": "Hotels and motels, no cooking",
+          "lighting_df": 2,
+          "unit_load": 16,
+          "value": 9
+        },
+        {
+          "label": "Industrial commercial (loft) buildings",
+          "lighting_df": null,
+          "unit_load": 16,
+          "value": 10
+        },
+        {
+          "label": "Lodge rooms",
+          "lighting_df": null,
+          "unit_load": 12,
+          "value": 11
+        },
+        {
+          "label": "Office buildings",
+          "lighting_df": null,
+          "unit_load": 28,
+          "value": 12
+        },
+        {
+          "label": "Restaurants",
+          "lighting_df": null,
+          "unit_load": 16,
+          "value": 13
+        },
+        {
+          "label": "Schools",
+          "lighting_df": null,
+          "unit_load": 24,
+          "value": 14
+        },
+        {
+          "label": "Stores",
+          "lighting_df": null,
+          "unit_load": 24,
+          "value": 15
+        },
+        {
+          "label": "Warehouses (storage)",
+          "lighting_df": 3,
+          "unit_load": 2,
+          "value": 16
+        }
+      ],
+      "value": 1
     }
   ],
   "phaseTypes": [
@@ -155,277 +406,110 @@
       "value": 1
     }
   ],
-  "loadSpecificationCategories": [
-    {
-      "label": "Lighting",
-      "value": 0,
-      "types": [
-        {
-          "label": "Fluorescent Lamp",
-          "value": 0,
-          "unit_load": 1
-        },
-        {
-          "label": "CFL",
-          "value": 1,
-          "unit_load": 1
-        },
-        {
-          "label": "PL",
-          "value": 2,
-          "unit_load": 1
-        },
-        {
-          "label": "EL",
-          "value": 3,
-          "unit_load": 1
-        },
-        {
-          "label": "LED",
-          "value": 4,
-          "unit_load": 1
-        },
-        {
-          "label": "Chandelier",
-          "value": 5,
-          "unit_load": 1
-        },
-        {
-          "label": "Lighting",
-          "value": 7,
-          "unit_load": 1
-        },
-        {
-          "label": "Others",
-          "value": 6,
-          "unit_load": 1
-        }
-      ]
-    },
-    {
-      "label": "Convenience outlet",
-      "value": 1
-    },
-    {
-      "label": "Kitchen Load",
-      "value": 2,
-      "types": [
-        {
-          "label": "Electric Oven",
-          "value": 0,
-          "unit_load": 1
-        },
-        {
-          "label": "Electric Range",
-          "value": 1,
-          "unit_load": 1
-        },
-        {
-          "label": "Electric Griller",
-          "value": 2,
-          "unit_load": 1
-        }
-      ]
-    },
-    {
-      "label": "Motor",
-      "value": 3,
-      "types": [
-        {
-          "label": "Air-Conditioning Unit",
-          "value": 0,
-          "unit_load": 1
-        },
-        {
-          "label": "Tonner ACU",
-          "value": 1,
-          "unit_load": 1
-        },
-        {
-          "label": "Water Pump",
-          "value": 2,
-          "unit_load": 1
-        },
-        {
-          "label": "Booster Pump",
-          "value": 3,
-          "unit_load": 1
-        },
-        {
-          "label": "Transfer Pump",
-          "value": 4,
-          "unit_load": 1
-        },
-        {
-          "label": "Fire Pump",
-          "value": 5,
-          "unit_load": 1
-        },
-        {
-          "label": "Jockey Pump",
-          "value": 6,
-          "unit_load": 1
-        },
-        {
-          "label": "Elevator",
-          "value": 7,
-          "unit_load": 1
-        },
-        {
-          "label": "Freezer",
-          "value": 8,
-          "unit_load": 1
-        },
-        {
-          "label": "Sump Pump",
-          "value": 9,
-          "unit_load": 1
-        },
-        {
-          "label": "Dishwasher",
-          "value": 10,
-          "unit_load": 1
-        },
-        {
-          "label": "Washing Machine",
-          "value": 11,
-          "unit_load": 1
-        },
-        {
-          "label": "Compressor",
-          "value": 12,
-          "unit_load": 1
-        },
-        {
-          "label": "Condenser",
-          "value": 13,
-          "unit_load": 1
-        },
-        {
-          "label": "Blower",
-          "value": 14,
-          "unit_load": 1
-        }
-      ]
-    },
-    {
-      "label": "Spare",
-      "value": 4,
-      "types": null
-    },
-    {
-      "label": "Other Loads",
-      "value": 5,
-      "types": [
-        {
-          "label": "PA",
-          "value": 0,
-          "unit_load": 1
-        },
-        {
-          "label": "CCTV",
-          "value": 1,
-          "unit_load": 1
-        },
-        {
-          "label": "FDAS",
-          "value": 2,
-          "unit_load": 1
-        },
-        {
-          "label": "Water Heater",
-          "value": 3,
-          "unit_load": 1
-        }
-      ]
-    }
-  ],
-  "lightingDemandFactors": [
-    [[3000, 100], [120000, 35], [null, 25]],
-    [[50000, 40], [null, 20]],
-    [[20000, 50], [100000, 40], [null, 30]],
-    [[12500, 100], [null, 50]]
-  ],
   "wireSizingData": {
     "entries": [
       {
+        "Amp": 15,
         "Load Type": "Lighting",
-        "Amp": 15.0,
-        "Wire Size": 2.0,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Size": 2,
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 20,
         "Load Type": "Convenience outlet",
-        "Amp": 20.0,
         "Wire Size": 3.5,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 25,
         "Load Type": "Small Appliance Circuits",
-        "Amp": 25.0,
         "Wire Size": 5.5,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 30,
         "Load Type": "Air-Conditioning Unit",
-        "Amp": 30.0,
-        "Wire Size": 8.0,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Size": 8,
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 30,
         "Load Type": "Water Heater",
-        "Amp": 30.0,
-        "Wire Size": 8.0,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Size": 8,
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 50,
         "Load Type": "Electric Range",
-        "Amp": 50.0,
-        "Wire Size": 14.0,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Size": 14,
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 50,
         "Load Type": "Electric Oven",
-        "Amp": 50.0,
-        "Wire Size": 14.0,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Size": 14,
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 60,
         "Load Type": "Tonner ACU",
-        "Amp": 60.0,
-        "Wire Size": 22.0,
-        "Wire Type": ["THHN", "THWN-2"]
+        "Wire Size": 22,
+        "Wire Type": [
+          "THHN",
+          "THWN-2"
+        ]
       },
       {
+        "Amp": 20,
         "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
-        "Amp": 20.0,
         "Wire Size": 5.5,
-        "Wire Type": ["THHN", "THWN-2", "RHW-2"]
+        "Wire Type": [
+          "THHN",
+          "THWN-2",
+          "RHW-2"
+        ]
       },
       {
+        "Amp": 40,
         "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
-        "Amp": 40.0,
-        "Wire Size": 14.0,
-        "Wire Type": ["THHN", "THWN-2", "RHW-2"]
+        "Wire Size": 14,
+        "Wire Type": [
+          "THHN",
+          "THWN-2",
+          "RHW-2"
+        ]
       },
       {
+        "Amp": 80,
         "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
-        "Amp": 80.0,
-        "Wire Size": 38.0,
-        "Wire Type": ["THHN", "THWN-2", "RHW-2"]
+        "Wire Size": 38,
+        "Wire Type": [
+          "THHN",
+          "THWN-2",
+          "RHW-2"
+        ]
       }
     ]
-  },
-  "conduitSizing": {
-    "entries": {
-      "2": 15,
-      "3.5": 15,
-      "5.5": 20,
-      "8": 25,
-      "14": 32,
-      "22": 38,
-      "38": 50
-    }
   }
-
 }

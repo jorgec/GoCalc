@@ -54,7 +54,9 @@
                 <BasicForm/>
                 <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
                     {#if $showSpecForm}
-                        <SpecForm/>
+                        <div class="bg-gray-100 border border-gray-300 rounded-lg py-0 px-4 shadow-sm">
+                            <SpecForm/>
+                        </div>
                     {/if}
 
                     {#if $showLoadSpecs}

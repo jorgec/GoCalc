@@ -671,6 +671,19 @@
         "THWN-2"
       ],
       "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Motor",
+      "name": "Test Motor",
+      "quantity": 1,
+      "wattage": 31530,
+      "horsepower": "42.27",
+      "subtotal": "31530.00",
+      "ratings": "-",
+      "abc": false,
+      "sizeOfWire": null,
+      "wireType": [],
+      "conduitSize": ""
     }
   ],
   "inventory": {

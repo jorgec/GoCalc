@@ -11,10 +11,10 @@
         wattage
     } from "../stores/dataStore";
 
-    import {constants} from "../stores/constantsStore";
+    import {constants, updateConstant} from "../stores/constantsStore";
     import {addAnotherLightingRow, addLoadSpecification, removeLightingRow, resetSpecForm} from "../utils/mutators";
 
-    import {showLightingInput, showSpecForm} from "../stores/uiStore";
+    import {showLightingInput, showSpecForm, statusMessage} from "../stores/uiStore";
 
     // For "hasCategoryTypes" logic:
     $: catIndex = $selectedCategoryIndex;
@@ -22,10 +22,85 @@
         ? constants.loadSpecificationCategories[catIndex]
         : null;
     $: hasCategoryTypes = !!(chosenCategory?.types?.length && catIndex !== 0);
+
+    let addCustomMotorFlag = false;
+
+    let newMotorName = '';
+    let customCat = null;
+
+    function addCustomModal(cat) {
+        addCustomMotorFlag = true;
+        customCat = cat;
+    }
+
+    function addCustom() {
+
+        if (newMotorName === '' || !customCat) {
+            statusMessage.set({text: "Name can't be empty", type: 'error'});
+        }else{
+            let cat = parseInt(customCat);
+            let customMotor = {
+                label: newMotorName,
+                value: 999,
+                unit_load: 1
+            };
+
+            updateConstant(`loadSpecificationCategories.${cat}.types`, [
+                ...constants.loadSpecificationCategories[cat].types,
+                customMotor
+            ]);
+
+            chosenCategory = constants.loadSpecificationCategories[cat];
+            console.log(chosenCategory);
+            addCustomMotorFlag = false;
+            newMotorName = '';
+        }
+    }
+
 </script>
 
+{#if addCustomMotorFlag}
+    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <!-- Modal Container -->
+        <div class="bg-white rounded-lg shadow-lg w-96">
+            <!-- Modal Header -->
+            <div class="px-4 py-3 border-b flex justify-between items-center">
+                <h2 class="text-lg font-semibold">Add Custom Motor</h2>
+                <button class="text-gray-500 hover:text-gray-700" on:click={() => addCustomMotorFlag = false}>
+                    ✖
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-4">
+                <div class="h-20 py-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                    <input
+                            required
+                            type="text"
+                            bind:value={newMotorName}
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                    />
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-4 py-3 border-t flex justify-end">
+                <button class="px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mr-2"
+                        on:click={addCustom}>
+                    Add
+                </button>
+                <button class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                        on:click={() => addCustomMotorFlag = false}>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+{/if}
+
 {#if $showSpecForm}
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 py-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 p-0">
         <div class="h-20 py-4">
             <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
                 Load Specification Category:
@@ -217,17 +292,31 @@
             </div>
         {/if}
 
-        <div class="flex items-end py-4">
+    </div>
+    <div class="flex items-center gap-4 py-4">
+        {#if catIndex === 3 || catIndex == 5}
+            <div>
+                <button
+                        on:click={() => {
+                            addCustomMotorFlag = true;
+                            addCustomModal(catIndex);
+                        }}
+                        class="px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                    Add a Custom
+                </button>
+            </div>
+        {/if}
+        <div class="flex items-center">
             <input
                     type="checkbox"
                     bind:checked={$isABC}
                     class="mr-2 h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
             />
-            <label class="block text-gray-700 text-sm font-bold">
+            <label class="text-gray-700 text-sm font-bold">
                 ABC
             </label>
         </div>
-
     </div>
 
     {#if catIndex !== null}
