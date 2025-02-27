@@ -214,6 +214,16 @@
           "label": "New Motor",
           "unit_load": 1,
           "value": 999
+        },
+        {
+          "label": "asgasg",
+          "unit_load": 1,
+          "value": 999
+        },
+        {
+          "label": "New Custom Motor",
+          "unit_load": 1,
+          "value": 999
         }
       ],
       "value": 3
@@ -245,6 +255,11 @@
           "label": "Water Heater",
           "unit_load": 1,
           "value": 3
+        },
+        {
+          "label": "Small Motor Load",
+          "unit_load": 1,
+          "value": 999
         }
       ],
       "value": 5

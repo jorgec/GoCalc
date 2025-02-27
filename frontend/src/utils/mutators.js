@@ -36,7 +36,7 @@ import {
 import {
     inventory,
     laborPercentage,
-    logisticsCost
+    logisticsCost, materialsInventory
 } from '../stores/materialInventoryStore';
 
 import {constants} from '../stores/constantsStore';
@@ -275,10 +275,10 @@ export function loadProjectData(projectData) {
             });
         }
 
-        if (projectData.inventory) {
-            inventory.set(projectData.inventory);
+        if (projectData.materialsInventory) {
+            materialsInventory.set(projectData.materialsInventory);
         } else {
-            inventory.set({});
+            materialsInventory.set({});
             statusMessage.set({text: "Warning: No inventory data found.", type: "warning"});
         }
 

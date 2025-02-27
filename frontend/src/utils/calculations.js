@@ -180,7 +180,8 @@ export function wireData(wireSize, wireType) {
 }
 
 export function determineConduitSize(wireSize) {
-    let retVal = "";
+    console.log(wireSize);
+    let retVal = "N/A";
     if (!constants.conduitSizing || !constants.conduitSizing.entries) {
         return retVal; // Or a suitable default, like "N/A"
     }
@@ -189,10 +190,13 @@ export function determineConduitSize(wireSize) {
 
     // Convert wireSize to a string to match the keys in conduitSizes
     const wireSizeStr = String(wireSize);
+    console.log(wireSizeStr);
 
     // Direct lookup
     if (conduitSizes.hasOwnProperty(wireSizeStr)) {
         retVal = `${conduitSizes[wireSizeStr]} mm Ø PVC`;
+    }else{
+        retVal = 'alaws';
     }
 
     return retVal; // Or a suitable default value

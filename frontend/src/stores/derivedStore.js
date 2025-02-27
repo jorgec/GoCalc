@@ -16,7 +16,7 @@ import {
     laborCost,
     laborPercentage,
     logisticsCost,
-    materialsCost,
+    materialsCost, materialsInventory,
     totalInventoryCost,
     totalProjectCost
 } from './materialInventoryStore';
@@ -35,7 +35,7 @@ export const csvData = derived(
 
             // Calculate wire size and type
             let {localWireSize, localWireType} = determineWireSizeAndType({...spec, volts: $volts});
-            let conduitSize = determineConduitSize(localWireSize);
+            let conduitSize = spec.conduitSize;
 
             let loadStr = spec.name;
             if (spec.category === 'Lighting' && spec.lightingLoads) {
@@ -170,7 +170,7 @@ export const projectData = derived(
         systemPhaseType,
         volts,
         loadSpecifications,
-        inventory,
+        materialsInventory,
         laborPercentage,
         logisticsCost,
         totalInventoryCost,
@@ -191,7 +191,7 @@ export const projectData = derived(
          $systemPhaseType,
          $volts,
          $loadSpecifications,
-         $inventory,
+         $materialsInventory,
          $laborPercentage,
          $logisticsCost,
          $totalInventoryCost,
@@ -213,7 +213,7 @@ export const projectData = derived(
             systemPhaseType: $systemPhaseType,
             volts: $volts,
             loadSpecifications: $loadSpecifications,
-            inventory: $inventory,
+            materialsInventory: $materialsInventory,
             labor: $laborPercentage,
             logistics: $logisticsCost,
             totalInventoryCost: $totalInventoryCost,

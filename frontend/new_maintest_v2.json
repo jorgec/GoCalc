@@ -799,36 +799,83 @@
     },
     {
       "category": "Motor",
-      "name": "Test Motor",
+      "name": "New Custom Motor",
       "quantity": 1,
-      "wattage": 31530,
-      "horsepower": "42.27",
-      "subtotal": "31530.00",
-      "ratings": "-",
+      "wattage": 1000,
+      "horsepower": "1.34",
+      "subtotal": "1000.00",
+      "ratings": "1HP",
       "abc": false,
-      "wireSize": null,
-      "wireType": [],
-      "wireTypeSelection": [],
-      "conduitSize": ""
+      "wireSize": 5.5,
+      "wireType": [
+        "RHW-2"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THWN-2",
+        "RHW-2"
+      ],
+      "conduitSize": "20 mm Ø PVC"
+    },
+    {
+      "category": "Other Loads",
+      "name": "Small Motor Load",
+      "quantity": 1,
+      "wattage": 5000,
+      "horsepower": "6.70",
+      "subtotal": "5000.00",
+      "ratings": "5HP",
+      "abc": false,
+      "wireSize": 5.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THWN-2"
+      ],
+      "conduitSize": "20 mm Ø PVC"
     }
   ],
-  "inventory": {
-    "Wire and Cable": [
+  "materialsInventory": {
+    "Circuit Breaker": [
       {
-        "slug": "3_5-mm-thhn",
-        "Unit": "m",
-        "Description": "3.5 mm² THHN",
-        "Unit Price": "33.00",
-        "Brand": "Royu",
-        "Quantity": 100,
-        "Subtotal": "3300.00"
+        "slug": "15-amperes",
+        "Unit": "pcs",
+        "Description": "15 Amperes",
+        "Unit Price": "45.00",
+        "Brand": "asdfh",
+        "Quantity": 134,
+        "Subtotal": "6030.00"
+      }
+    ],
+    "Casing": [
+      {
+        "slug": "12-branch-circuit",
+        "Unit": "pcs",
+        "Description": "12 Branch Circuit",
+        "Unit Price": "34.00",
+        "Brand": "Blue Eagle",
+        "Quantity": 1,
+        "Subtotal": "34.00"
+      }
+    ],
+    "Conduit Raceway": [
+      {
+        "slug": "new-conduit-kilometers",
+        "Unit": "Kilometers",
+        "Description": "New Conduit",
+        "Unit Price": "5900.00",
+        "Brand": "Jack & Jill",
+        "Quantity": 13,
+        "Subtotal": "76700.00"
       }
     ]
   },
-  "labor": 0.7,
-  "logistics": 50000,
-  "totalInventoryCost": "3300.00",
-  "materialsCost": 4125,
-  "laborCost": 2310,
-  "totalProjectCost": 56435
+  "labor": 70,
+  "logistics": 500000,
+  "totalInventoryCost": "82764.00",
+  "materialsCost": 103455,
+  "laborCost": 57934.799999999996,
+  "totalProjectCost": 661389.8
 }

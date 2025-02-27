@@ -85,7 +85,7 @@
     {#if $statusMessage.text}
         {#if $statusMessage.type === 'error'}
             <!-- Locking Modal for Errors -->
-            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" style="z-index: 99999">
                 <div class="bg-white p-6 rounded shadow-lg max-w-lg">
                     <h2 class="text-red-600 text-lg font-bold">Error</h2>
                     <p>{$statusMessage.text}</p>
