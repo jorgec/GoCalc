@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io/ioutil"
 	"os"
@@ -11,8 +12,23 @@ import (
 
 // App struct
 type App struct {
-	ctx   context.Context
-	isDev bool
+	ctx        context.Context
+	isDev      bool
+	allowClose bool
+}
+
+func (a *App) AllowClose() {
+	a.allowClose = true
+	fmt.Println("App is now allowed to close.")
+	runtime.Quit(a.ctx)
+}
+
+func (a *App) OnBeforeClose(ctx context.Context) (prevent bool) {
+	if a.allowClose {
+		return false // Allow closing
+	}
+	fmt.Println("Close prevented! Show a dialog here.")
+	return true // Prevent closing
 }
 
 func checkDevMode() bool {

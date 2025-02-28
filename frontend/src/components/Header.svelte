@@ -1,15 +1,16 @@
 <script>
-    import {projectDate, projectName, projectInCharge, projectLocation, projectOwner} from "../stores/dataStore";
+    import {projectDate, projectInCharge, projectLocation, projectName, projectOwner} from "../stores/dataStore";
     import {showConsole, showCsvTable, showLoadSpecs, showMaterialsInventory, statusMessage} from "../stores/uiStore";
     import LoadProjectModal from "./LoadProjectModal.svelte";
     import SaveProjectModal from "./SaveProjectModal.svelte";
+    import {intentionToClose} from "../stores/uiStore.js";
 
 
     let showLoadModal = false; // Control modal visibility
     let showSaveModal = false;
 
     function clearStatus() {
-        if($statusMessage.type === 'info'){
+        if ($statusMessage.type === 'info') {
             statusMessage.set({text: '', type: ''})
         }
         return false;
@@ -28,11 +29,15 @@
     }
 
     function openSaveModal() {
-        if (!$projectName || !$projectDate || !$projectLocation || !$projectOwner || !$projectInCharge) {
-            statusMessage.set({text: "Fill up all project details at the top", type: 'error'});
-            return;
+        if(intentionToClose){
+            showSaveModal = true;
+        }else{
+            if (!$projectName || !$projectDate || !$projectLocation || !$projectOwner || !$projectInCharge) {
+                statusMessage.set({text: "Fill up all project details at the top", type: 'error'});
+                return;
+            }
+            showSaveModal = true;
         }
-        showSaveModal = true;
     }
 
     function closeSaveModal() {
@@ -99,11 +104,11 @@
 
     <div class="flex-[1] flex justify-end items-center gap-2">
         <a on:click={toggleInventory}
-                href="#!"
-                title="Inventory Management"
-                on:mouseenter={() => showStatus('Inventory Management')}
-                on:mouseleave={clearStatus}
-                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+           href="#!"
+           title="Inventory Management"
+           on:mouseenter={() => showStatus('Inventory Management')}
+           on:mouseleave={clearStatus}
+           class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 9l9-5 9 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z M9 22V12h6v10"/>
@@ -179,7 +184,19 @@
             </svg>
 
         </button>
+        <button
+                id="closeApp"
+                class="bg-red-600 hover:bg-red-400 text-white py-2 px-4 rounded inline-flex items-center"
+                on:mouseenter={() => showStatus('Exit Project')}
+                on:click={() => {
+                        $intentionToClose = true;
+                        openSaveModal();
+                    }
+                }
+        >
+            X
 
+        </button>
 
     </div>
 </header>

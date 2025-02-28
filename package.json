@@ -3,5 +3,8 @@
     "@rollup/plugin-typescript": "^12.1.2",
     "svelte-preprocess": "^6.0.3",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@wailsapp/runtime": "^1.1.1"
   }
 }
