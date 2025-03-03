@@ -1,8 +1,8 @@
 // src/utils/calculations.js
-import { get } from 'svelte/store';
-import { constants } from '../stores/constantsStore';
-import {loadSpecifications, selectedLightingDemandFactorID, volts} from '../stores/dataStore'; // Import volts
-import {totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore.js";
+import {get} from 'svelte/store';
+import {constants} from '../stores/constantsStore';
+import {selectedLightingDemandFactorID, volts} from '../stores/dataStore'; // Import volts
+
 
 /**
  * Calculate lighting demand factor based on
@@ -203,6 +203,17 @@ export function determineConduitSize(wireSize) {
 
 export function loadCurrentIFL(volts, load, totalVA) {
     return (totalVA + ((load * .8)*.5)) / volts;
+}
+
+export function getWireRecommendation(value) {
+    const WireRecommendationLookup = constants.WireRecommendationLookup;
+    for (let i = 0; i < WireRecommendationLookup.length; i++) {
+        if (value <= WireRecommendationLookup[i][0]) {
+            return WireRecommendationLookup[i][1];
+        }
+    }
+
+    return WireRecommendationLookup[WireRecommendationLookup.length - 1][1];
 }
 
 export function sumCsvData(data) {
