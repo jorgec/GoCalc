@@ -10,7 +10,7 @@
         volts
     } from "../stores/dataStore";
 
-    import {loadCurrentIFL} from "../utils/calculations.js";
+    import {loadCurrentIFL, getWireRecommendation} from "../utils/calculations.js";
 
     import {
         derivedHighestNonTrivialLoad,
@@ -65,7 +65,8 @@
                 <code>{formatWithCommas($serviceEntranceAmpacity)}</code>
             </p>
             <p>
-                // wire recommendation logic
+                <span class="font-bold">Wire Recommendation:</span>
+                <code>{getWireRecommendation($serviceEntranceAmpacity)}mm<sup>2</sup></code>
             </p>
 
             <p>

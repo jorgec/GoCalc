@@ -1,6 +1,6 @@
 <!-- src/components/LoadSpecsTable.svelte -->
 <script>
-    import {loadSpecifications, updateLoadSpecifications, volts} from "../stores/dataStore";
+    import {loadSpecifications, updateLoadSpecifications, volts, sa, sab, sabc, threeGang} from "../stores/dataStore";
     import {showLoadSpecs} from "../stores/uiStore";
     import {moveSpecDown, moveSpecUp, removeLoadSpecification} from "../utils/mutators";
 
@@ -13,14 +13,17 @@
      */
     import {totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore";
     import {formatInt, formatWithCommas} from "../utils/misc.js";
+    import {get} from "svelte/store";
 
     let showWireTypeModal = false;
     let wireTypes = [];
     let currentIdx = null;
     let selectedWireType = null;
 
+    let showSwitchEditModal = false;
+
     function setWireType() {
-        if(!selectedWireType){
+        if (!selectedWireType) {
             return;
         }
 
@@ -29,9 +32,37 @@
         showWireTypeModal = false;
         // updateLoadSpecifications(`${currentIdx}.wireType`, 'test'); // Overwrites the value
     }
+
+    function setSwitchData(){
+        updateLoadSpecifications(`${currentIdx}.sa`, $sa);
+        updateLoadSpecifications(`${currentIdx}.sab`, $sab);
+        updateLoadSpecifications(`${currentIdx}.sabc`, $sabc);
+        updateLoadSpecifications(`${currentIdx}.threeGang`, $threeGang);
+        showSwitchEditModal = false;
+    }
+
+    function getWireType(wireType) {
+        if (Array.isArray(wireType) && wireType.length > 0) {
+            return String(wireType[0]);
+        } else if (typeof wireType === 'string') {
+            return wireType.split(',')[0].trim();
+        }
+        return "THHN"; // Return null if the input is neither an array nor a string
+    }
+
+
+    function loadSwitchData(idx){
+        const currentLoadSpecifications = get(loadSpecifications);
+        sa.set(currentLoadSpecifications[idx].sa);
+        sab.set(currentLoadSpecifications[idx].sab);
+        sabc.set(currentLoadSpecifications[idx].sabc);
+        threeGang.set(currentLoadSpecifications[idx].threeGang);
+    }
+
 </script>
 
 <div class="my-4">
+
 
     {#if showWireTypeModal}
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -77,7 +108,85 @@
         </div>
     {/if}
 
-    {#if $showLoadSpecs}
+    {#if showSwitchEditModal}
+        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <!-- Modal Container -->
+            <div class="bg-white rounded-lg shadow-lg w-96">
+                <!-- Modal Header -->
+                <div class="px-4 py-3 border-b flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">Edit Switches</h2>
+                    <button class="text-gray-500 hover:text-gray-700" on:click={() => showSwitchEditModal = false}>
+                        ✖
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-4">
+                    <div class="w-full border-t border-gray-300 mt-3 pt-2">
+                        <div class="grid grid-cols-4 gap-2">
+                            <!-- Sa -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 text-xs font-medium">Sa</label>
+                                <input
+                                        type="number"
+                                        min="0"
+                                        bind:value={$sa}
+                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                                />
+                            </div>
+
+                            <!-- Sab -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 text-xs font-medium">Sab</label>
+                                <input
+                                        type="number"
+                                        min="0"
+                                        bind:value={$sab}
+                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                                />
+                            </div>
+
+                            <!-- Sabc -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 text-xs font-medium">Sabc</label>
+                                <input
+                                        type="number"
+                                        min="0"
+                                        bind:value={$sabc}
+                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                                />
+                            </div>
+
+                            <!-- 3 Gang -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 text-xs font-medium">3 Gang</label>
+                                <input
+                                        type="number"
+                                        min="0"
+                                        bind:value={$threeGang}
+                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-4 py-3 border-t flex justify-end">
+                    <button class="px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mr-2"
+                            on:click={setSwitchData}>
+                        Update
+                    </button>
+                    <button class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                            on:click={() => showSwitchEditModal = false}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    {/if}
+
+    {#if $showLoadSpecs && Array.isArray($loadSpecifications) && $loadSpecifications.length > 0}
         <div class="m-2 flow-root">
             <div class="my-2 overflow-y-auto">
                 <div class="inline-block w-full">
@@ -114,6 +223,12 @@
                                         class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                 >
                                     VA
+                                </th>
+                                <th
+                                        scope="col"
+                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                    Switches
                                 </th>
                                 <th
                                         scope="col"
@@ -188,12 +303,28 @@
                                             <a href="#!"
                                                class="text-orange-400"
                                                on:click={() => {
+                                               showSwitchEditModal = true;
+                                               currentIdx = idx;
+                                               loadSwitchData(idx);
+                                           }}
+                                            >
+                                                <code>
+                                                    {#if spec.sa}{spec.sa}{:else}0{/if}/{#if spec.sab}{spec.sab}{:else}0{/if}/{#if spec.sabc}{spec.sabc}{:else}0{/if}/{#if spec.threeGang}{spec.threeGang}{:else}0{/if}
+                                                </code>
+                                            </a>
+                                        </td>
+                                        <td
+                                                class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                        >
+                                            <a href="#!"
+                                               class="text-orange-400"
+                                               on:click={() => {
                                                showWireTypeModal = true;
                                                wireTypes = spec.wireTypeSelection;
                                                currentIdx = idx;
                                            }}
                                             >
-                                                {spec.wireSize} {spec.wireType}
+                                                {spec.wireSize} {getWireType(spec.wireType)}
                                             </a>
                                         </td>
                                         <td
@@ -304,6 +435,7 @@
                                 <td class="py-2 px-3 text-sm text-gray-800">
                                     <code>{formatWithCommas($totalOfAllAmp.toFixed(2))}</code>
                                 </td>
+                                <td></td>
                                 <td></td>
                             </tr>
                             </tfoot>

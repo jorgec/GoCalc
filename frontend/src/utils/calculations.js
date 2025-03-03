@@ -1,8 +1,8 @@
 // src/utils/calculations.js
-import { get } from 'svelte/store';
-import { constants } from '../stores/constantsStore';
-import {loadSpecifications, selectedLightingDemandFactorID, volts} from '../stores/dataStore'; // Import volts
-import {totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore.js";
+import {get} from 'svelte/store';
+import {constants} from '../stores/constantsStore';
+import {selectedLightingDemandFactorID, volts} from '../stores/dataStore'; // Import volts
+
 
 /**
  * Calculate lighting demand factor based on
@@ -164,7 +164,7 @@ export function determineWireSizeAndType(loadSpec) {
     if (matchedEntry) {
         return {
             wireSize: matchedEntry["Wire Size"],
-            wireType: matchedEntry["Wire Type"]
+            wireType: "THHN"
         };
     } else {
         return {
@@ -180,17 +180,16 @@ export function wireData(wireSize, wireType) {
 }
 
 export function determineConduitSize(wireSize) {
-    console.log(wireSize);
+
     let retVal = "N/A";
     if (!constants.conduitSizing || !constants.conduitSizing.entries) {
-        return retVal; // Or a suitable default, like "N/A"
+        return retVal;
     }
 
     const conduitSizes = constants.conduitSizing.entries;
 
     // Convert wireSize to a string to match the keys in conduitSizes
     const wireSizeStr = String(wireSize);
-    console.log(wireSizeStr);
 
     // Direct lookup
     if (conduitSizes.hasOwnProperty(wireSizeStr)) {
@@ -206,6 +205,58 @@ export function loadCurrentIFL(volts, load, totalVA) {
     return (totalVA + ((load * .8)*.5)) / volts;
 }
 
+export function getWireRecommendation(value) {
+    const WireRecommendationLookup = constants.WireRecommendationLookup;
+    for (let i = 0; i < WireRecommendationLookup.length; i++) {
+        if (value <= WireRecommendationLookup[i][0]) {
+            return WireRecommendationLookup[i][1];
+        }
+    }
+
+    return WireRecommendationLookup[WireRecommendationLookup.length - 1][1];
+}
+
+export function sumCsvData(data) {
+    // We’ll accumulate each column in variables
+    let voltAmpere = 0;
+    let ampLoadSingle = 0;
+    let ampLoadAB = 0;
+    let ampLoadBC = 0;
+    let ampLoadCA = 0;
+    let ampLoadABC = 0;
+    let sa = 0;
+    let sab = 0;
+    let sabc = 0;
+    let threeGang = 0;
+
+    for (const row of data) {
+        // For each numeric property, parse the value or default to 0
+        voltAmpere += parseFloat(row['Volt Ampere']) || 0;
+        ampLoadSingle += parseFloat(row.AmpLoadSingle) || 0;
+        ampLoadAB += parseFloat(row.AmpLoadAB) || 0;
+        ampLoadBC += parseFloat(row.AmpLoadBC) || 0;
+        ampLoadCA += parseFloat(row.AmpLoadCA) || 0;
+        ampLoadABC += parseFloat(row.AmpLoadABC) || 0;
+        sa += parseFloat(row.Sa) || 0;
+        sab += parseFloat(row.Sab) || 0;
+        sabc += parseFloat(row.Sabc) || 0;
+        threeGang += parseFloat(row['Three Gang']) || 0;
+    }
+
+    // Return an object that can be used in your component
+    return {
+        voltAmpere,
+        ampLoadSingle,
+        ampLoadAB,
+        ampLoadBC,
+        ampLoadCA,
+        ampLoadABC,
+        sa,
+        sab,
+        sabc,
+        threeGang
+    };
+}
 
 window.calcWireSize = determineWireSizeAndType;
 window.wireData = wireData;

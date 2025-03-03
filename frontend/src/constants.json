@@ -1,4 +1,90 @@
 {
+  "WireRecommendationLookup": [
+    [
+      25,
+      2.0
+    ],
+    [
+      30,
+      3.5
+    ],
+    [
+      40,
+      5.5
+    ],
+    [
+      55,
+      8.0
+    ],
+    [
+      75,
+      14.0
+    ],
+    [
+      95,
+      22.0
+    ],
+    [
+      115,
+      30.0
+    ],
+    [
+      130,
+      38.0
+    ],
+    [
+      150,
+      50.0
+    ],
+    [
+      170,
+      60.0
+    ],
+    [
+      205,
+      80.0
+    ],
+    [
+      240,
+      100.0
+    ],
+    [
+      285,
+      125.0
+    ],
+    [
+      320,
+      150.0
+    ],
+    [
+      345,
+      175.0
+    ],
+    [
+      360,
+      200.0
+    ],
+    [
+      425,
+      250.0
+    ],
+    [
+      490,
+      325.0
+    ],
+    [
+      530,
+      375.0
+    ],
+    [
+      535,
+      400.0
+    ],
+    [
+      595,
+      500.0
+    ]
+  ],
   "conduitSizing": {
     "entries": {
       "14": 32,
@@ -65,6 +151,11 @@
       "label": "Lighting",
       "types": [
         {
+          "label": "Lighting",
+          "unit_load": 1,
+          "value": 7
+        },
+        {
           "label": "Fluorescent Lamp",
           "unit_load": 1,
           "value": 0
@@ -93,11 +184,6 @@
           "label": "Chandelier",
           "unit_load": 1,
           "value": 5
-        },
-        {
-          "label": "Lighting",
-          "unit_load": 1,
-          "value": 7
         },
         {
           "label": "Others",
@@ -214,6 +300,16 @@
           "label": "New Motor",
           "unit_load": 1,
           "value": 999
+        },
+        {
+          "label": "asgasg",
+          "unit_load": 1,
+          "value": 999
+        },
+        {
+          "label": "New Custom Motor",
+          "unit_load": 1,
+          "value": 999
         }
       ],
       "value": 3
@@ -245,6 +341,11 @@
           "label": "Water Heater",
           "unit_load": 1,
           "value": 3
+        },
+        {
+          "label": "Small Motor Load",
+          "unit_load": 1,
+          "value": 999
         }
       ],
       "value": 5
