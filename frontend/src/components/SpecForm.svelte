@@ -1,5 +1,9 @@
 <script>
     import {
+        sa,
+        sab,
+        sabc,
+        threeGang,
         convenienceVA,
         isABC,
         lightingRows,
@@ -31,6 +35,10 @@
     function addCustomModal(cat) {
         addCustomMotorFlag = true;
         customCat = cat;
+    }
+
+    function prepAddLoadSpecification() {
+        addLoadSpecification();
     }
 
     function addCustom() {
@@ -143,6 +151,7 @@
                 {#if $showLightingInput || $lightingRows.length > 0}
                     {#each $lightingRows as row, rowIndex}
                         <div class="flex flex-wrap gap-2 mb-2 items-end">
+                            <!-- Type Selection -->
                             <div class="flex flex-col">
                                 <label class="block text-gray-700 text-sm font-bold">Type:</label>
                                 <select
@@ -156,16 +165,7 @@
                                 </select>
                             </div>
 
-                            <div class="flex flex-col">
-                                <label class="block text-gray-700 text-sm font-bold">Wattage</label>
-                                <input
-                                        type="number"
-                                        min="1"
-                                        bind:value={row.wattage}
-                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
-                                />
-                            </div>
-
+                            <!-- Quantity -->
                             <div class="flex flex-col">
                                 <label class="block text-gray-700 text-sm font-bold">Quantity</label>
                                 <input
@@ -177,6 +177,18 @@
                                 />
                             </div>
 
+                            <!-- Wattage -->
+                            <div class="flex flex-col">
+                                <label class="block text-gray-700 text-sm font-bold">Wattage</label>
+                                <input
+                                        type="number"
+                                        min="1"
+                                        bind:value={row.wattage}
+                                        class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                                />
+                            </div>
+
+                            <!-- Remove Button -->
                             <button
                                     type="button"
                                     on:click={() => removeLightingRow(rowIndex)}
@@ -195,6 +207,55 @@
                 >
                     Add Lighting Row
                 </button>
+            </div>
+
+            <!-- Switches Section -->
+            <div class="w-full border-t border-gray-300 mt-3 pt-2">
+                <div class="grid grid-cols-4 gap-2">
+                    <!-- Sa -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 text-xs font-medium">Sa</label>
+                        <input
+                                type="number"
+                                min="0"
+                                bind:value={$sa}
+                                class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                        />
+                    </div>
+
+                    <!-- Sab -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 text-xs font-medium">Sab</label>
+                        <input
+                                type="number"
+                                min="0"
+                                bind:value={$sab}
+                                class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                        />
+                    </div>
+
+                    <!-- Sabc -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 text-xs font-medium">Sabc</label>
+                        <input
+                                type="number"
+                                min="0"
+                                bind:value={$sabc}
+                                class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                        />
+                    </div>
+
+                    <!-- 3 Gang -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 text-xs font-medium">3 Gang</label>
+                        <input
+                                type="number"
+                                min="0"
+                                bind:value={$threeGang}
+                                class="shadow appearance-none border rounded py-1 px-2 text-gray-700"
+                        />
+                    </div>
+                </div>
             </div>
         {/if}
 
@@ -323,7 +384,7 @@
             <button
                     type="button"
                     class="mt-3 inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 sm:ml-3 sm:mt-0 sm:w-auto"
-                    on:click={addLoadSpecification}
+                    on:click={prepAddLoadSpecification}
             >
                 Add
             </button>

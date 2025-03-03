@@ -1,46 +1,42 @@
 // src/utils/mutators.js
 import {get} from 'svelte/store';
 import {
+    applicationDemandFactor,
+    convenienceVA,
+    floorArea,
+    isABC,
     lightingRows,
     loadSpecifications,
-    sumOfSpecifications,
-    totalSumOfSpecs,
-    applicationDemandFactor,
-    systemPhaseType,
-    selectedCategoryIndex,
-    selectedCategoryType,
-    ratings,
-    isABC,
-    spareName,
-    quantity,
-    wattage,
-    convenienceVA,
-    selectedLightingDemandFactorID,
-    selectedOccupancyValue,
-    selectedAddOnValue,
-    selectedTypeValue,
-    floorArea,
+    projectDate,
+    projectInCharge,
+    projectLocation,
     projectName,
     projectOwner,
-    projectDate,
-    projectLocation,
-    projectInCharge,
+    quantity,
+    ratings,
+    sa,
+    sab,
+    sabc,
+    selectedAddOnValue,
+    selectedCategoryIndex,
+    selectedCategoryType,
+    selectedOccupancyValue,
+    selectedTypeValue,
+    spareName,
+    sumOfSpecifications,
+    systemPhaseType,
+    threeGang,
+    totalSumOfSpecs,
     volts,
+    wattage,
 } from '../stores/dataStore';
 
-import {
-    showLightingInput,
-    statusMessage
-} from '../stores/uiStore';
+import {showLightingInput, statusMessage} from '../stores/uiStore';
 
-import {
-    inventory,
-    laborPercentage,
-    logisticsCost, materialsInventory
-} from '../stores/materialInventoryStore';
+import {laborPercentage, logisticsCost, materialsInventory} from '../stores/materialInventoryStore';
 
 import {constants} from '../stores/constantsStore';
-import {determineWireSizeAndType, getSumOfSpecifications, determineConduitSize} from './calculations';
+import {determineConduitSize, determineWireSizeAndType, getSumOfSpecifications} from './calculations';
 
 // --- Helper Functions (Internal) ---
 
@@ -115,6 +111,38 @@ export function resetSpecForm() {
     isABC.set(false);
     lightingRows.set([]);      // Clear lighting rows
     showLightingInput.set(false); // Hide lighting input section
+    sa.set(0);
+    sab.set(0);
+    sabc.set(0);
+    threeGang.set(0);
+}
+
+function checkLoadSpecificationForm(rowData, part) {
+    let check = {};
+    if (part === "lighting-row") {
+        check['type'] = rowData.type !== '';
+        check['wattage'] = rowData.wattage > 0;
+        check['quantity'] = rowData.quantity > 0;
+
+    }
+
+    if (part === "lighting-switches") {
+        check['switches'] = rowData.sa >= 0 || rowData.sab >= 0 || rowData.sabc >= 0 || rowData.threeGang >= 0;
+    }
+
+    for (let [key, value] of Object.entries(check)) {
+        if (!value) {
+            return {
+                status: false,
+                msg: `Error in ${key}`
+            }
+        }
+    }
+
+    return {
+        status: true,
+        msg: "Clear"
+    }
 }
 
 /**
@@ -128,43 +156,87 @@ export function addLoadSpecification() {
 
     let category = constants.loadSpecificationCategories[idx];
     let details = {};
+    let retVal = {
+        status: true,
+        msg: idx
+    };
 
+    let check = false;
+    let msg = '';
     // --- Handle each category separately ---
 
     // LIGHTING (Category Index 0)
     if (idx === 0) {
-        let totalLighting = 0;
-        let rowDetails = [];
-        // Use an IIFE
-        lightingRows.subscribe(rows => {
-            for (let row of rows) {
-                totalLighting += row.wattage * row.quantity;
-                // Find correct type of selection
-                let foundType = (category.types || []).find(t => t.value === +row.typeValue);
-                rowDetails.push({
-                    type: foundType ? foundType.label : 'Unknown',  // Handle potentially missing type
-                    wattage: row.wattage,
-                    quantity: row.quantity
-                });
+        if (idx === 0) {
+            const rows = get(lightingRows);      // 1. Get rows synchronously
+            if (rows.length === 0) {
+                statusMessage.set({text: "Please add at least one lighting row", type: "error"});
+                return;  // Stop here
             }
-        })();
 
+            let rowDetails = [];
+            let totalLighting = 0;
+            let tempName = (rows.length > 1) ? "Multiple Lighting Loads" : "Lighting Load";
 
-        details = {
-            category: category.label,
-            name: `Multiple Lighting Loads (${rowDetails.length} rows)`,
-            lightingLoads: rowDetails,
-            wattage: totalLighting,
-            horsepower: (totalLighting / 746).toFixed(2), // Calculate HP
-            quantity: 1, // Quantity is always 1 for the combined lighting load
-            subtotal: totalLighting.toFixed(2),
-            ratings: '-', // No ratings for lighting
-            abc: false    // ABC checkbox doesn't apply to lighting
-        };
+            // 2. Validate each row before adding
+            for (let row of rows) {
+                // Attempt to find the matching type label
+                let foundType = (category.types || [])
+                    .find(t => t.value === +row.typeValue);
 
-        // Reset lighting rows & hide input after adding.
-        lightingRows.set([]);
-        showLightingInput.set(false);
+                const rowData = {
+                    type: foundType ? foundType.label : '',
+                    wattage: row.wattage,
+                    quantity: row.quantity,
+                };
+
+                // Call your validation function
+                const {status, msg} = checkLoadSpecificationForm(rowData, "lighting-row");
+                if (!status) {
+                    // If invalid, set the error message and STOP
+                    statusMessage.set({text: `Lighting row error: ${msg}`, type: 'error'});
+                    return;  // No rows are added
+                }
+
+                // If valid, accumulate
+                totalLighting += rowData.wattage * rowData.quantity;
+                rowDetails.push(rowData);
+            }
+            let switches = {
+                sa: get(sa) >= 0,
+                sab: get(sab) >= 0,
+                sabc: get(sabc) >= 0,
+                threeGang: get(threeGang) >= 0
+            }
+
+            const {status, msg} = checkLoadSpecificationForm(switches, "lighting-switches");
+            if (!status) {
+                // If invalid, set the error message and STOP
+                statusMessage.set({text: `Switch Error`, type: 'error'});
+                return;  // No rows are added
+            }
+
+            // If we get here, all rows are valid
+            details = {
+                category: category.label,
+                name: `${tempName} (${rowDetails.length} rows)`,
+                lightingLoads: rowDetails,
+                wattage: totalLighting,
+                horsepower: (totalLighting / 746).toFixed(2),
+                quantity: rowDetails.length,
+                sa: get(sa),
+                sab: get(sab),
+                sabc: get(sabc),
+                threeGang: get(threeGang),
+                subtotal: totalLighting.toFixed(2),
+                ratings: '-',
+                abc: false
+            };
+
+            // Reset lighting input after success
+            lightingRows.set([]);
+            showLightingInput.set(false);
+        }
     }
 
     // CONVENIENCE OUTLET (Category Index 1)
@@ -174,7 +246,7 @@ export function addLoadSpecification() {
 
         details = {
             category: category.label,
-            name: 'N/A',  // No specific name for convenience outlets
+            name: `${qty} CO @ ${cva}VA`,
             quantity: qty,
             va: cva,        // Use the entered VA value
             wattage: cva,   // Wattage is the same as VA
@@ -238,6 +310,8 @@ export function addLoadSpecification() {
 
     resetSpecForm();          // Reset the form
     recalcSpecifications(); // Recalculate derived values
+
+    return retVal;
 }
 
 /**

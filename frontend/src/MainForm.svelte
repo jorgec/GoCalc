@@ -16,8 +16,11 @@
         showSpecForm,
         statusMessage
     } from "./stores/uiStore"; // Import statusMessage and showLoadSpecs/showSpecForm
-    import {systemPhaseType} from "./stores/dataStore";
+    import {loadSpecifications, systemPhaseType} from "./stores/dataStore";
     import {csvData} from "./stores/derivedStore";
+    import { sumCsvData } from "./utils/calculations";
+
+    $: sums = sumCsvData($csvData);
 
     // Function to get the appropriate CSS class based on message type
     function getStatusClass(type) {
@@ -64,7 +67,7 @@
                     {/if}
 
                     {#if $showCsvTable}
-                        <CsvDataTable csvData={$csvData} systemPhaseType={$systemPhaseType}/>
+                        <CsvDataTable csvData={$csvData} systemPhaseType={$systemPhaseType} sums={sums}/>
                     {/if}
                 </div>
             {/if}

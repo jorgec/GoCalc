@@ -65,6 +65,11 @@
       "label": "Lighting",
       "types": [
         {
+          "label": "Lighting",
+          "unit_load": 1,
+          "value": 7
+        },
+        {
           "label": "Fluorescent Lamp",
           "unit_load": 1,
           "value": 0
@@ -93,11 +98,6 @@
           "label": "Chandelier",
           "unit_load": 1,
           "value": 5
-        },
-        {
-          "label": "Lighting",
-          "unit_load": 1,
-          "value": 7
         },
         {
           "label": "Others",

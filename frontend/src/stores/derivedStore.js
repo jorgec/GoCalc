@@ -38,17 +38,30 @@ export const csvData = derived(
             let conduitSize = spec.conduitSize;
 
             let loadStr = spec.name;
-            if (spec.category === 'Lighting' && spec.lightingLoads) {
-                const combos = spec.lightingLoads.map(
-                    (row) => `${row.type}: ${row.wattage}W x ${row.quantity}`
-                );
-                loadStr = combos.join('; ');
+            let ratings = '';
+            if (spec.category === 'Lighting'){
+                if(spec.lightingLoads){
+                    const combos = spec.lightingLoads.map(
+                        (row) => `${row.type}: ${row.wattage}W x ${row.quantity}`
+                    );
+                    loadStr = combos.join('; ');
+                }else{
+                    loadStr = '';
+                }
+                ratings = '';
+            }else{
+                loadStr = '';
+                if(spec.category === 'Convenience Outlet'){
+                    ratings = spec.name;
+                }else{
+                    ratings = `${spec.quantity} ${spec.category} (${spec.name})`;
+                }
             }
 
             let rowObj = {
                 CRKTno,
                 Load: loadStr,
-                Ratings: spec.ratings || '-',
+                'Convenience Outlet': ratings,
                 'Volt Ampere': formatInt(spec.subtotal),
                 Volts: $volts,
                 AmpLoadSingle: '',
@@ -56,12 +69,15 @@ export const csvData = derived(
                 AmpLoadBC: '',
                 AmpLoadCA: '',
                 AmpLoadABC: '',
+                "Sa": spec.sa,
+                "Sab": spec.sab,
+                "Sabc": spec.sabc,
+                "Three Gang": spec.threeGang,
                 WireSize: spec.wireSize || '', // Use calculated wire size or empty string
                 WireType: spec.wireType,
                 WireSizeAndType: wireData(spec.wireSize, spec.wireType),
                 ConduitSize: conduitSize || '',
             };
-
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
 
@@ -90,6 +106,7 @@ export const csvData = derived(
         return result;
     }
 );
+
 
 // Derived store for the total VA
 export const totalOfAllVA = derived(

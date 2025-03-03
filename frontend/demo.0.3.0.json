@@ -1,0 +1,77 @@
+{
+  "projectName": "",
+  "projectDate": "Tue Mar 04 2025 03:35:33 GMT+0800 (Philippine Standard Time)",
+  "projectLocation": "",
+  "projectOwner": "",
+  "projectInCharge": "",
+  "floorArea": 0,
+  "selectedOccupancyValue": 0,
+  "selectedAddOnValue": null,
+  "selectedTypeValue": null,
+  "systemPhaseType": null,
+  "volts": 230,
+  "loadSpecifications": [
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 2
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 5
+        }
+      ],
+      "wattage": 300,
+      "horsepower": "0.40",
+      "quantity": 2,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "300.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN"],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 9
+        }
+      ],
+      "wattage": 450,
+      "horsepower": "0.60",
+      "quantity": 1,
+      "sa": 0,
+      "sab": 0,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "450.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN"],
+      "conduitSize": "15 mm Ø PVC"
+    }
+  ],
+  "materialsInventory": [],
+  "labor": 70,
+  "logistics": 0,
+  "totalInventoryCost": "0.00",
+  "materialsCost": 0,
+  "laborCost": 0,
+  "totalProjectCost": 0
+}

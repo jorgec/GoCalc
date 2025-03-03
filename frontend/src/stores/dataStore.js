@@ -27,6 +27,10 @@ export const selectedCategoryType = writable(null);
 
 // For lighting
 export const lightingRows = writable([]);
+export const sa = writable(0);
+export const sab = writable(0);
+export const sabc = writable(0);
+export const threeGang = writable(0);
 
 // For convenience outlet
 export const convenienceVA = writable(180);
@@ -50,7 +54,6 @@ export const applicationDemandFactor = writable(0);
 
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {
-        console.log("DEBUG: ", value);
 
         const keys = path.split('.');
         let obj = JSON.parse(JSON.stringify(current));
