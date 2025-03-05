@@ -261,15 +261,6 @@
 
         {#if catIndex === 1}
             <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">VA:</label>
-                <input
-                        type="number"
-                        min="1"
-                        bind:value={$convenienceVA}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
-            </div>
-            <div class="h-20 py-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Quantity:</label>
                 <input
                         type="number"
@@ -279,6 +270,16 @@
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                 />
             </div>
+            <div class="h-20 py-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">VA:</label>
+                <input
+                        type="number"
+                        min="1"
+                        bind:value={$convenienceVA}
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                />
+            </div>
+
         {/if}
 
         {#if catIndex === 2}
@@ -341,7 +342,8 @@
         {#if catIndex !== null && catIndex != 0 && catIndex != 1}
             <div class="h-20 py-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="ratings">
-                    Ratings:
+                    Description:
+                    Description:
                 </label>
                 <input
                         type="text"

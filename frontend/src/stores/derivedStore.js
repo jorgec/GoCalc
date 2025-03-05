@@ -20,7 +20,7 @@ import {
     totalInventoryCost,
     totalProjectCost
 } from './materialInventoryStore';
-import {formatInt} from "../utils/misc.js"; // Include inventory store
+import {formatDecimal, formatInt} from "../utils/misc.js"; // Include inventory store
 
 // Derived store for the CSV data
 export const csvData = derived(
@@ -73,10 +73,10 @@ export const csvData = derived(
                 "Sab": spec.sab,
                 "Sabc": spec.sabc,
                 "Three Gang": spec.threeGang,
-                WireSize: spec.wireSize || '', // Use calculated wire size or empty string
+                WireSize: formatDecimal(spec.wireSize) || 0.00, // Use calculated wire size or empty string
                 WireType: spec.wireType,
-                WireSizeAndType: wireData(spec.wireSize, spec.wireType),
-                ConduitSize: conduitSize || '',
+                WireSizeAndType: wireData(formatDecimal(spec.wireSize), spec.wireType),
+                ConduitSize: conduitSize || 0.00,
             };
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;

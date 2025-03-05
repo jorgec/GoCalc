@@ -6,13 +6,13 @@ import { SaveConstants } from "../../wailsjs/go/main/App.js";
 const defaultConstants = {
     "conduitSizing": {
         "entries": {
-            "14": 32,
-            "2": 15,
-            "22": 38,
-            "3.5": 15,
-            "38": 50,
-            "5.5": 20,
-            "8": 25
+            "14": 32.00,
+            "2": 15.00,
+            "22": 38.00,
+            "3.5": 15.00,
+            "38": 50.00,
+            "5.5": 20.00,
+            "8": 25.00
         }
     },
     "lightingDemandFactors": [
@@ -416,7 +416,7 @@ const defaultConstants = {
             {
                 "Amp": 15,
                 "Load Type": "Lighting",
-                "Wire Size": 2,
+                "Wire Size": 2.00,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -425,7 +425,7 @@ const defaultConstants = {
             {
                 "Amp": 20,
                 "Load Type": "Convenience outlet",
-                "Wire Size": 3.5,
+                "Wire Size": 3.50,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -434,7 +434,7 @@ const defaultConstants = {
             {
                 "Amp": 25,
                 "Load Type": "Small Appliance Circuits",
-                "Wire Size": 5.5,
+                "Wire Size": 5.50,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -443,7 +443,7 @@ const defaultConstants = {
             {
                 "Amp": 30,
                 "Load Type": "Air-Conditioning Unit",
-                "Wire Size": 8,
+                "Wire Size": 8.0,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -452,7 +452,7 @@ const defaultConstants = {
             {
                 "Amp": 30,
                 "Load Type": "Water Heater",
-                "Wire Size": 8,
+                "Wire Size": 8.0,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -461,7 +461,7 @@ const defaultConstants = {
             {
                 "Amp": 50,
                 "Load Type": "Electric Range",
-                "Wire Size": 14,
+                "Wire Size": 14.0,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -470,7 +470,7 @@ const defaultConstants = {
             {
                 "Amp": 50,
                 "Load Type": "Electric Oven",
-                "Wire Size": 14,
+                "Wire Size": 14.0,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -479,7 +479,7 @@ const defaultConstants = {
             {
                 "Amp": 60,
                 "Load Type": "Tonner ACU",
-                "Wire Size": 22,
+                "Wire Size": 22.0,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -488,7 +488,7 @@ const defaultConstants = {
             {
                 "Amp": 20,
                 "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
-                "Wire Size": 5.5,
+                "Wire Size": 5.50,
                 "Wire Type": [
                     "THHN",
                     "THWN-2",
@@ -498,7 +498,7 @@ const defaultConstants = {
             {
                 "Amp": 40,
                 "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
-                "Wire Size": 14,
+                "Wire Size": 14.00,
                 "Wire Type": [
                     "THHN",
                     "THWN-2",
@@ -508,7 +508,7 @@ const defaultConstants = {
             {
                 "Amp": 80,
                 "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
-                "Wire Size": 38,
+                "Wire Size": 38.00,
                 "Wire Type": [
                     "THHN",
                     "THWN-2",

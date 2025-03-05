@@ -12,7 +12,7 @@
      * you have derived stores named "totalOfAllVA" and "totalOfAllAmp".
      */
     import {totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore";
-    import {formatInt, formatWithCommas} from "../utils/misc.js";
+    import {formatDecimal, formatInt, formatWithCommas} from "../utils/misc.js";
     import {get} from "svelte/store";
 
     let showWireTypeModal = false;
@@ -324,7 +324,7 @@
                                                currentIdx = idx;
                                            }}
                                             >
-                                                {spec.wireSize} {getWireType(spec.wireType)}
+                                                {formatDecimal(spec.wireSize)} {getWireType(spec.wireType)}
                                             </a>
                                         </td>
                                         <td

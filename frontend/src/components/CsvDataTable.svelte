@@ -6,6 +6,7 @@
     export let systemPhaseType;
 
     $: headers = generateHeaders(systemPhaseType);
+    $: displayHeaders = generateDisplayHeaders(systemPhaseType);
     $: ampLoadTotals = generateLoadTotals(systemPhaseType);
 
     function generateHeaders(phase) {
@@ -29,6 +30,29 @@
             baseHeaders.splice(5, 0, "AmpLoadAB", "AmpLoadBC", "AmpLoadCA", "AmpLoadABC");
         }
         return baseHeaders;
+    }
+    function generateDisplayHeaders(phase) {
+
+        let displayHeaders = [
+            "CRKTno",
+            "Load",
+            "Convenience Outlet",
+            "Volt Ampere",
+            "Volts",
+            "Sa",
+            "Sab",
+            "Sabc",
+            "Three Way",
+            "Wire Size and Type", // Combined header
+            "Conduit Size",
+        ];
+
+        if (phase === 0) {
+            displayHeaders.splice(5, 0, "Single Load");
+        } else {
+            displayHeaders.splice(5, 0, "AB", "BC", "CA", "ABC");
+        }
+        return displayHeaders;
     }
     function generateLoadTotals(phase){
         if(phase === 0){
@@ -54,7 +78,7 @@
         <table class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">
             <tr>
-                {#each headers as header}
+                {#each displayHeaders as header}
                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                         {formatHeader(header)}
                     </th>
@@ -78,7 +102,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    {#each headers as header}
+                    {#each displayHeaders as header}
                         <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                             {formatHeader(header)}
                         </th>

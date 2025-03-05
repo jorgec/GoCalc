@@ -3,6 +3,16 @@ export function formatWithCommas(value) {
     return value.toLocaleString('en-US'); // Uses built-in localization for proper formatting
 }
 
+export function formatDecimal(input) {
+    let num = parseFloat(input);
+
+    if (isNaN(num)) {
+        throw new Error("Invalid input: must be a number or a numeric string");
+    }
+
+    return num.toFixed(2);
+}
+
 export function formatInt(value) {
     if (typeof value === 'string') {
         value = parseFloat(value); // Convert string to number

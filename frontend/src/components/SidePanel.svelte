@@ -19,7 +19,7 @@
         totalOfAllVA
     } from "../stores/derivedStore";
 
-    import {formatWithCommas} from "../utils/misc.js";
+    import {formatDecimal, formatWithCommas} from "../utils/misc.js";
 
 </script>
 
@@ -66,7 +66,7 @@
             </p>
             <p>
                 <span class="font-bold">Wire Recommendation:</span>
-                <code>{getWireRecommendation($serviceEntranceAmpacity)}mm<sup>2</sup></code>
+                <code>{formatDecimal(getWireRecommendation($serviceEntranceAmpacity))}mm<sup>2</sup></code>
             </p>
 
             <p>

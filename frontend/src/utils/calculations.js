@@ -1,7 +1,8 @@
 // src/utils/calculations.js
 import {get} from 'svelte/store';
 import {constants} from '../stores/constantsStore';
-import {selectedLightingDemandFactorID, volts} from '../stores/dataStore'; // Import volts
+import {selectedLightingDemandFactorID, volts} from '../stores/dataStore';
+import {formatDecimal} from "./misc.js"; // Import volts
 
 
 /**
@@ -90,7 +91,7 @@ export function getSumOfSpecifications(items) {
 // --- determineWireSizeAndType ---
 export function determineWireSizeAndType(loadSpec) {
     if (!constants.wireSizingData) { // Safety check
-        return { wireSize: null, wireType: [] };
+        return { wireSize: 0.0, wireType: [] };
     }
     const wireSizingData = constants.wireSizingData.entries;
     const $volts = get(volts); // Get current volts value
@@ -163,12 +164,12 @@ export function determineWireSizeAndType(loadSpec) {
 
     if (matchedEntry) {
         return {
-            wireSize: matchedEntry["Wire Size"],
+            wireSize: formatDecimal(matchedEntry["Wire Size"]),
             wireType: "THHN"
         };
     } else {
         return {
-            wireSize: null,
+            wireSize: 0.00,
             wireType: []
         };
     }
@@ -176,7 +177,7 @@ export function determineWireSizeAndType(loadSpec) {
 
 export function wireData(wireSize, wireType) {
 
-    return `${wireSize} mm² ${wireType}`;
+    return `${formatDecimal(wireSize)} mm² ${wireType}`;
 }
 
 export function determineConduitSize(wireSize) {
@@ -213,7 +214,7 @@ export function getWireRecommendation(value) {
         }
     }
 
-    return WireRecommendationLookup[WireRecommendationLookup.length - 1][1];
+    return 0.00;
 }
 
 export function sumCsvData(data) {
