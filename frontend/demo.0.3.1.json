@@ -100,8 +100,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -130,8 +130,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -155,8 +155,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -185,8 +185,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -210,8 +210,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -240,8 +240,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -270,8 +270,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -295,8 +295,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -320,8 +320,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -345,8 +345,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -370,8 +370,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -395,8 +395,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -420,8 +420,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -445,8 +445,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -460,8 +460,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -474,8 +474,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 14,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "32 mm Ø PVC"
     },
     {
@@ -488,8 +488,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -503,8 +503,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -517,8 +517,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -531,8 +531,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -545,8 +545,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -559,8 +559,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 5.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "20 mm Ø PVC"
     },
     {
@@ -574,8 +574,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -589,8 +589,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -604,8 +604,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -618,8 +618,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 2,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -633,8 +633,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -647,8 +647,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -661,8 +661,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     },
     {
@@ -675,8 +675,8 @@
       "ratings": "-",
       "abc": false,
       "wireSize": 3.5,
-      "wireType": "THHN",
-      "wireTypeSelection": "THHN",
+      "wireType": ["THHN"],
+      "wireTypeSelection": ["THHN", "THHW", "THW", "THWN"],
       "conduitSize": "15 mm Ø PVC"
     }
   ],
@@ -688,5 +688,5 @@
   "laborCost": 0,
   "totalProjectCost": 0,
   "globalWireType": "THHN",
-  "globalConduitType": "PCV"
+  "globalConduitType": "PVC"
 }

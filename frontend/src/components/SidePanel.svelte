@@ -9,11 +9,12 @@
         totalSumOfSpecs,
         volts,
         globalConduitType,
-        globalWireType
+        globalWireType, loadSpecifications
     } from "../stores/dataStore";
 
     import {loadCurrentIFL, getWireRecommendation} from "../utils/calculations.js";
     import {wireDataLookup} from "../utils/lookups.js";
+    import {recalcSpecifications} from "../utils/mutators.js";
 
     import {
         derivedHighestNonTrivialLoad,
@@ -23,9 +24,14 @@
     } from "../stores/derivedStore";
 
     import {formatDecimal, formatWithCommas} from "../utils/misc.js";
-    console.log("globals", $globalWireType, $globalConduitType);
 
     $: wireRecommendation = wireDataLookup($serviceEntranceAmpacity, $globalWireType);
+    $: if($globalConduitType) {
+        loadSpecifications.update(specs => {
+            return specs;
+        });
+        recalcSpecifications(); // Recalculate after moving
+    }
 
 </script>
 
@@ -82,9 +88,8 @@
                             bind:value={$globalWireType}
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     >
-                        <option></option>
-                        <option value="THW">THW</option>
                         <option value="THHN">THHN</option>
+                        <option value="THW">THW</option>
                     </select>
                 </div>
                 <div>
@@ -94,8 +99,7 @@
                             bind:value={$globalConduitType}
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     >
-                        <option></option>
-                        <option value="PCV">PCV</option>
+                        <option value="PVC">PVC</option>
                         <option value="RMC">RMC</option>
                     </select>
                 </div>
@@ -105,7 +109,7 @@
                     <strong>
                         Use 2 - {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}) {$globalWireType} wires
                         in
-                        {#if $globalConduitType === "PCV"}
+                        {#if $globalConduitType === "PVC"}
                             {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}) {$globalConduitType} pipe
                         {:else}
                             {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}) {$globalConduitType} pipe
@@ -114,7 +118,7 @@
                 </div>
             {:else }
                 <div class="text-red-900 bg-red-200 p-4 my-4">
-                    Please set Wire and Conduit Type
+                    Insufficient data for wire recommendation
                 </div>
             {/if}
         </div>

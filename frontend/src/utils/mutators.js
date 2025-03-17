@@ -37,11 +37,13 @@ import {laborPercentage, logisticsCost, materialsInventory} from '../stores/mate
 
 import {constants} from '../stores/constantsStore';
 import {determineConduitSize, determineWireSizeAndType, getSumOfSpecifications} from './calculations';
+import {determineWireParams, formatWireDataRow, wireDataLookup} from "./lookups.js";
+import {formatDecimal} from "./misc.js";
 
 // --- Helper Functions (Internal) ---
 
 /** Recompute sums & demand factors after changes to loadSpecifications */
-function recalcSpecifications() {
+export function recalcSpecifications() {
     const items = get(loadSpecifications);
     const {sumOfSpecs, totalSumOfSpecs: total, applicationDemandFactor: adf} =
         getSumOfSpecifications(items);
@@ -152,6 +154,8 @@ function checkLoadSpecificationForm(rowData, part) {
  */
 export function addLoadSpecification() {
     const idx = get(selectedCategoryIndex);
+    const _globalConduitType = get(globalConduitType).toString();
+    const _globalWireType = get(globalWireType).toString();
     if (idx == null) return;  // No category selected
 
     let category = constants.loadSpecificationCategories[idx];
@@ -297,13 +301,29 @@ export function addLoadSpecification() {
     // Add the new specification to the store, calculating wire/conduit size.
     loadSpecifications.update(current => {
         const newSpec = {...details};
+
         const {wireSize, wireType} = determineWireSizeAndType({...newSpec, volts: get(volts)});
 
-        newSpec.wireSize = wireSize;
-        newSpec.wireType = wireType;
+        const wireParams = determineWireParams(wireSize, wireType);
+        const wireParamsAnnotated = formatWireDataRow(wireParams);
+
+        newSpec.wireSize = formatDecimal(wireSize, 1);
         newSpec.wireTypeSelection = wireType;
         newSpec.wireType = wireType;
-        newSpec.conduitSize = determineConduitSize(wireSize); // Calculate conduit
+        if(Array.isArray(wireType)){
+            newSpec.wireType = wireType[0];
+        }
+
+        // newSpec.conduitSize = determineConduitSize(wireSize); // Calculate conduit
+
+        if(_globalConduitType === "RMC"){
+            newSpec.conduitSize = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
+        }else{
+            newSpec.conduitSize = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
+        }
+
+        newSpec.wireParams = wireParams;
+        newSpec.wireParamsAnnotated = wireParamsAnnotated;
 
         return [...current, newSpec]; // Return the updated array
     });

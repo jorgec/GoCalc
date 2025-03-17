@@ -22,6 +22,10 @@
             "Three Gang",
             "WireSizeAndType", // Combined header
             "ConduitSize",
+            "Pole",
+            "AT",
+            "KAIC",
+            "Type"
         ];
 
         if (phase === 0) {
@@ -45,6 +49,10 @@
             "Three Way",
             "Wire Size and Type", // Combined header
             "Conduit Size",
+            "Pole",
+            "AT",
+            "KAIC",
+            "Type"
         ];
 
         if (phase === 0) {

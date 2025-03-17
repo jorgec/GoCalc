@@ -53,8 +53,8 @@ export const selectedLightingDemandFactorID = writable(null);
 export const applicationDemandFactor = writable(0);
 
 // Global specs
-export const globalWireType = writable("");
-export const globalConduitType = writable("");
+export const globalWireType = writable("THHN");
+export const globalConduitType = writable("PVC");
 
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {

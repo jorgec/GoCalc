@@ -1,6 +1,7 @@
 import {wireDataTable} from "../stores/wireDataStore.js";
+import {get} from "svelte/store";
 
-export function wireDataLookup(wireSize, wireType) {
+export function wireDataLookup(wireSize, wireType = "THHN", transform = true) {
     // Validate inputs: wireSize must be a valid number and wireType must be a string.
     if (typeof wireSize !== "number" || isNaN(wireSize)) {
         console.error("Invalid wireSize provided. Must be a valid number.");
@@ -23,7 +24,10 @@ export function wireDataLookup(wireSize, wireType) {
     // Iterate through the dataset to find the first row where the rating is >= wireSize.
     for (let i = 0; i < wireDataTable.length; i++) {
         if (wireDataTable[i][ratingKey] >= wireSize) {
-            return formatWireDataRow(wireDataTable[i]);
+            if(transform){
+                return formatWireDataRow(wireDataTable[i]);
+            }
+            return wireDataTable[i];
         }
     }
 
@@ -44,4 +48,20 @@ export function formatWireDataRow(wireDataRow){
         "branch_AT": wireDataRow.branch_AT,
         "entrance_AT": wireDataRow.entrance_AT,
     }
+}
+
+export function determineWireParams(wireSize_metric) {
+    wireSize_metric = parseFloat(wireSize_metric);
+    const wireData = wireDataTable;
+    // Validate that wireSize_metric is a valid number.
+    if (typeof wireSize_metric !== "number" || isNaN(wireSize_metric)) {
+        console.error("Invalid wireSize_metric provided. Must be a valid number.");
+        return wireData[wireData.length - 1];
+    }
+
+    // Look for the row in wireData with an exact match on wiresize_metric.
+    const result = wireData.find(item => item.wiresize_metric === wireSize_metric);
+
+    // If found, return the corresponding row; otherwise return null.
+    return result || wireData[wireData.length - 1];
 }

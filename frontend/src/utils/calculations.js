@@ -165,7 +165,7 @@ export function determineWireSizeAndType(loadSpec) {
     if (matchedEntry) {
         return {
             wireSize: formatDecimal(matchedEntry["Wire Size"]),
-            wireType: "THHN"
+            wireType: ["THHN"]
         };
     } else {
         return {
@@ -177,7 +177,7 @@ export function determineWireSizeAndType(loadSpec) {
 
 export function wireData(wireSize, wireType) {
 
-    return `${formatDecimal(wireSize)} mm² ${wireType}`;
+    return `${wireSize} mm² ${wireType}`;
 }
 
 export function determineConduitSize(wireSize) {

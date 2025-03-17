@@ -1,5 +1,5 @@
 // src/stores/derivedStore.js
-import {derived} from 'svelte/store';
+import {derived, get} from 'svelte/store';
 import {
     floorArea, globalConduitType, globalWireType,
     loadSpecifications, projectDate, projectInCharge, projectLocation,
@@ -20,12 +20,15 @@ import {
     totalInventoryCost,
     totalProjectCost
 } from './materialInventoryStore';
-import {formatDecimal, formatInt} from "../utils/misc.js"; // Include inventory store
+import {formatDecimal, formatInt} from "../utils/misc.js";
+import {determineWireParams, formatWireDataRow} from "../utils/lookups.js"; // Include inventory store
 
 // Derived store for the CSV data
 export const csvData = derived(
     [loadSpecifications, volts, systemPhaseType],
     ([$loadSpecifications, $volts, $phase]) => {
+        const _globalConduitType = get(globalConduitType).toString();
+        const _globalWireType = get(globalWireType).toString();
         const result = [];
         let pairIndex = 0;
 
@@ -34,8 +37,17 @@ export const csvData = derived(
             const CRKTno = i + 1;
 
             // Calculate wire size and type
-            let {localWireSize, localWireType} = determineWireSizeAndType({...spec, volts: $volts});
+            // let {localWireSize, localWireType} = determineWireSizeAndType({...spec, volts: $volts});
+
+            const wireParams = determineWireParams(spec.wireSize, spec.wireType);
+            const wireParamsAnnotated = formatWireDataRow(wireParams);
+
             let conduitSize = spec.conduitSize;
+            if(_globalConduitType === "PVC"){
+                conduitSize = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
+            }else{
+                conduitSize = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
+            }
 
             let loadStr = spec.name;
             let ratings = '';
@@ -73,14 +85,18 @@ export const csvData = derived(
                 "Sab": spec.sab,
                 "Sabc": spec.sabc,
                 "Three Gang": spec.threeGang,
-                WireSize: formatDecimal(spec.wireSize) || 0.00, // Use calculated wire size or empty string
+                WireSize: parseFloat(spec.wireSize).toFixed(1) || 0.0, // Use calculated wire size or empty string
                 WireType: spec.wireType,
-                WireSizeAndType: wireData(formatDecimal(spec.wireSize), spec.wireType),
-                ConduitSize: conduitSize || 0.00,
+                WireSizeAndType: wireData(parseFloat(spec.wireSize).toFixed(1), spec.wireType),
+                ConduitSize: conduitSize || 0.0,
+                WireParams: wireParams,
+                KAIC: 10,
+                Pole: 2,
+                Type: "PLUG-IN",
+                AT: wireParams.branch_AT
             };
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
-
 
             if ($phase === 0) {
                 rowObj.AmpLoadSingle = ampLoadValue.toFixed(2);
