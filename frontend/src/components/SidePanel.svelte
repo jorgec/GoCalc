@@ -7,10 +7,13 @@
         sumOfSpecifications,
         totalLoad,
         totalSumOfSpecs,
-        volts
+        volts,
+        globalConduitType,
+        globalWireType
     } from "../stores/dataStore";
 
     import {loadCurrentIFL, getWireRecommendation} from "../utils/calculations.js";
+    import {wireDataLookup} from "../utils/lookups.js";
 
     import {
         derivedHighestNonTrivialLoad,
@@ -20,6 +23,9 @@
     } from "../stores/derivedStore";
 
     import {formatDecimal, formatWithCommas} from "../utils/misc.js";
+    console.log("globals", $globalWireType, $globalConduitType);
+
+    $: wireRecommendation = wireDataLookup($serviceEntranceAmpacity, $globalWireType);
 
 </script>
 
@@ -64,11 +70,55 @@
                 <span class="font-bold">Service Entrance Ampacity:</span>
                 <code>{formatWithCommas($serviceEntranceAmpacity)}</code>
             </p>
-            <p>
-                <span class="font-bold">Wire Recommendation:</span>
-                <code>{formatDecimal(getWireRecommendation($serviceEntranceAmpacity))}mm<sup>2</sup></code>
-            </p>
 
+        </div>
+        <div class="my-4 p-2 px-3">
+            <h2 class="text-xl font-bold">Wire and Conduit Recommendation</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="wireType" class="block text-gray-700 font-bold mb-2">Wire Type</label>
+                    <select
+                            id="wireType"
+                            bind:value={$globalWireType}
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option></option>
+                        <option value="THW">THW</option>
+                        <option value="THHN">THHN</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="conduitType" class="block text-gray-700 font-bold mb-2">Conduit Type</label>
+                    <select
+                            id="conduitType"
+                            bind:value={$globalConduitType}
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option></option>
+                        <option value="PCV">PCV</option>
+                        <option value="RMC">RMC</option>
+                    </select>
+                </div>
+            </div>
+            {#if wireRecommendation}
+                <div class="my-4 p-4 text-gray-900 bg-green-200">
+                    <strong>
+                        Use 2 - {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}) {$globalWireType} wires
+                        in
+                        {#if $globalConduitType === "PCV"}
+                            {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}) {$globalConduitType} pipe
+                        {:else}
+                            {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}) {$globalConduitType} pipe
+                        {/if}
+                    </strong>
+                </div>
+            {:else }
+                <div class="text-red-900 bg-red-200 p-4 my-4">
+                    Please set Wire and Conduit Type
+                </div>
+            {/if}
+        </div>
+        <div class="my-4 p-2 px-3">
             <p>
                 <span class="font-bold">Computation at 80% Demand Factor:</span>
                 <code>{formatWithCommas(loadCurrentIFL($volts, $derivedHighestNonTrivialLoad, $totalOfAllVA))}</code>

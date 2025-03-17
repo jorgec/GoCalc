@@ -3,7 +3,7 @@ import {get} from 'svelte/store';
 import {
     applicationDemandFactor,
     convenienceVA,
-    floorArea,
+    floorArea, globalConduitType, globalWireType,
     isABC,
     lightingRows,
     loadSpecifications,
@@ -336,6 +336,8 @@ export function loadProjectData(projectData) {
         projectDate.set(projectData.projectDate || '');
         projectLocation.set(projectData.projectLocation || '');
         projectInCharge.set(projectData.projectInCharge || '');
+        globalWireType.set(projectData.globalWireType || '');
+        globalConduitType.set(projectData.globalConduitType || '');
 
         // Load Specifications (Crucially, *replace* the existing array)
         if (Array.isArray(projectData.loadSpecifications)) {

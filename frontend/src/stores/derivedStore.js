@@ -1,7 +1,7 @@
 // src/stores/derivedStore.js
 import {derived} from 'svelte/store';
 import {
-    floorArea,
+    floorArea, globalConduitType, globalWireType,
     loadSpecifications, projectDate, projectInCharge, projectLocation,
     projectName, projectOwner,
     selectedAddOnValue,
@@ -112,7 +112,6 @@ export const csvData = derived(
 export const totalOfAllVA = derived(
     [loadSpecifications, volts],
     ([$loadSpecifications, $volts]) => {
-        console.log("Debug: $loadSpecifications =", $loadSpecifications);
 
         let vaSum = 0;
 
@@ -193,7 +192,9 @@ export const projectData = derived(
         totalInventoryCost,
         materialsCost,
         laborCost,
-        totalProjectCost
+        totalProjectCost,
+        globalWireType,
+        globalConduitType,
     ],
     ([
          $projectName,
@@ -214,7 +215,9 @@ export const projectData = derived(
          $totalInventoryCost,
          $materialsCost,
          $laborCost,
-         $totalProjectCost
+         $totalProjectCost,
+         $globalWireType,
+         $globalConduitType
 
      ]) => {
         return {
@@ -236,7 +239,9 @@ export const projectData = derived(
             totalInventoryCost: $totalInventoryCost,
             materialsCost: $materialsCost,
             laborCost: $laborCost,
-            totalProjectCost: $totalProjectCost
+            totalProjectCost: $totalProjectCost,
+            globalWireType: $globalWireType,
+            globalConduitType: $globalConduitType
 
         };
     }
