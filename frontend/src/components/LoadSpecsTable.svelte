@@ -328,7 +328,7 @@
                                                currentIdx = idx;
                                            }}
                                             >
-                                                {formatDecimal(spec.wireSize)} {getWireType(spec.wireType)}
+                                                2 - {spec.wireParamsAnnotated.wiresize_metric} {spec.wireParamsAnnotated.wiresize_awg} ({getWireType(spec.wireType)})
                                             </a>
                                         </td>
                                         <td

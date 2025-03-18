@@ -113,17 +113,15 @@
                     in
                     <strong>
                         {#if $globalConduitType === "PVC"}
-                            {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}
-                            ) {$globalConduitType} pipe
+                            {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}) Ø {$globalConduitType} pipe
                         {:else}
-                            {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}
-                            ) {$globalConduitType} pipe
+                            {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}) Ø {$globalConduitType} pipe
                         {/if}
                     </strong>
                 </div>
                 <div class="my-4 p-4 text-gray-900 bg-green-200">
                     Use
-                    <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V KAIC MCCB FPR</strong>
+                    <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V 10 KAIC MCCB FPR</strong>
                     Overcurrent Protection
                 </div>
             {:else }

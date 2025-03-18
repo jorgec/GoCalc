@@ -359,6 +359,21 @@ export function addLoadSpecification() {
     return retVal;
 }
 
+export function updateSpecs(loadSpecifications){
+    for(let i = 0; i < loadSpecifications.length; i++){
+        loadSpecifications[i] = updateWireData(loadSpecifications[i]);
+    }
+    return loadSpecifications;
+}
+
+export function updateWireData(row){
+    if(! ('wireParamsAnnotated' in row)){
+        row.wireParams = determineWireParams(row.wireSize, row.wireType);
+        row.wireParamsAnnotated = formatWireDataRow(row.wireParams);
+    }
+    return row;
+}
+
 /**
  * Loads project data from a parsed JSON object.  This function
  * *replaces* the current project data with the provided data.
@@ -384,9 +399,14 @@ export function loadProjectData(projectData) {
         globalWireType.set(projectData.globalWireType || '');
         globalConduitType.set(projectData.globalConduitType || '');
 
+        // Check for missing data in loadSpecifications
+
+        let loadSpecs = [];
         // Load Specifications (Crucially, *replace* the existing array)
         if (Array.isArray(projectData.loadSpecifications)) {
-            loadSpecifications.set(projectData.loadSpecifications);
+            loadSpecs = updateSpecs(projectData.loadSpecifications);
+            console.log(loadSpecs);
+            loadSpecifications.set(loadSpecs);
         } else {
             // Handle the case where loadSpecifications is missing or invalid.
             loadSpecifications.set([]); // Set to an empty array

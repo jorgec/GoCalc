@@ -69,6 +69,7 @@ export const csvData = derived(
                     ratings = `${spec.quantity} ${spec.category} (${spec.name})`;
                 }
             }
+            const AnnotatedWireSizeAndType = "2 - " + wireParamsAnnotated.wiresize_metric + " (" + wireParamsAnnotated.wiresize_awg + ") " + spec.wireType;
 
             let rowObj = {
                 CRKTno,
@@ -88,6 +89,7 @@ export const csvData = derived(
                 WireSize: parseFloat(spec.wireSize).toFixed(1) || 0.0, // Use calculated wire size or empty string
                 WireType: spec.wireType,
                 WireSizeAndType: wireData(parseFloat(spec.wireSize).toFixed(1), spec.wireType),
+                AnnotatedWireSizeAndType: AnnotatedWireSizeAndType,
                 ConduitSize: conduitSize || 0.0,
                 WireParams: wireParams,
                 KAIC: 10,
