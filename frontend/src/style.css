@@ -5,4 +5,13 @@
 #app {
     height: 100vh;
     text-align: left;
+    font-size: 80%;
+}
+
+th, td{
+    font-size: 90%;
+}
+
+.text-sm {
+    font-size: 90%;
 }
