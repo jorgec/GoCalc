@@ -56,6 +56,8 @@ export const applicationDemandFactor = writable(0);
 export const globalWireType = writable("THHN");
 export const globalConduitType = writable("PVC");
 
+export const rowConduitType = writable("PVC");
+
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {
 

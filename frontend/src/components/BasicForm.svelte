@@ -9,7 +9,8 @@
         selectedTypeValue,
         systemPhaseType,
         totalLoad,
-        volts
+        volts,
+        rowConduitType
     } from "../stores/dataStore";
 
     import {showSpecForm} from "../stores/uiStore";
@@ -127,6 +128,21 @@
                 {#each constants.phaseTypes as {label, value}}
                     <option value={value}>{label}</option>
                 {/each}
+            </select>
+        </div>
+
+        <div class="h-20 py-4">
+            <label for="rowConduitType" class="block text-gray-700 text-sm font-bold mb-2">
+                Individual Conduit Type
+            </label>
+            <select
+                    bind:value={$rowConduitType}
+                    required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+                <option value={null}>-- Select --</option>
+                <option value="PVC">PVC</option>
+                <option value="RMC">RMC</option>
             </select>
         </div>
 

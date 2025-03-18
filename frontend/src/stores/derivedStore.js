@@ -3,7 +3,7 @@ import {derived, get} from 'svelte/store';
 import {
     floorArea, globalConduitType, globalWireType, horsepower,
     loadSpecifications, projectDate, projectInCharge, projectLocation,
-    projectName, projectOwner,
+    projectName, projectOwner, rowConduitType,
     selectedAddOnValue,
     selectedOccupancyValue,
     selectedTypeValue,
@@ -27,7 +27,7 @@ import {determineWireParams, formatWireDataRow} from "../utils/lookups.js"; // I
 export const csvData = derived(
     [loadSpecifications, volts, systemPhaseType],
     ([$loadSpecifications, $volts, $phase]) => {
-        const _globalConduitType = get(globalConduitType).toString();
+        const _globalConduitType = get(rowConduitType).toString();
         const _globalWireType = get(globalWireType).toString();
         const result = [];
         let pairIndex = 0;
@@ -43,11 +43,13 @@ export const csvData = derived(
             const wireParamsAnnotated = formatWireDataRow(wireParams);
 
             let conduitSize = spec.conduitSize;
+            let conduitSizeAnnotated = spec.conduitSize;
             if(_globalConduitType === "PVC"){
-                conduitSize = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
+                conduitSizeAnnotated = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
             }else{
-                conduitSize = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
+                conduitSizeAnnotated = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
             }
+            conduitSizeAnnotated += " ø " + _globalConduitType;
 
             let loadStr = spec.name;
             let ratings = '';
@@ -91,6 +93,7 @@ export const csvData = derived(
                 WireSizeAndType: wireData(parseFloat(spec.wireSize).toFixed(1), spec.wireType),
                 AnnotatedWireSizeAndType: AnnotatedWireSizeAndType,
                 ConduitSize: conduitSize || 0.0,
+                CounduitSizeAnnotated: conduitSizeAnnotated || "",
                 WireParams: wireParams,
                 KAIC: 10,
                 Pole: 2,

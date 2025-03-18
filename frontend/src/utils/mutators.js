@@ -13,7 +13,7 @@ import {
     projectName,
     projectOwner,
     quantity,
-    ratings,
+    ratings, rowConduitType,
     sa,
     sab,
     sabc,
@@ -45,9 +45,11 @@ import {formatDecimal} from "./misc.js";
 /** Recompute sums & demand factors after changes to loadSpecifications */
 export function recalcSpecifications() {
     const items = get(loadSpecifications);
+    const phase = get(systemPhaseType);
     const {sumOfSpecs, totalSumOfSpecs: total, applicationDemandFactor: adf} =
         getSumOfSpecifications(items);
 
+    recalcHP(phase);
     sumOfSpecifications.set(sumOfSpecs);
     totalSumOfSpecs.set(total);
     applicationDemandFactor.set(adf);
@@ -398,6 +400,7 @@ export function loadProjectData(projectData) {
         projectInCharge.set(projectData.projectInCharge || '');
         globalWireType.set(projectData.globalWireType || '');
         globalConduitType.set(projectData.globalConduitType || '');
+        rowConduitType.set(projectData.rowConduitType || 'PCV');
 
         // Check for missing data in loadSpecifications
 
@@ -438,6 +441,7 @@ export function loadProjectData(projectData) {
         spareName.set('');
         ratings.set('');
         isABC.set(false);
+        rowConduitType.set('PVC');
 
 
         // Recalculate derived values. VERY important after loading.

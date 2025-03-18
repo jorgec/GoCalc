@@ -22,7 +22,7 @@
             "Sabc",
             "Three Gang",
             "AnnotatedWireSizeAndType", // Combined header
-            "ConduitSize",
+            "CounduitSizeAnnotated",
             "Pole",
             "AT",
             "KAIC",
