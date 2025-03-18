@@ -121,8 +121,8 @@
                 </div>
                 <div class="my-4 p-4 text-gray-900 bg-green-200">
                     Use
-                    <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V 10 KAIC MCCB FPR</strong>
-                    Overcurrent Protection
+                    <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V 10 KAIC MCCB</strong>
+                    for Overcurrent Protection
                 </div>
             {:else }
                 <div class="text-red-900 bg-red-200 p-4 my-4">
