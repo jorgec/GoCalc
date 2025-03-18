@@ -19,6 +19,11 @@
     import {loadSpecifications, systemPhaseType} from "./stores/dataStore";
     import {csvData} from "./stores/derivedStore";
     import { sumCsvData } from "./utils/calculations";
+    import {recalcHP, recalcSpecifications} from "./utils/mutators.js";
+
+    $: if($csvData){
+        sums = sumCsvData($csvData);
+    }
 
     $: sums = sumCsvData($csvData);
 
@@ -42,6 +47,11 @@
     }
     function handleGoBack() {
         showMaterialsInventory.set(false);
+    }
+
+    $: if($systemPhaseType !== undefined && $systemPhaseType !== null)  {
+        recalcHP($systemPhaseType);
+        sums = sumCsvData($csvData);
     }
 </script>
 

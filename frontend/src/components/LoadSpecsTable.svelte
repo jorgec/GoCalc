@@ -16,7 +16,7 @@
     import {get} from "svelte/store";
 
     let showWireTypeModal = false;
-    let wireTypes = [];
+    let wireTypes = ["THHN", "THHW", "THW", "THWN"];
     let currentIdx = null;
     let selectedWireType = null;
 
@@ -45,7 +45,7 @@
         if (Array.isArray(wireType) && wireType.length > 0) {
             return String(wireType[0]);
         } else if (typeof wireType === 'string') {
-            return wireType.split(',')[0].trim();
+            return wireType;
         }
         return "THHN"; // Return null if the input is neither an array nor a string
     }
@@ -70,7 +70,7 @@
             <div class="bg-white rounded-lg shadow-lg w-96">
                 <!-- Modal Header -->
                 <div class="px-4 py-3 border-b flex justify-between items-center">
-                    <h2 class="text-lg font-semibold">Add Custom Motor</h2>
+                    <h2 class="text-lg font-semibold">Update Wire</h2>
                     <button class="text-gray-500 hover:text-gray-700" on:click={() => showWireTypeModal = false}>
                         ✖
                     </button>
@@ -86,7 +86,7 @@
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
                             <option value={null}>Select a Wire Type</option>
-                            {#each wireTypes as wireType}
+                            {#each ["THHN", "THHW", "THW", "THWN"] as wireType}
                                 <option value={wireType}>{wireType}</option>
                             {/each}
                         </select>
@@ -283,7 +283,11 @@
                                                 </ul>
                                             {:else}
                                                 <code>
-                                                    {spec.wattage}W <!-- | {spec.horsepower}HP-->
+                                                    {#if spec.category === "Motor"}
+                                                        {spec.horsepower}HP
+                                                    {:else}
+                                                        {spec.wattage}W <!-- | {spec.horsepower}HP-->
+                                                    {/if}
                                                 </code>
                                             {/if}
                                         </td>
@@ -428,6 +432,7 @@
                                 <td class="py-2 px-3 text-sm text-gray-800">
                                     <code>{formatWithCommas(formatInt($totalOfAllVA.toFixed(2)))}</code>
                                 </td>
+                                <td></td>
                                 <td></td>
                                 <td class="py-2 px-3 text-sm text-gray-800">
                                     <code>{$volts}</code>

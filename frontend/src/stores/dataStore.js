@@ -18,7 +18,7 @@ export const selectedAddOnValue = writable(null);
 export const selectedTypeValue = writable(null);
 
 // System Phase & Voltage
-export const systemPhaseType = writable(null); // 0=single-phase, 1=three-phase
+export const systemPhaseType = writable(0); // 0=single-phase, 1=three-phase
 export const volts = writable(230);
 
 // For category-based specs
@@ -51,6 +51,10 @@ export const sumOfSpecifications = writable({});
 export const totalSumOfSpecs = writable(0);
 export const selectedLightingDemandFactorID = writable(null);
 export const applicationDemandFactor = writable(0);
+
+// Global specs
+export const globalWireType = writable("THHN");
+export const globalConduitType = writable("PVC");
 
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {

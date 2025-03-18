@@ -1,7 +1,7 @@
 // src/stores/derivedStore.js
-import {derived} from 'svelte/store';
+import {derived, get} from 'svelte/store';
 import {
-    floorArea,
+    floorArea, globalConduitType, globalWireType, horsepower,
     loadSpecifications, projectDate, projectInCharge, projectLocation,
     projectName, projectOwner,
     selectedAddOnValue,
@@ -20,12 +20,15 @@ import {
     totalInventoryCost,
     totalProjectCost
 } from './materialInventoryStore';
-import {formatDecimal, formatInt} from "../utils/misc.js"; // Include inventory store
+import {formatDecimal, formatInt} from "../utils/misc.js";
+import {determineWireParams, formatWireDataRow} from "../utils/lookups.js"; // Include inventory store
 
 // Derived store for the CSV data
 export const csvData = derived(
     [loadSpecifications, volts, systemPhaseType],
     ([$loadSpecifications, $volts, $phase]) => {
+        const _globalConduitType = get(globalConduitType).toString();
+        const _globalWireType = get(globalWireType).toString();
         const result = [];
         let pairIndex = 0;
 
@@ -34,8 +37,17 @@ export const csvData = derived(
             const CRKTno = i + 1;
 
             // Calculate wire size and type
-            let {localWireSize, localWireType} = determineWireSizeAndType({...spec, volts: $volts});
+            // let {localWireSize, localWireType} = determineWireSizeAndType({...spec, volts: $volts});
+
+            const wireParams = determineWireParams(spec.wireSize, spec.wireType);
+            const wireParamsAnnotated = formatWireDataRow(wireParams);
+
             let conduitSize = spec.conduitSize;
+            if(_globalConduitType === "PVC"){
+                conduitSize = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
+            }else{
+                conduitSize = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
+            }
 
             let loadStr = spec.name;
             let ratings = '';
@@ -73,28 +85,36 @@ export const csvData = derived(
                 "Sab": spec.sab,
                 "Sabc": spec.sabc,
                 "Three Gang": spec.threeGang,
-                WireSize: formatDecimal(spec.wireSize) || 0.00, // Use calculated wire size or empty string
+                WireSize: parseFloat(spec.wireSize).toFixed(1) || 0.0, // Use calculated wire size or empty string
                 WireType: spec.wireType,
-                WireSizeAndType: wireData(formatDecimal(spec.wireSize), spec.wireType),
-                ConduitSize: conduitSize || 0.00,
+                WireSizeAndType: wireData(parseFloat(spec.wireSize).toFixed(1), spec.wireType),
+                ConduitSize: conduitSize || 0.0,
+                WireParams: wireParams,
+                KAIC: 10,
+                Pole: 2,
+                Type: "PLUG-IN",
+                AT: wireParams.branch_AT
             };
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
 
-
             if ($phase === 0) {
-                rowObj.AmpLoadSingle = ampLoadValue.toFixed(2);
+                rowObj.AmpLoadSingle = ampLoadValue;
+                rowObj.AmpLoadSingleDisplay = ampLoadValue.toFixed(2);
             } else {
                 if (spec.abc) {
-                    rowObj.AmpLoadABC = ampLoadValue.toFixed(2);
+                    rowObj.AmpLoadABC = ampLoadValue;
                 } else {
                     const group = Math.floor(pairIndex / 2) % 3;
                     if (group === 0) {
-                        rowObj.AmpLoadAB = ampLoadValue.toFixed(2);
+                        rowObj.AmpLoadAB = ampLoadValue;
+                        rowObj.AmpLoadABDisplay = ampLoadValue.toFixed(2);
                     } else if (group === 1) {
-                        rowObj.AmpLoadBC = ampLoadValue.toFixed(2);
+                        rowObj.AmpLoadBC = ampLoadValue;
+                        rowObj.AmpLoadBCDisplay = ampLoadValue.toFixed(2);
                     } else {
-                        rowObj.AmpLoadCA = ampLoadValue.toFixed(2);
+                        rowObj.AmpLoadCA = ampLoadValue;
+                        rowObj.AmpLoadCADisplay = ampLoadValue.toFixed(2);
                     }
                     pairIndex++;
                 }
@@ -112,7 +132,6 @@ export const csvData = derived(
 export const totalOfAllVA = derived(
     [loadSpecifications, volts],
     ([$loadSpecifications, $volts]) => {
-        console.log("Debug: $loadSpecifications =", $loadSpecifications);
 
         let vaSum = 0;
 
@@ -193,7 +212,9 @@ export const projectData = derived(
         totalInventoryCost,
         materialsCost,
         laborCost,
-        totalProjectCost
+        totalProjectCost,
+        globalWireType,
+        globalConduitType,
     ],
     ([
          $projectName,
@@ -214,7 +235,9 @@ export const projectData = derived(
          $totalInventoryCost,
          $materialsCost,
          $laborCost,
-         $totalProjectCost
+         $totalProjectCost,
+         $globalWireType,
+         $globalConduitType,
 
      ]) => {
         return {
@@ -236,7 +259,9 @@ export const projectData = derived(
             totalInventoryCost: $totalInventoryCost,
             materialsCost: $materialsCost,
             laborCost: $laborCost,
-            totalProjectCost: $totalProjectCost
+            totalProjectCost: $totalProjectCost,
+            globalWireType: $globalWireType,
+            globalConduitType: $globalConduitType,
 
         };
     }

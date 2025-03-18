@@ -1,5 +1,6 @@
 <script>
-    import {formatWithCommas} from "../utils/misc.js";
+    import {formatInt, formatWithCommas} from "../utils/misc.js";
+    import {totalOfAllVA} from "../stores/derivedStore.js";
 
     export let sums;
     export let csvData;
@@ -22,12 +23,16 @@
             "Three Gang",
             "WireSizeAndType", // Combined header
             "ConduitSize",
+            "Pole",
+            "AT",
+            "KAIC",
+            "Type"
         ];
 
         if (phase === 0) {
-            baseHeaders.splice(5, 0, "AmpLoadSingle");
+            baseHeaders.splice(5, 0, "AmpLoadSingleDisplay");
         } else {
-            baseHeaders.splice(5, 0, "AmpLoadAB", "AmpLoadBC", "AmpLoadCA", "AmpLoadABC");
+            baseHeaders.splice(5, 0, "AmpLoadABDisplay", "AmpLoadBCDisplay", "AmpLoadCADisplay", "AmpLoadABCDisplay");
         }
         return baseHeaders;
     }
@@ -45,6 +50,10 @@
             "Three Way",
             "Wire Size and Type", // Combined header
             "Conduit Size",
+            "Pole",
+            "AT",
+            "KAIC",
+            "Type"
         ];
 
         if (phase === 0) {
@@ -56,13 +65,13 @@
     }
     function generateLoadTotals(phase){
         if(phase === 0){
-            return [sums.ampLoadSingle];
+            return [sums.ampLoadSingleDisplay];
         }else{
             return [
-                sums.ampLoadAB,
-                sums.ampLoadBC,
-                sums.ampLoadCA,
-                sums.ampLoadABC,
+                sums.ampLoadABDisplay,
+                sums.ampLoadBCDisplay,
+                sums.ampLoadCADisplay,
+                sums.ampLoadABCDisplay,
             ];
         }
     }
@@ -110,7 +119,7 @@
                 </tr>
                 <tr>
                     <td class="py-3.5 pl-4 pr-3 text-left text-sm bold text-gray-900" colspan="3">Totals</td>
-                    <td class="py-3.5 pl-4 pr-3 text-left text-sm  font-mono text-gray-900">{formatWithCommas(sums.voltAmpere)}</td>
+                    <td class="py-3.5 pl-4 pr-3 text-left text-sm  font-mono text-gray-900">{formatWithCommas(formatInt($totalOfAllVA.toFixed(2)))}</td>
                     <td class="py-3.5 pl-4 pr-3 text-left text-sm  font-mono text-gray-900"></td>
                     {#each ampLoadTotals as ampLoadTotal}
                         <td class="py-3.5 pl-4 pr-3 text-left text-sm  font-mono text-gray-900">{formatWithCommas(ampLoadTotal)}</td>

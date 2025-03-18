@@ -3,14 +3,17 @@ export function formatWithCommas(value) {
     return value.toLocaleString('en-US'); // Uses built-in localization for proper formatting
 }
 
-export function formatDecimal(input) {
+export function formatDecimal(input, digits) {
+    if(!digits){
+        digits = 2;
+    }
     let num = parseFloat(input);
 
     if (isNaN(num)) {
         throw new Error("Invalid input: must be a number or a numeric string");
     }
 
-    return num.toFixed(2);
+    return num.toFixed(digits);
 }
 
 export function formatInt(value) {

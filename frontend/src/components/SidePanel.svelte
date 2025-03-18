@@ -3,14 +3,19 @@
     import {
         applicationDemandFactor,
         floorArea,
+        globalConduitType,
+        globalWireType,
         loadByOccupancy,
+        loadSpecifications,
         sumOfSpecifications,
         totalLoad,
         totalSumOfSpecs,
         volts
     } from "../stores/dataStore";
 
-    import {loadCurrentIFL, getWireRecommendation} from "../utils/calculations.js";
+    import {loadCurrentIFL} from "../utils/calculations.js";
+    import {wireDataLookup} from "../utils/lookups.js";
+    import {recalcSpecifications} from "../utils/mutators.js";
 
     import {
         derivedHighestNonTrivialLoad,
@@ -19,7 +24,15 @@
         totalOfAllVA
     } from "../stores/derivedStore";
 
-    import {formatDecimal, formatWithCommas} from "../utils/misc.js";
+    import {formatWithCommas} from "../utils/misc.js";
+
+    $: wireRecommendation = wireDataLookup($serviceEntranceAmpacity, $globalWireType);
+    $: if ($globalConduitType) {
+        loadSpecifications.update(specs => {
+            return specs;
+        });
+        recalcSpecifications(); // Recalculate after moving
+    }
 
 </script>
 
@@ -64,11 +77,62 @@
                 <span class="font-bold">Service Entrance Ampacity:</span>
                 <code>{formatWithCommas($serviceEntranceAmpacity)}</code>
             </p>
-            <p>
-                <span class="font-bold">Wire Recommendation:</span>
-                <code>{formatDecimal(getWireRecommendation($serviceEntranceAmpacity))}mm<sup>2</sup></code>
-            </p>
 
+        </div>
+        <div class="my-4 p-2 px-3">
+            <h2 class="text-xl font-bold">Wire and Conduit Recommendation</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="wireType" class="block text-gray-700 font-bold mb-2">Wire Type</label>
+                    <select
+                            id="wireType"
+                            bind:value={$globalWireType}
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option value="THHN">THHN</option>
+                        <option value="THW">THW</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="conduitType" class="block text-gray-700 font-bold mb-2">Conduit Type</label>
+                    <select
+                            id="conduitType"
+                            bind:value={$globalConduitType}
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option value="PVC">PVC</option>
+                        <option value="RMC">RMC</option>
+                    </select>
+                </div>
+            </div>
+            {#if wireRecommendation}
+                <div class="my-4 p-4 text-gray-900 bg-green-200">
+
+                    Use <strong>2 - {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}
+                    ) {$globalWireType} wires</strong>
+                    in
+                    <strong>
+                        {#if $globalConduitType === "PVC"}
+                            {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}
+                            ) {$globalConduitType} pipe
+                        {:else}
+                            {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}
+                            ) {$globalConduitType} pipe
+                        {/if}
+                    </strong>
+                </div>
+                <div class="my-4 p-4 text-gray-900 bg-green-200">
+                    Use
+                    <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V KAIC MCCB FPR</strong>
+                    Overcurrent Protection
+                </div>
+            {:else }
+                <div class="text-red-900 bg-red-200 p-4 my-4">
+                    Insufficient data for wire recommendation
+                </div>
+            {/if}
+        </div>
+        <div class="my-4 p-2 px-3">
             <p>
                 <span class="font-bold">Computation at 80% Demand Factor:</span>
                 <code>{formatWithCommas(loadCurrentIFL($volts, $derivedHighestNonTrivialLoad, $totalOfAllVA))}</code>
