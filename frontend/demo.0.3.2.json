@@ -1,0 +1,921 @@
+{
+  "projectName": "Demo v3",
+  "projectDate": "2025-03-04",
+  "projectLocation": "Diri",
+  "projectOwner": "Ako",
+  "projectInCharge": "Ako gyapon",
+  "floorArea": 0,
+  "selectedOccupancyValue": 0,
+  "selectedAddOnValue": null,
+  "selectedTypeValue": 0,
+  "systemPhaseType": 0,
+  "volts": 230,
+  "loadSpecifications": [
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 2
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 5
+        }
+      ],
+      "wattage": 300,
+      "horsepower": "0.40",
+      "quantity": 2,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "300.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 9
+        }
+      ],
+      "wattage": 450,
+      "horsepower": "0.60",
+      "quantity": 1,
+      "sa": 0,
+      "sab": 0,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "450.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 2
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 8
+        }
+      ],
+      "wattage": 450,
+      "horsepower": "0.60",
+      "quantity": 2,
+      "sa": 0,
+      "sab": 0,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "450.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 4
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 8
+        }
+      ],
+      "wattage": 500,
+      "horsepower": "0.67",
+      "quantity": 2,
+      "sa": 0,
+      "sab": 0,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "500.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 9
+        }
+      ],
+      "wattage": 450,
+      "horsepower": "0.60",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "450.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 4
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 5
+        }
+      ],
+      "wattage": 350,
+      "horsepower": "0.47",
+      "quantity": 2,
+      "sa": 0,
+      "sab": 1,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "350.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 11
+        }
+      ],
+      "wattage": 550,
+      "horsepower": "0.74",
+      "quantity": 1,
+      "sa": 0,
+      "sab": 3,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "550.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 12
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 6
+        }
+      ],
+      "wattage": 600,
+      "horsepower": "0.80",
+      "quantity": 2,
+      "sa": 0,
+      "sab": 1,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "600.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Multiple Lighting Loads (2 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 2
+        },
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 10
+        }
+      ],
+      "wattage": 550,
+      "horsepower": "0.74",
+      "quantity": 2,
+      "sa": 0,
+      "sab": 2,
+      "sabc": 1,
+      "threeGang": 0,
+      "subtotal": "550.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 15
+        }
+      ],
+      "wattage": 750,
+      "horsepower": "1.01",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "750.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 11
+        }
+      ],
+      "wattage": 550,
+      "horsepower": "0.74",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "550.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 12
+        }
+      ],
+      "wattage": 600,
+      "horsepower": "0.80",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "600.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 10
+        }
+      ],
+      "wattage": 500,
+      "horsepower": "0.67",
+      "quantity": 1,
+      "sa": 0,
+      "sab": 1,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "500.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Fluorescent Lamp",
+          "wattage": 50,
+          "quantity": 9
+        }
+      ],
+      "wattage": 450,
+      "horsepower": "0.60",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "450.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 50,
+          "quantity": 8
+        }
+      ],
+      "wattage": 400,
+      "horsepower": "0.54",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "400.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Lighting",
+      "name": "Lighting Load (1 rows)",
+      "lightingLoads": [
+        {
+          "type": "Lighting",
+          "wattage": 25,
+          "quantity": 22
+        }
+      ],
+      "wattage": 550,
+      "horsepower": "0.74",
+      "quantity": 1,
+      "sa": 1,
+      "sab": 0,
+      "sabc": 0,
+      "threeGang": 0,
+      "subtotal": "550.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Convenience outlet",
+      "name": "7 CO @ 180VA",
+      "quantity": 7,
+      "va": 180,
+      "wattage": 180,
+      "horsepower": "0.24",
+      "subtotal": "1260.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "CR",
+      "quantity": 1,
+      "wattage": 8000,
+      "horsepower": "10.72",
+      "subtotal": "8000.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 14,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "32 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "MO",
+      "quantity": 1,
+      "wattage": 1200,
+      "horsepower": "1.61",
+      "subtotal": "1200.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Convenience outlet",
+      "name": "7 CO @ 180VA",
+      "quantity": 7,
+      "va": 180,
+      "wattage": 180,
+      "horsepower": "0.24",
+      "subtotal": "1260.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "REF",
+      "quantity": 1,
+      "wattage": 1500,
+      "horsepower": "2.01",
+      "subtotal": "1500.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "CR",
+      "quantity": 1,
+      "wattage": 3910,
+      "horsepower": "5.24",
+      "subtotal": "3910.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "Washing Machine",
+      "quantity": 1,
+      "wattage": 1500,
+      "horsepower": "2.01",
+      "subtotal": "1500.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "CD",
+      "quantity": 1,
+      "wattage": 5000,
+      "horsepower": "6.70",
+      "subtotal": "5000.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 5.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "20 mm Ø PVC"
+    },
+    {
+      "category": "Convenience outlet",
+      "name": "7 CO @ 180VA",
+      "quantity": 7,
+      "va": 180,
+      "wattage": 180,
+      "horsepower": "0.24",
+      "subtotal": "1260.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Convenience outlet",
+      "name": "7 CO @ 180VA",
+      "quantity": 7,
+      "va": 180,
+      "wattage": 180,
+      "horsepower": "0.24",
+      "subtotal": "1260.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Convenience outlet",
+      "name": "8 CO @ 180VA",
+      "quantity": 8,
+      "va": 180,
+      "wattage": 180,
+      "horsepower": "0.24",
+      "subtotal": "1440.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Spare",
+      "name": "WP",
+      "quantity": 1,
+      "wattage": 2300,
+      "horsepower": "3.08",
+      "subtotal": "2300.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 2,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Convenience outlet",
+      "name": "2 CO @ 180VA",
+      "quantity": 2,
+      "va": 180,
+      "wattage": 180,
+      "horsepower": "0.24",
+      "subtotal": "360.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Other Loads",
+      "name": "Other Load",
+      "quantity": 1,
+      "wattage": 3910,
+      "horsepower": "5.24",
+      "subtotal": "3910.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Other Loads",
+      "name": "Other Load",
+      "quantity": 1,
+      "wattage": 3910,
+      "horsepower": "5.24",
+      "subtotal": "3910.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": 3.5,
+      "wireType": [
+        "THHN"
+      ],
+      "wireTypeSelection": [
+        "THHN",
+        "THHW",
+        "THW",
+        "THWN"
+      ],
+      "conduitSize": "15 mm Ø PVC"
+    },
+    {
+      "category": "Motor",
+      "name": "Air-Conditioning Unit",
+      "quantity": 1,
+      "wattage": "3910.00",
+      "horsepower": "3",
+      "subtotal": "3910.00",
+      "ratings": "-",
+      "abc": false,
+      "wireSize": "8.0",
+      "wireTypeSelection": [
+        "THHN"
+      ],
+      "wireType": "THHN",
+      "conduitSize": "20mm Ø PVC (1/2\")",
+      "wireParams": {
+        "wiresize_metric": 8,
+        "wiresize_awg": "8",
+        "THW_rating": 50,
+        "THHN_rating": 55,
+        "conduitsize_metric_pvc": 20,
+        "conduitsize_imperial_pvc": "1/2",
+        "conduitsize_metric_rmc": 15,
+        "conduitsize_imperial_rmc": "1/2",
+        "branch_AT": 40,
+        "entrance_AT": 60
+      },
+      "wireParamsAnnotated": {
+        "wiresize_metric": "8mm²",
+        "wiresize_awg": "#8 AWG",
+        "THW_rating": 50,
+        "THHN_rating": 55,
+        "conduitsize_metric_pvc": "20mm Ø PVC",
+        "conduitsize_imperial_pvc": "1/2\"",
+        "conduitsize_metric_rmc": "15mm Ø RMC",
+        "conduitsize_imperial_rmc": "1/2\"",
+        "branch_AT": 40,
+        "entrance_AT": 60
+      }
+    }
+  ],
+  "materialsInventory": [],
+  "labor": 70,
+  "logistics": 0,
+  "totalInventoryCost": "0.00",
+  "materialsCost": 0,
+  "laborCost": 0,
+  "totalProjectCost": 0,
+  "globalWireType": "THHN",
+  "globalConduitType": "PVC"
+}

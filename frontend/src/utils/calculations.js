@@ -2,7 +2,9 @@
 import {get} from 'svelte/store';
 import {constants} from '../stores/constantsStore';
 import {selectedLightingDemandFactorID, volts} from '../stores/dataStore';
-import {formatDecimal} from "./misc.js"; // Import volts
+import {formatDecimal} from "./misc.js";
+import {csvData} from "../stores/derivedStore.js";
+import {onDestroy} from "svelte"; // Import volts
 
 
 /**
@@ -218,13 +220,19 @@ export function getWireRecommendation(value) {
 }
 
 export function sumCsvData(data) {
+
     // We’ll accumulate each column in variables
     let voltAmpere = 0;
     let ampLoadSingle = 0;
+    let ampLoadSingleDisplay = 0;
     let ampLoadAB = 0;
+    let ampLoadABDisplay = 0;
     let ampLoadBC = 0;
+    let ampLoadBCDisplay = 0;
     let ampLoadCA = 0;
+    let ampLoadCADisplay = 0;
     let ampLoadABC = 0;
+    let ampLoadABCDisplay = 0;
     let sa = 0;
     let sab = 0;
     let sabc = 0;
@@ -243,6 +251,11 @@ export function sumCsvData(data) {
         sabc += parseFloat(row.Sabc) || 0;
         threeGang += parseFloat(row['Three Gang']) || 0;
     }
+    ampLoadSingleDisplay = ampLoadSingle.toFixed(2)
+    ampLoadABDisplay = ampLoadAB.toFixed(2)
+    ampLoadBCDisplay = ampLoadBC.toFixed(2)
+    ampLoadCADisplay = ampLoadCA.toFixed(2)
+    ampLoadABCDisplay = ampLoadABC.toFixed(2)
 
     // Return an object that can be used in your component
     return {
@@ -255,7 +268,12 @@ export function sumCsvData(data) {
         sa,
         sab,
         sabc,
-        threeGang
+        threeGang,
+        ampLoadSingleDisplay,
+        ampLoadABDisplay,
+        ampLoadBCDisplay,
+        ampLoadCADisplay,
+        ampLoadABCDisplay,
     };
 }
 

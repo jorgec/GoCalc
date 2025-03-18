@@ -3,7 +3,7 @@ import {get} from 'svelte/store';
 import {
     applicationDemandFactor,
     convenienceVA,
-    floorArea, globalConduitType, globalWireType,
+    floorArea, globalConduitType, globalWireType, horsepower,
     isABC,
     lightingRows,
     loadSpecifications,
@@ -35,7 +35,7 @@ import {showLightingInput, statusMessage} from '../stores/uiStore';
 
 import {laborPercentage, logisticsCost, materialsInventory} from '../stores/materialInventoryStore';
 
-import {constants} from '../stores/constantsStore';
+import {constants, lookupWattage} from '../stores/constantsStore';
 import {determineConduitSize, determineWireSizeAndType, getSumOfSpecifications} from './calculations';
 import {determineWireParams, formatWireDataRow, wireDataLookup} from "./lookups.js";
 import {formatDecimal} from "./misc.js";
@@ -54,6 +54,24 @@ export function recalcSpecifications() {
 }
 
 // --- Exported Mutator Functions ---
+export function recalcHP(phase){
+    loadSpecifications.update(specs => {
+        const _volts = get(volts);
+
+        return specs.map(spec => {
+            if (spec.horsepower && (spec.horsepower !== 0 && spec.horsepower !== "") && spec.category === "Motor") {
+                let wattage = lookupWattage(spec.horsepower, _volts, phase);
+                let subtotal = spec.quantity * wattage;
+                return {
+                    ...spec,
+                    subtotal: subtotal,
+                    wattage: wattage !== undefined ? wattage : (spec.wattage !== 0 ? (spec.wattage / 746).toFixed(2) : 0)
+                };
+            }
+            return spec; // ✅ Always return the spec, even if unchanged
+        });
+    });
+}
 
 /** Move a specification row UP in the loadSpecifications array */
 export function moveSpecUp(index) {
@@ -263,17 +281,24 @@ export function addLoadSpecification() {
 
     // KITCHEN, MOTOR, OTHER LOADS (Categories with 'types')
     else if (idx === 2 || idx === 3 || idx === 5) {
-        const w = get(wattage);
+        let w = get(wattage);
         const catTypeIndex = get(selectedCategoryType);
         const catType = category.types?.[catTypeIndex]; // Safe access
         const typeLabel = catType ? catType.label : 'Unknown';
-
+        const hp = get(horsepower);
+        let _horsepower = (w / 746).toFixed(2);
+        if(idx === 3){
+            if(w === 0){
+                w = lookupWattage(hp, get(volts), get(systemPhaseType));
+                _horsepower = hp;
+            }
+        }
         details = {
             category: category.label,
             name: typeLabel,
             quantity: 1,
             wattage: w,
-            horsepower: (w / 746).toFixed(2),
+            horsepower: _horsepower,
             subtotal: (1 * w).toFixed(2),
             ratings: get(ratings).trim() !== '' ? get(ratings) : '-',
             abc: (get(systemPhaseType) == 1 && get(isABC)) ? true : false

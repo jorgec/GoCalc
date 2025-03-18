@@ -1,7 +1,7 @@
 // src/stores/derivedStore.js
 import {derived, get} from 'svelte/store';
 import {
-    floorArea, globalConduitType, globalWireType,
+    floorArea, globalConduitType, globalWireType, horsepower,
     loadSpecifications, projectDate, projectInCharge, projectLocation,
     projectName, projectOwner,
     selectedAddOnValue,
@@ -99,18 +99,22 @@ export const csvData = derived(
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
 
             if ($phase === 0) {
-                rowObj.AmpLoadSingle = ampLoadValue.toFixed(2);
+                rowObj.AmpLoadSingle = ampLoadValue;
+                rowObj.AmpLoadSingleDisplay = ampLoadValue.toFixed(2);
             } else {
                 if (spec.abc) {
-                    rowObj.AmpLoadABC = ampLoadValue.toFixed(2);
+                    rowObj.AmpLoadABC = ampLoadValue;
                 } else {
                     const group = Math.floor(pairIndex / 2) % 3;
                     if (group === 0) {
-                        rowObj.AmpLoadAB = ampLoadValue.toFixed(2);
+                        rowObj.AmpLoadAB = ampLoadValue;
+                        rowObj.AmpLoadABDisplay = ampLoadValue.toFixed(2);
                     } else if (group === 1) {
-                        rowObj.AmpLoadBC = ampLoadValue.toFixed(2);
+                        rowObj.AmpLoadBC = ampLoadValue;
+                        rowObj.AmpLoadBCDisplay = ampLoadValue.toFixed(2);
                     } else {
-                        rowObj.AmpLoadCA = ampLoadValue.toFixed(2);
+                        rowObj.AmpLoadCA = ampLoadValue;
+                        rowObj.AmpLoadCADisplay = ampLoadValue.toFixed(2);
                     }
                     pairIndex++;
                 }
@@ -233,7 +237,7 @@ export const projectData = derived(
          $laborCost,
          $totalProjectCost,
          $globalWireType,
-         $globalConduitType
+         $globalConduitType,
 
      ]) => {
         return {
@@ -257,7 +261,7 @@ export const projectData = derived(
             laborCost: $laborCost,
             totalProjectCost: $totalProjectCost,
             globalWireType: $globalWireType,
-            globalConduitType: $globalConduitType
+            globalConduitType: $globalConduitType,
 
         };
     }

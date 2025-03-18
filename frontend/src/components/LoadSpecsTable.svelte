@@ -283,7 +283,11 @@
                                                 </ul>
                                             {:else}
                                                 <code>
-                                                    {spec.wattage}W <!-- | {spec.horsepower}HP-->
+                                                    {#if spec.category === "Motor"}
+                                                        {spec.horsepower}HP
+                                                    {:else}
+                                                        {spec.wattage}W <!-- | {spec.horsepower}HP-->
+                                                    {/if}
                                                 </code>
                                             {/if}
                                         </td>
@@ -428,6 +432,7 @@
                                 <td class="py-2 px-3 text-sm text-gray-800">
                                     <code>{formatWithCommas(formatInt($totalOfAllVA.toFixed(2)))}</code>
                                 </td>
+                                <td></td>
                                 <td></td>
                                 <td class="py-2 px-3 text-sm text-gray-800">
                                     <code>{$volts}</code>

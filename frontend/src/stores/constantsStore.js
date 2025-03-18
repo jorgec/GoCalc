@@ -1,8 +1,8 @@
-import { writable } from 'svelte/store';
-import { SaveConstants } from "../../wailsjs/go/main/App.js";
+import {writable} from 'svelte/store';
+import {SaveConstants} from "../../wailsjs/go/main/App.js";
 
 
- // Start with an empty object
+// Start with an empty object
 const defaultConstants = {
     "conduitSizing": {
         "entries": {
@@ -525,7 +525,7 @@ async function loadConstants() {
         const response = await fetch('/constants.json'); // Load dynamically
         if (!response.ok) throw new Error('Failed to load constants.json');
         const data = await response.json();
-        constantsStore.set({ ...defaultConstants, ...data });
+        constantsStore.set({...defaultConstants, ...data});
     } catch (error) {
         console.error('Error loading constants:', error);
     }
@@ -570,6 +570,29 @@ export function updateConstant(path, value) {
         obj[keys[keys.length - 1]] = value;
 
         SaveConstants(current);
-        return { ...current };
+        return {...current};
     });
+}
+
+export const hp_lookup = new Map([
+    ["1/2", [4.9, 2.2]],
+    ["3/4", [6.9, 3.2]],
+    ["1", [8, 4.2]],
+    ["1 1/2", [10, 6]],
+    ["2", [12, 6.8]],
+    ["2 1/2", [15, 8.2]],
+    ["3", [17, 9.6]],
+    ["5", [28, 15.2]],
+    ["7 1/2", [40, 22]],
+    ["10", [50, 28]]
+]);
+
+export function lookupWattage(hp, volts, phase) {
+    const remap = Object.fromEntries(hp_lookup);
+    const hpRow = remap[hp];
+    let ampCol = hpRow[0];
+    if (phase === 1) {
+        ampCol = hpRow[1];
+    }
+    return (ampCol * volts).toFixed(2) || undefined;
 }

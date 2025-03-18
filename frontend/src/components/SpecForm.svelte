@@ -12,13 +12,18 @@
         selectedCategoryIndex,
         selectedCategoryType,
         spareName,
-        wattage
+        wattage,
+        horsepower,
+        systemPhaseType,
+        loadSpecifications
     } from "../stores/dataStore";
 
-    import {constants, updateConstant} from "../stores/constantsStore";
-    import {addAnotherLightingRow, addLoadSpecification, removeLightingRow, resetSpecForm} from "../utils/mutators";
+    import {constants, updateConstant, hp_lookup, lookupWattage} from "../stores/constantsStore";
+    import {addAnotherLightingRow, addLoadSpecification, removeLightingRow, resetSpecForm, recalcSpecifications} from "../utils/mutators";
 
     import {showLightingInput, showSpecForm, statusMessage} from "../stores/uiStore";
+
+    const hpKeys =[...hp_lookup.keys()];
 
     // For "hasCategoryTypes" logic:
     $: catIndex = $selectedCategoryIndex;
@@ -339,10 +344,9 @@
             </div>
         {/if}
 
-        {#if catIndex !== null && catIndex != 0 && catIndex != 1}
+        {#if catIndex !== null && catIndex != 0 && catIndex != 1 && catIndex != 3}
             <div class="h-20 py-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="ratings">
-                    Description:
                     Description:
                 </label>
                 <input
@@ -353,7 +357,23 @@
                 />
             </div>
         {/if}
-
+        {#if catIndex === 3}
+            <div class="h-20 py-4">
+            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
+                HP:
+            </label>
+                <select
+                        id="category"
+                        bind:value={$horsepower}
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                    <option value=0>Select HP</option>
+                    {#each hpKeys as hp}
+                        <option value={hp}>{hp}</option>
+                    {/each}
+                </select>
+            </div>
+        {/if }
     </div>
     <div class="flex items-center gap-4 py-4">
         {#if catIndex === 3 || catIndex == 5}
