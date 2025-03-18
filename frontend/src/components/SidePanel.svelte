@@ -3,16 +3,17 @@
     import {
         applicationDemandFactor,
         floorArea,
+        globalConduitType,
+        globalWireType,
         loadByOccupancy,
+        loadSpecifications,
         sumOfSpecifications,
         totalLoad,
         totalSumOfSpecs,
-        volts,
-        globalConduitType,
-        globalWireType, loadSpecifications
+        volts
     } from "../stores/dataStore";
 
-    import {loadCurrentIFL, getWireRecommendation} from "../utils/calculations.js";
+    import {loadCurrentIFL} from "../utils/calculations.js";
     import {wireDataLookup} from "../utils/lookups.js";
     import {recalcSpecifications} from "../utils/mutators.js";
 
@@ -23,10 +24,10 @@
         totalOfAllVA
     } from "../stores/derivedStore";
 
-    import {formatDecimal, formatWithCommas} from "../utils/misc.js";
+    import {formatWithCommas} from "../utils/misc.js";
 
     $: wireRecommendation = wireDataLookup($serviceEntranceAmpacity, $globalWireType);
-    $: if($globalConduitType) {
+    $: if ($globalConduitType) {
         loadSpecifications.update(specs => {
             return specs;
         });
@@ -106,15 +107,24 @@
             </div>
             {#if wireRecommendation}
                 <div class="my-4 p-4 text-gray-900 bg-green-200">
+
+                    Use <strong>2 - {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}
+                    ) {$globalWireType} wires</strong>
+                    in
                     <strong>
-                        Use 2 - {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}) {$globalWireType} wires
-                        in
                         {#if $globalConduitType === "PVC"}
-                            {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}) {$globalConduitType} pipe
+                            {wireRecommendation.conduitsize_metric_pvc} ({wireRecommendation.conduitsize_imperial_pvc}
+                            ) {$globalConduitType} pipe
                         {:else}
-                            {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}) {$globalConduitType} pipe
+                            {wireRecommendation.conduitsize_metric_rmc} ({wireRecommendation.conduitsize_imperial_rmc}
+                            ) {$globalConduitType} pipe
                         {/if}
                     </strong>
+                </div>
+                <div class="my-4 p-4 text-gray-900 bg-green-200">
+                    Use
+                    <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V KAIC MCCB FPR</strong>
+                    Overcurrent Protection
                 </div>
             {:else }
                 <div class="text-red-900 bg-red-200 p-4 my-4">

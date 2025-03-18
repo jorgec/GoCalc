@@ -38,7 +38,7 @@ export function wireDataLookup(wireSize, wireType = "THHN", transform = true) {
 export function formatWireDataRow(wireDataRow){
     return {
         "wiresize_metric": wireDataRow.wiresize_metric + "mm²",
-        "wiresize_awg": wireDataRow.wiresize_awg + " AWG",
+        "wiresize_awg": "#" + wireDataRow.wiresize_awg + " AWG",
         "THW_rating": wireDataRow.THW_rating,
         "THHN_rating": wireDataRow.THHN_rating,
         "conduitsize_metric_pvc": wireDataRow.conduitsize_metric_pvc + "mm Ø PVC",
