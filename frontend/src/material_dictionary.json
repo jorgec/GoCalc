@@ -25,31 +25,133 @@
       {
         "slug": "2_0-mm",
         "Unit": "m",
-        "Description": "2.0 mm²",
+        "Description": "2.0 mm² (14 AWG)",
         "Unit Price": 20.00
       },
       {
         "slug": "3_5-mm",
         "Unit": "m",
-        "Description": "3.5 mm²",
+        "Description": "3.5 mm² (12 AWG)",
         "Unit Price": 33.00
       },
       {
-        "slug": "125-mm",
+        "slug": "5_5-mm",
         "Unit": "m",
-        "Description": "125 mm²",
+        "Description": "5.5 mm² (10 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "8_0-mm",
+        "Unit": "m",
+        "Description": "8.0 mm² (8 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "14_0-mm",
+        "Unit": "m",
+        "Description": "14.0 mm² (6 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "22_0-mm",
+        "Unit": "m",
+        "Description": "22.0 mm² (4 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "30-mm",
+        "Unit": "m",
+        "Description": "30.0 mm² (2 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "38.0-mm",
+        "Unit": "m",
+        "Description": "38.0 mm² (1 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "50.0-mm",
+        "Unit": "m",
+        "Description": "50.0 mm² (1/0 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "60.0-mm",
+        "Unit": "m",
+        "Description": "60.0 mm² (2/0 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "80.0-mm",
+        "Unit": "m",
+        "Description": "80.0 mm² (3/0 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "100.0-mm",
+        "Unit": "m",
+        "Description": "100.0 mm² (4/0 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "125.0-mm",
+        "Unit": "m",
+        "Description": "125.0 mm² (250 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "150.0-mm",
+        "Unit": "m",
+        "Description": "150.0 mm² (300 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "175.0-mm",
+        "Unit": "m",
+        "Description": "175.0 mm² (350 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "200.0-mm",
+        "Unit": "m",
+        "Description": "200.0 mm² (400 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "250.0-mm",
+        "Unit": "m",
+        "Description": "250.0 mm² (500 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "325.0-mm",
+        "Unit": "m",
+        "Description": "325.0 mm² (650 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "350.0-mm",
+        "Unit": "m",
+        "Description": "350.0 mm² (750 AWG)",
+        "Unit Price": 33.00
+      },
+      {
+        "slug": "375.0-mm",
+        "Unit": "m",
+        "Description": "375.0 mm² (800 AWG)",
         "Unit Price": 1150.00
       },
       {
-        "slug": "150-mm",
+        "slug": "400.0-mm",
         "Unit": "m",
-        "Description": "150 mm²",
+        "Description": "400.0 mm² (1000 AWG)",
         "Unit Price": 1375.00
       },
       {
-        "slug": "250-mm",
+        "slug": "500.0-mm",
         "Unit": "m",
-        "Description": "250 mm²",
+        "Description": "500.0 mm² ( AWG)",
         "Unit Price": 2248.00
       }
     ],
@@ -87,6 +189,120 @@
         "slug": "20-mm-pvc",
         "Unit": "m",
         "Description": "20 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "25-mm-pvc",
+        "Unit": "m",
+        "Description": "25 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "32-mm-pvc",
+        "Unit": "m",
+        "Description": "32 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "40-mm-pvc",
+        "Unit": "m",
+        "Description": "40 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "50-mm-pvc",
+        "Unit": "m",
+        "Description": "50 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "63-mm-pvc",
+        "Unit": "m",
+        "Description": "63 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "75-mm-pvc",
+        "Unit": "m",
+        "Description": "75 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "90-mm-pvc",
+        "Unit": "m",
+        "Description": "90 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "110-mm-pvc",
+        "Unit": "m",
+        "Description": "110 mm Ø PVC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "15-mm-rmc",
+        "Unit": "m",
+        "Description": "15 mm Ø RMC",
+        "Unit Price": 28.00
+      },
+      {
+        "slug": "20-mm-rmc",
+        "Unit": "m",
+        "Description": "20 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "25-mm-rmc",
+        "Unit": "m",
+        "Description": "25 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "32-mm-rmc",
+        "Unit": "m",
+        "Description": "32 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "40-mm-rmc",
+        "Unit": "m",
+        "Description": "40 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "50-mm-rmc",
+        "Unit": "m",
+        "Description": "50 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "63-mm-rmc",
+        "Unit": "m",
+        "Description": "63 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "65-mm-rmc",
+        "Unit": "m",
+        "Description": "65 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "75-mm-rmc",
+        "Unit": "m",
+        "Description": "75 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "90-mm-rmc",
+        "Unit": "m",
+        "Description": "90 mm Ø RMC",
+        "Unit Price": 32.60
+      },
+      {
+        "slug": "110-mm-rmc",
+        "Unit": "m",
+        "Description": "110 mm Ø RMC",
         "Unit Price": 32.60
       }
     ],

@@ -176,3 +176,61 @@ func (a *App) SaveConstants(content interface{}) (string, error) {
 
 	return savePath, nil
 }
+
+func (a *App) SaveMaterialInventory(content interface{}) (string, error) {
+	data, err := json.MarshalIndent(content, "", "  ")
+	if err != nil {
+		return "", err
+	}
+
+	// 📂 Use config or home directory
+	baseDir, err := os.UserConfigDir() // or os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	appDir := filepath.Join(baseDir, "")
+	err = os.MkdirAll(appDir, 0755)
+	if err != nil {
+		return "", err
+	}
+
+	savePath := filepath.Join(appDir, "materialInventory.json")
+
+	err = os.WriteFile(savePath, data, 0644)
+	if err != nil {
+		return "", err
+	}
+
+	return savePath, nil
+}
+func (a *App) LoadMaterialInventory() (map[string]interface{}, error) {
+	var filePath string
+
+	if a.isDev {
+		filePath = filepath.Join("frontend", "public", "materialInventory.json")
+	} else {
+		execPath, err := os.Executable()
+		if err != nil {
+			return nil, err
+		}
+		filePath = filepath.Join(filepath.Dir(execPath), "materialInventory.json")
+	}
+
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return nil, err // No file yet, return nil
+	}
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	var constants map[string]interface{}
+	err = json.Unmarshal(data, &constants)
+	if err != nil {
+		return nil, err
+	}
+
+	return constants, nil
+}

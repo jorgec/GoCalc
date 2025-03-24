@@ -237,6 +237,26 @@
           "value": 2
         },
         {
+          "label": "Freezer",
+          "unit_load": 1,
+          "value": 8
+        },
+        {
+          "label": "Dishwasher",
+          "unit_load": 1,
+          "value": 10
+        },
+        {
+          "label": "Washing Machine",
+          "unit_load": 1,
+          "value": 11
+        },
+        {
+          "label": "Compressor",
+          "unit_load": 1,
+          "value": 12
+        },
+        {
           "label": "Booster Pump",
           "unit_load": 1,
           "value": 3
@@ -262,29 +282,9 @@
           "value": 7
         },
         {
-          "label": "Freezer",
-          "unit_load": 1,
-          "value": 8
-        },
-        {
           "label": "Sump Pump",
           "unit_load": 1,
           "value": 9
-        },
-        {
-          "label": "Dishwasher",
-          "unit_load": 1,
-          "value": 10
-        },
-        {
-          "label": "Washing Machine",
-          "unit_load": 1,
-          "value": 11
-        },
-        {
-          "label": "Compressor",
-          "unit_load": 1,
-          "value": 12
         },
         {
           "label": "Condenser",
@@ -295,21 +295,6 @@
           "label": "Blower",
           "unit_load": 1,
           "value": 14
-        },
-        {
-          "label": "New Motor",
-          "unit_load": 1,
-          "value": 999
-        },
-        {
-          "label": "asgasg",
-          "unit_load": 1,
-          "value": 999
-        },
-        {
-          "label": "New Custom Motor",
-          "unit_load": 1,
-          "value": 999
         }
       ],
       "value": 3
@@ -349,6 +334,16 @@
         },
         {
           "label": "Other Load",
+          "unit_load": 1,
+          "value": 999
+        },
+        {
+          "label": "asdgasdg",
+          "unit_load": 1,
+          "value": 999
+        },
+        {
+          "label": "asdf1234$$",
           "unit_load": 1,
           "value": 999
         }
@@ -519,8 +514,7 @@
         "Load Type": "Lighting",
         "Wire Size": 2,
         "Wire Type": [
-          "THHN",
-          "THWN-2"
+          "THHN"
         ]
       },
       {
@@ -528,8 +522,15 @@
         "Load Type": "Convenience outlet",
         "Wire Size": 3.5,
         "Wire Type": [
-          "THHN",
-          "THWN-2"
+          "THHN"
+        ]
+      },
+      {
+        "Amp": 20,
+        "Load Type": "Kitchen Load",
+        "Wire Size": 3.5,
+        "Wire Type": [
+          "THHN"
         ]
       },
       {
@@ -537,83 +538,71 @@
         "Load Type": "Small Appliance Circuits",
         "Wire Size": 5.5,
         "Wire Type": [
-          "THHN",
-          "THWN-2"
+          "THHN"
         ]
       },
       {
         "Amp": 30,
         "Load Type": "Air-Conditioning Unit",
-        "Wire Size": 8,
+        "Wire Size": 5.5,
         "Wire Type": [
-          "THHN",
-          "THWN-2"
-        ]
-      },
-      {
-        "Amp": 30,
-        "Load Type": "Water Heater",
-        "Wire Size": 8,
-        "Wire Type": [
-          "THHN",
-          "THWN-2"
-        ]
-      },
-      {
-        "Amp": 50,
-        "Load Type": "Electric Range",
-        "Wire Size": 14,
-        "Wire Type": [
-          "THHN",
-          "THWN-2"
-        ]
-      },
-      {
-        "Amp": 50,
-        "Load Type": "Electric Oven",
-        "Wire Size": 14,
-        "Wire Type": [
-          "THHN",
-          "THWN-2"
-        ]
-      },
-      {
-        "Amp": 60,
-        "Load Type": "Tonner ACU",
-        "Wire Size": 22,
-        "Wire Type": [
-          "THHN",
-          "THWN-2"
+          "THHN"
         ]
       },
       {
         "Amp": 20,
-        "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
+        "Load Type": "Water Pump",
+        "Wire Size": 3.5,
+        "Wire Type": [
+          "THHN"
+        ]
+      },
+      {
+        "Amp": 30,
+        "Load Type": "Tonner ACU",
         "Wire Size": 5.5,
         "Wire Type": [
-          "THHN",
-          "THWN-2",
-          "RHW-2"
+          "THHN"
         ]
       },
       {
-        "Amp": 40,
-        "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
-        "Wire Size": 14,
+        "Amp": 20,
+        "Load Type": "Water Pump",
+        "Wire Size": 3.5,
         "Wire Type": [
-          "THHN",
-          "THWN-2",
-          "RHW-2"
+          "THHN"
         ]
       },
       {
-        "Amp": 80,
-        "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
-        "Wire Size": 38,
+        "Amp": 20,
+        "Load Type": "Freezer",
+        "Wire Size": 3.5,
         "Wire Type": [
-          "THHN",
-          "THWN-2",
-          "RHW-2"
+          "THHN"
+        ]
+      },
+      {
+        "Amp": 20,
+        "Load Type": "Dishwasher",
+        "Wire Size": 3.5,
+        "Wire Type": [
+          "THHN"
+        ]
+      },
+      {
+        "Amp": 20,
+        "Load Type": "Washing Machine",
+        "Wire Size": 3.5,
+        "Wire Type": [
+          "THHN"
+        ]
+      },
+      {
+        "Amp": 20,
+        "Load Type": "Compressor",
+        "Wire Size": 3.5,
+        "Wire Type": [
+          "THHN"
         ]
       }
     ]

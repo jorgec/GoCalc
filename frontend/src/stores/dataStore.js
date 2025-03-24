@@ -57,6 +57,7 @@ export const globalWireType = writable("THHN");
 export const globalConduitType = writable("PVC");
 
 export const rowConduitType = writable("PVC");
+export const rowWireType = writable("THHN");
 
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {
@@ -79,3 +80,5 @@ export function updateLoadSpecifications(path, value) {
         return obj;
     });
 }
+
+window.myLoadSpecs = loadSpecifications;

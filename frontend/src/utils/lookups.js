@@ -1,5 +1,7 @@
 import {wireDataTable} from "../stores/wireDataStore.js";
 import {get} from "svelte/store";
+import {volts} from "../stores/dataStore.js";
+import {constants} from "../stores/constantsStore.js";
 
 export function wireDataLookup(wireSize, wireType = "THHN", transform = true) {
     // Validate inputs: wireSize must be a valid number and wireType must be a string.
@@ -53,6 +55,7 @@ export function formatWireDataRow(wireDataRow){
 export function determineWireParams(wireSize_metric) {
     wireSize_metric = parseFloat(wireSize_metric);
     const wireData = wireDataTable;
+
     // Validate that wireSize_metric is a valid number.
     if (typeof wireSize_metric !== "number" || isNaN(wireSize_metric)) {
         console.error("Invalid wireSize_metric provided. Must be a valid number.");
@@ -64,4 +67,94 @@ export function determineWireParams(wireSize_metric) {
 
     // If found, return the corresponding row; otherwise return null.
     return result || wireData[wireData.length - 1];
+}
+
+// export function determineWireSize(baseRating, wireType = "THHN") {
+//     const key = wireType === "THHN" ? "THHN_rating" :
+//         wireType === "THW" ? "THW_rating" :
+//             "THHN_rating";
+//
+//     if (!key) {
+//         throw new Error("wireType must be either 'THHN' or 'THW'");
+//     }
+//     const v = get(volts);
+//     const rating = parseFloat(baseRating)/v;
+//
+//     // Filter wires that meet or exceed the rating
+//     const suitableWires = wireDataTable.filter(row => row[key] >= rating);
+//     console.log(suitableWires);
+//
+//     if (suitableWires.length === 0) {
+//         return null;
+//     }
+//
+//     // Return the one with the smallest wiresize_metric
+//     const res = suitableWires.reduce((smallest, current) =>
+//         current.wiresize_metric < smallest.wiresize_metric ? current : smallest
+//     );
+//     console.log("reduce");
+//     console.log(res);
+// }
+
+export function determineWireSize(loadSpec, baseRating, wireType = "THHN") {
+    const wireSizingData = constants.wireSizingData;
+    const key = wireType === "THHN" ? "THHN_rating" :
+        wireType === "THW" ? "THW_rating" :
+            null;
+
+    if (!key) {
+        throw new Error("wireType must be either 'THHN' or 'THW'");
+    }
+
+    const v = get(volts);
+    const rating = parseFloat(baseRating) / v;
+
+    // First, try to find a matching entry in wireSizingData
+    let matchingLoadEntry = null;
+    for (let i = 0; i < wireSizingData.entries.length; i++) {
+        const entry = wireSizingData.entries[i];
+        if (
+            entry["Load Type"] === loadSpec.category ||
+            entry["Load Type"] === loadSpec.name
+        ) {
+            matchingLoadEntry = entry;
+            break;
+        }
+    }
+
+    let candidateWires;
+
+    if (matchingLoadEntry) {
+        const requiredMinSize = matchingLoadEntry["Wire Size"];
+        candidateWires = wireDataTable.filter(row =>
+            row.wiresize_metric >= requiredMinSize && row[key] >= rating
+        );
+    } else {
+        // No exact match, use fallback logic based on category
+        let requiredMinSize = 0;
+
+        if (loadSpec.category === "Motor") {
+            requiredMinSize = 5.5;
+        } else if (loadSpec.category === "Lighting") {
+            // No minimum size constraint, use normal logic
+            candidateWires = wireDataTable.filter(row => row[key] >= rating);
+        } else {
+            requiredMinSize = 3.5;
+        }
+
+        if (!candidateWires) {
+            candidateWires = wireDataTable.filter(row =>
+                row.wiresize_metric >= requiredMinSize && row[key] >= rating
+            );
+        }
+    }
+
+    if (candidateWires.length === 0) {
+        return null;
+    }
+
+    // Return the smallest wire that matches
+    return candidateWires.reduce((smallest, current) =>
+        current.wiresize_metric < smallest.wiresize_metric ? current : smallest
+    );
 }

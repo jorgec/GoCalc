@@ -272,3 +272,7 @@ export const projectData = derived(
     }
 );
 
+window.myDerived = {
+    "csv": csvData,
+    "projectData": projectData
+}

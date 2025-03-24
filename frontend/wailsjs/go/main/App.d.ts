@@ -7,6 +7,10 @@ export function LoadConstants():Promise<Record<string, any>>;
 
 export function LoadJSONFile():Promise<string>;
 
+export function LoadMaterialInventory():Promise<Record<string, any>>;
+
 export function SaveConstants(arg1:any):Promise<string>;
 
 export function SaveFile(arg1:string):Promise<string>;
+
+export function SaveMaterialInventory(arg1:any):Promise<string>;
