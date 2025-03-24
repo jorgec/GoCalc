@@ -107,19 +107,17 @@ export function determineWireSize(loadSpec, baseRating, wireType = "THHN") {
     }
 
     const v = get(volts);
-    const rating = parseFloat(baseRating)/v;
+    const rating = parseFloat(baseRating) / v;
 
-    console.log(loadSpec);
-
-    // Check if we have a match in wireSizingData
-    // const matchingLoadEntry = wireSizingData.entries.find(entry =>
-    //     entry["Load Type"] === loadSpec.name
-    // );
-    let matchingLoadEntry;
-    for(let i = 0; i < wireSizingData.entries.length; i++){
-        console.log(wireSizingData.entries[i]["Load Type"]);
-        if((wireSizingData.entries[i]["Load Type"] === loadSpec.category) || (wireSizingData.entries[i]["Load Type"] === loadSpec.name)){
-            matchingLoadEntry = wireSizingData.entries[i];
+    // First, try to find a matching entry in wireSizingData
+    let matchingLoadEntry = null;
+    for (let i = 0; i < wireSizingData.entries.length; i++) {
+        const entry = wireSizingData.entries[i];
+        if (
+            entry["Load Type"] === loadSpec.category ||
+            entry["Load Type"] === loadSpec.name
+        ) {
+            matchingLoadEntry = entry;
             break;
         }
     }
@@ -128,13 +126,27 @@ export function determineWireSize(loadSpec, baseRating, wireType = "THHN") {
 
     if (matchingLoadEntry) {
         const requiredMinSize = matchingLoadEntry["Wire Size"];
-        // Filter only wires that are >= required size and meet rating
         candidateWires = wireDataTable.filter(row =>
             row.wiresize_metric >= requiredMinSize && row[key] >= rating
         );
     } else {
-        // Fall back to normal lookup
-        candidateWires = wireDataTable.filter(row => row[key] >= rating);
+        // No exact match, use fallback logic based on category
+        let requiredMinSize = 0;
+
+        if (loadSpec.category === "Motor") {
+            requiredMinSize = 5.5;
+        } else if (loadSpec.category === "Lighting") {
+            // No minimum size constraint, use normal logic
+            candidateWires = wireDataTable.filter(row => row[key] >= rating);
+        } else {
+            requiredMinSize = 3.5;
+        }
+
+        if (!candidateWires) {
+            candidateWires = wireDataTable.filter(row =>
+                row.wiresize_metric >= requiredMinSize && row[key] >= rating
+            );
+        }
     }
 
     if (candidateWires.length === 0) {
