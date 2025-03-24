@@ -13,7 +13,7 @@ import {
     projectName,
     projectOwner,
     quantity,
-    ratings, rowConduitType,
+    ratings, rowConduitType, rowWireType,
     sa,
     sab,
     sabc,
@@ -37,7 +37,7 @@ import {laborPercentage, logisticsCost, materialsInventory} from '../stores/mate
 
 import {constants, lookupWattage} from '../stores/constantsStore';
 import {determineConduitSize, determineWireSizeAndType, getSumOfSpecifications} from './calculations';
-import {determineWireParams, formatWireDataRow, wireDataLookup} from "./lookups.js";
+import {determineWireParams, determineWireSize, formatWireDataRow, wireDataLookup} from "./lookups.js";
 import {formatDecimal} from "./misc.js";
 
 // --- Helper Functions (Internal) ---
@@ -62,7 +62,10 @@ export function recalcHP(phase){
 
         return specs.map(spec => {
             if (spec.horsepower && (spec.horsepower !== 0 && spec.horsepower !== "") && spec.category === "Motor") {
-                let wattage = lookupWattage(spec.horsepower, _volts, phase);
+                let wattage = parseFloat(spec.wattage);
+                if(wattage <= 0 || !wattage){
+                    wattage = lookupWattage(spec.horsepower, _volts, phase);
+                }
                 let subtotal = spec.quantity * wattage;
                 return {
                     ...spec,
@@ -329,9 +332,14 @@ export function addLoadSpecification() {
     loadSpecifications.update(current => {
         const newSpec = {...details};
 
-        const {wireSize, wireType} = determineWireSizeAndType({...newSpec, volts: get(volts)});
+        // const {wireSize, wireType} = determineWireSizeAndType({...newSpec, volts: get(volts)});
+        // const wireSpecDefaults = determineWireSizeAndType({...newSpec, volts: get(volts)});
+        const wireType = get(rowWireType);
+        let wireSizeRow = determineWireSize(newSpec, parseFloat(newSpec.subtotal), wireType);
+        const wireSize = wireSizeRow.wiresize_metric;
 
         const wireParams = determineWireParams(wireSize, wireType);
+        console.log(wireParams);
         const wireParamsAnnotated = formatWireDataRow(wireParams);
 
         newSpec.wireSize = formatDecimal(wireSize, 1);

@@ -10,7 +10,8 @@
         systemPhaseType,
         totalLoad,
         volts,
-        rowConduitType
+        rowWireType,
+        rowConduitType,
     } from "../stores/dataStore";
 
     import {showSpecForm} from "../stores/uiStore";
@@ -49,7 +50,7 @@
 <!-- EXACT markup for floor area, occupancy selects, system phase, volts -->
 <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
     <h2 class="text-lg font-semibold text-gray-800 mb-3">Load Specifications</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
         <div class="h-20 py-4">
             <label for="floorArea" class="block text-gray-700 text-sm font-bold mb-2">
                 Floor Area:
@@ -128,6 +129,21 @@
                 {#each constants.phaseTypes as {label, value}}
                     <option value={value}>{label}</option>
                 {/each}
+            </select>
+        </div>
+
+        <div class="h-20 py-4">
+            <label for="rowConduitType" class="block text-gray-700 text-sm font-bold mb-2">
+                Individual Wire Type
+            </label>
+            <select
+                    bind:value={$rowWireType}
+                    required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+                <option value={null}>-- Select --</option>
+                <option value="THHN">THHN</option>
+                <option value="THW">THW</option>
             </select>
         </div>
 

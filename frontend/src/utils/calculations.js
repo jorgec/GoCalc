@@ -96,13 +96,13 @@ export function determineWireSizeAndType(loadSpec) {
         return { wireSize: 0.0, wireType: [] };
     }
     const wireSizingData = constants.wireSizingData.entries;
-    const $volts = get(volts); // Get current volts value
+    const volts = loadSpec.volts;
 
     let loadType = loadSpec.category;
     let amperage = 0;
 
-    if (loadSpec.subtotal && loadSpec.subtotal > 0 && $volts > 0) {
-        amperage = parseFloat(loadSpec.subtotal) / parseFloat($volts)
+    if (loadSpec.subtotal && loadSpec.subtotal > 0 && volts > 0) {
+        amperage = parseFloat(loadSpec.subtotal) / parseFloat(volts)
     }
 
     if (loadType === "Lighting") {
@@ -145,7 +145,6 @@ export function determineWireSizeAndType(loadSpec) {
         loadType = "Other Loads"
     }
 
-
     let matchedEntry = null;
     for (const entry of wireSizingData) {
         if (entry["Load Type"] === loadType) {
@@ -153,16 +152,8 @@ export function determineWireSizeAndType(loadSpec) {
             break;
         }
     }
-
-    if (!matchedEntry) {
-        for (const entry of wireSizingData) {
-            const entryAmp = parseFloat(entry.Amp);
-            if(amperage <= entryAmp) {
-                matchedEntry = entry;
-                break;
-            }
-        }
-    }
+    console.log("=======matchedEntry========");
+    console.log(matchedEntry);
 
     if (matchedEntry) {
         return {
@@ -170,10 +161,7 @@ export function determineWireSizeAndType(loadSpec) {
             wireType: ["THHN"]
         };
     } else {
-        return {
-            wireSize: 0.00,
-            wireType: []
-        };
+        return null;
     }
 }
 

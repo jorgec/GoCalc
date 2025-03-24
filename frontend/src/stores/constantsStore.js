@@ -418,8 +418,7 @@ const defaultConstants = {
                 "Load Type": "Lighting",
                 "Wire Size": 2.00,
                 "Wire Type": [
-                    "THHN",
-                    "THWN-2"
+                    "THHN"
                 ]
             },
             {
@@ -432,9 +431,18 @@ const defaultConstants = {
                 ]
             },
             {
+                "Amp": 20,
+                "Load Type": "Kitchen Load",
+                "Wire Size": 3.5,
+                "Wire Type": [
+                    "THHN",
+                    "THWN-2"
+                ]
+            },
+            {
                 "Amp": 25,
                 "Load Type": "Small Appliance Circuits",
-                "Wire Size": 5.50,
+                "Wire Size": 5.5,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -443,43 +451,7 @@ const defaultConstants = {
             {
                 "Amp": 30,
                 "Load Type": "Air-Conditioning Unit",
-                "Wire Size": 8.0,
-                "Wire Type": [
-                    "THHN",
-                    "THWN-2"
-                ]
-            },
-            {
-                "Amp": 30,
-                "Load Type": "Water Heater",
-                "Wire Size": 8.0,
-                "Wire Type": [
-                    "THHN",
-                    "THWN-2"
-                ]
-            },
-            {
-                "Amp": 50,
-                "Load Type": "Electric Range",
-                "Wire Size": 14.0,
-                "Wire Type": [
-                    "THHN",
-                    "THWN-2"
-                ]
-            },
-            {
-                "Amp": 50,
-                "Load Type": "Electric Oven",
-                "Wire Size": 14.0,
-                "Wire Type": [
-                    "THHN",
-                    "THWN-2"
-                ]
-            },
-            {
-                "Amp": 60,
-                "Load Type": "Tonner ACU",
-                "Wire Size": 22.0,
+                "Wire Size": 5.5,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -487,34 +459,115 @@ const defaultConstants = {
             },
             {
                 "Amp": 20,
-                "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
-                "Wire Size": 5.50,
+                "Load Type": "Water Pump",
+                "Wire Size": 3.5,
                 "Wire Type": [
                     "THHN",
-                    "THWN-2",
-                    "RHW-2"
+                    "THWN-2"
+                ]
+            },
+            // {
+            //     "Amp": 50,
+            //     "Load Type": "Electric Range",
+            //     "Wire Size": 14.0,
+            //     "Wire Type": [
+            //         "THHN",
+            //         "THWN-2"
+            //     ]
+            // },
+            // {
+            //     "Amp": 50,
+            //     "Load Type": "Electric Oven",
+            //     "Wire Size": 14.0,
+            //     "Wire Type": [
+            //         "THHN",
+            //         "THWN-2"
+            //     ]
+            // },
+            {
+                "Amp": 30,
+                "Load Type": "Tonner ACU",
+                "Wire Size": 5.5,
+                "Wire Type": [
+                    "THHN",
+                    "THWN-2"
                 ]
             },
             {
-                "Amp": 40,
-                "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
-                "Wire Size": 14.00,
+                "Amp": 20,
+                "Load Type": "Water Pump",
+                "Wire Size": 3.5,
                 "Wire Type": [
                     "THHN",
-                    "THWN-2",
-                    "RHW-2"
+                    "THWN-2"
                 ]
             },
             {
-                "Amp": 80,
-                "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
-                "Wire Size": 38.00,
+                "Amp": 20,
+                "Load Type": "Freezer",
+                "Wire Size": 3.5,
                 "Wire Type": [
                     "THHN",
-                    "THWN-2",
-                    "RHW-2"
+                    "THWN-2"
                 ]
-            }
+            },
+            {
+                "Amp": 20,
+                "Load Type": "Dishwasher",
+                "Wire Size": 3.5,
+                "Wire Type": [
+                    "THHN",
+                    "THWN-2"
+                ]
+            },
+            {
+                "Amp": 20,
+                "Load Type": "Washing Machine",
+                "Wire Size": 3.5,
+                "Wire Type": [
+                    "THHN",
+                    "THWN-2"
+                ]
+            },
+            {
+                "Amp": 20,
+                "Load Type": "Compressor",
+                "Wire Size": 3.5,
+                "Wire Type": [
+                    "THHN",
+                    "THWN-2"
+                ]
+            },
+            // {
+            //     "Amp": 20,
+            //     "Load Type": "Motor Load (1 HP - 3 HP, 230V)",
+            //     "Wire Size": 5.50,
+            //     "Wire Type": [
+            //         "THHN",
+            //         "THWN-2",
+            //         "RHW-2"
+            //     ]
+            // },
+            // {
+            //     "Amp": 40,
+            //     "Load Type": "Motor Load (5 HP - 10 HP, 230V)",
+            //     "Wire Size": 14.00,
+            //     "Wire Type": [
+            //         "THHN",
+            //         "THWN-2",
+            //         "RHW-2"
+            //     ]
+            // },
+            // {
+            //     "Amp": 80,
+            //     "Load Type": "Motor Load (15 HP - 20 HP, 230V)",
+            //     "Wire Size": 38.00,
+            //     "Wire Type": [
+            //         "THHN",
+            //         "THWN-2",
+            //         "RHW-2"
+            //     ]
+            // }
         ]
     }
 }
@@ -596,3 +649,5 @@ export function lookupWattage(hp, volts, phase) {
     }
     return (ampCol * volts).toFixed(2) || undefined;
 }
+
+window.myConstants = constants;
