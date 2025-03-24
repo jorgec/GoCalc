@@ -16,8 +16,9 @@
     import {loadCurrentIFL} from "../utils/calculations.js";
     import {wireDataLookup} from "../utils/lookups.js";
     import {recalcSpecifications} from "../utils/mutators.js";
+    import wire_lookup from "../assets/images/wire_lookup.jpg";
 
-    import {showMaterialsInventory} from "../stores/uiStore";
+    import {showMaterialsInventory, showImageModal, modalImage} from "../stores/uiStore";
 
     import {
         derivedHighestNonTrivialLoad,
@@ -46,6 +47,13 @@
             "Wire Types": wireTypes,
         }
         SaveMaterialInventory(materialInventory);
+    }
+
+    function prepImageModal(src){
+        if(src === "wire_lookup"){
+            modalImage.set(wire_lookup);
+        }
+        showImageModal.set(true);
     }
 
     function ArmMaterialInventory(){
@@ -143,8 +151,10 @@
                 {#if wireRecommendation}
                     <div class="my-4 p-4 text-gray-900 bg-green-200">
 
-                        Use <strong>2 - {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}
-                        ) {$globalWireType} wires</strong>
+                        Use <strong>2 - <a href="#!" on:click|preventDefault={() => prepImageModal("wire_lookup")} class="underline">
+                        {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}
+                        ) {$globalWireType}</a> wires</strong>
+
                         in
                         <strong>
                             {#if $globalConduitType === "PVC"}

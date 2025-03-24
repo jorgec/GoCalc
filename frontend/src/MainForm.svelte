@@ -6,7 +6,7 @@
     import SidePanel from "./components/SidePanel.svelte";
     import CsvDataTable from "./components/CsvDataTable.svelte";
     import MaterialsInventory from './components/MaterialsInventory.svelte';
-
+    import ImageModal from "./components/ImageModal.svelte";
 
     import {
         showConsole,
@@ -14,7 +14,8 @@
         showLoadSpecs,
         showMaterialsInventory,
         showSpecForm,
-        statusMessage
+        statusMessage,
+        showImageModal, modalImage
     } from "./stores/uiStore"; // Import statusMessage and showLoadSpecs/showSpecForm
     import {loadSpecifications, systemPhaseType} from "./stores/dataStore";
     import {csvData} from "./stores/derivedStore";
@@ -42,6 +43,8 @@
     }
 
 
+
+
     function closeErrorModal() {
         statusMessage.set({text: null, type: null});
     }
@@ -56,6 +59,11 @@
 </script>
 
 <div class="flex flex-col h-screen">
+    {#if $showImageModal && $modalImage}
+        <ImageModal on:close={() => $showImageModal = false}>
+            <img src={$modalImage} alt="{$modalImage}" style="max-width: 100%;" />
+        </ImageModal>
+    {/if}
     <Header/>
 
     <div class="flex flex-1 bg-gray-200 overflow-auto">
