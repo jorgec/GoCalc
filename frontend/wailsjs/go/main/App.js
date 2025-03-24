@@ -14,10 +14,18 @@ export function LoadJSONFile() {
   return window['go']['main']['App']['LoadJSONFile']();
 }
 
+export function LoadMaterialInventory() {
+  return window['go']['main']['App']['LoadMaterialInventory']();
+}
+
 export function SaveConstants(arg1) {
   return window['go']['main']['App']['SaveConstants'](arg1);
 }
 
 export function SaveFile(arg1) {
   return window['go']['main']['App']['SaveFile'](arg1);
+}
+
+export function SaveMaterialInventory(arg1) {
+  return window['go']['main']['App']['SaveMaterialInventory'](arg1);
 }

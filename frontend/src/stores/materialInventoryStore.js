@@ -14,7 +14,7 @@ export const materialDictionary = materialConstants["Inventory"];
 export const wireTypes = materialConstants["Wire Types"];
 
 // Store for brands
-const initialBrands = materialConstants["brands"];
+export const initialBrands = materialConstants["brands"];
 export const brands = writable(initialBrands);
 // Function to add a brand
 export function addBrand(newBrand) {

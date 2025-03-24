@@ -36,10 +36,14 @@
 
     let newMotorName = '';
     let customCat = null;
+    let customCatTitle = 'Motor';
 
     function addCustomModal(cat) {
         addCustomMotorFlag = true;
         customCat = cat;
+        if(cat !== 3){
+            customCatTitle = 'Load';
+        }
     }
 
     function prepAddLoadSpecification() {
@@ -77,7 +81,7 @@
         <div class="bg-white rounded-lg shadow-lg w-96">
             <!-- Modal Header -->
             <div class="px-4 py-3 border-b flex justify-between items-center">
-                <h2 class="text-lg font-semibold">Add Custom Motor</h2>
+                <h2 class="text-lg font-semibold">Add Custom {customCatTitle}</h2>
                 <button class="text-gray-500 hover:text-gray-700" on:click={() => addCustomMotorFlag = false}>
                     ✖
                 </button>
@@ -252,7 +256,7 @@
 
                     <!-- 3 Gang -->
                     <div class="flex flex-col">
-                        <label class="text-gray-700 text-xs font-medium">3 Gang</label>
+                        <label class="text-gray-700 text-xs font-medium">3 Way</label>
                         <input
                                 type="number"
                                 min="0"

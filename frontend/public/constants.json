@@ -237,6 +237,26 @@
           "value": 2
         },
         {
+          "label": "Freezer",
+          "unit_load": 1,
+          "value": 8
+        },
+        {
+          "label": "Dishwasher",
+          "unit_load": 1,
+          "value": 10
+        },
+        {
+          "label": "Washing Machine",
+          "unit_load": 1,
+          "value": 11
+        },
+        {
+          "label": "Compressor",
+          "unit_load": 1,
+          "value": 12
+        },
+        {
           "label": "Booster Pump",
           "unit_load": 1,
           "value": 3
@@ -262,29 +282,9 @@
           "value": 7
         },
         {
-          "label": "Freezer",
-          "unit_load": 1,
-          "value": 8
-        },
-        {
           "label": "Sump Pump",
           "unit_load": 1,
           "value": 9
-        },
-        {
-          "label": "Dishwasher",
-          "unit_load": 1,
-          "value": 10
-        },
-        {
-          "label": "Washing Machine",
-          "unit_load": 1,
-          "value": 11
-        },
-        {
-          "label": "Compressor",
-          "unit_load": 1,
-          "value": 12
         },
         {
           "label": "Condenser",
@@ -295,21 +295,6 @@
           "label": "Blower",
           "unit_load": 1,
           "value": 14
-        },
-        {
-          "label": "New Motor",
-          "unit_load": 1,
-          "value": 999
-        },
-        {
-          "label": "asgasg",
-          "unit_load": 1,
-          "value": 999
-        },
-        {
-          "label": "New Custom Motor",
-          "unit_load": 1,
-          "value": 999
         }
       ],
       "value": 3
@@ -349,6 +334,16 @@
         },
         {
           "label": "Other Load",
+          "unit_load": 1,
+          "value": 999
+        },
+        {
+          "label": "asdgasdg",
+          "unit_load": 1,
+          "value": 999
+        },
+        {
+          "label": "asdf1234$$",
           "unit_load": 1,
           "value": 999
         }
@@ -517,7 +512,7 @@
       {
         "Amp": 15,
         "Load Type": "Lighting",
-        "Wire Size": 2.00,
+        "Wire Size": 2,
         "Wire Type": [
           "THHN"
         ]
@@ -525,7 +520,7 @@
       {
         "Amp": 20,
         "Load Type": "Convenience outlet",
-        "Wire Size": 3.50,
+        "Wire Size": 3.5,
         "Wire Type": [
           "THHN"
         ]

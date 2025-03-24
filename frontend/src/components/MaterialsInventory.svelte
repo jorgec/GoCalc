@@ -3,13 +3,14 @@
     import {
         addBrand,
         addItemToCategory,
-        brands,
         inventory,
         laborCost,
         laborPercentage,
         logisticsCost,
         materialDictionary,
-        materialsCost, materialsInventory, totalInventoryCost,
+        materialsCost,
+        materialsInventory,
+        totalInventoryCost,
         totalProjectCost,
         wireTypes
     } from '../stores/materialInventoryStore';
@@ -21,7 +22,7 @@
     const selectedCategory = writable('');
     const selectedItem = writable('');
     const selectedBrand = writable('');
-
+    const unit = writable('');
     const quantity = writable(1);
 
     // Extract category names from materialDictionary
@@ -98,7 +99,8 @@
 
         const newItem = {
             slug: slug,
-            Unit: selectedItemDetails.Unit,
+            // Unit: selectedItemDetails.Unit,
+            Unit: $unit,
             Description: description,
             "Unit Price": unitPrice.toFixed(2), // Use stored price
             Brand: $selectedBrand,
@@ -117,6 +119,8 @@
 
         selectedItem.set('');
         selectedBrand.set('');
+        unit.set('');
+        unitPrice = 0;
         quantity.set(1);
     }
 
@@ -142,9 +146,9 @@
     let newItemUnit = '';
 
     function addNewItemToList() {
-        if(newItemUnit === '' || newItemDescription === ''){
+        if (newItemUnit === '' || newItemDescription === '') {
             statusMessage.set({text: "Name or Unit can't be empty", type: 'error'});
-        }else{
+        } else {
             const slug = slugify(newItemDescription, newItemUnit).join("-");
             const newAddedItem = {
                 "slug": slug,
@@ -256,28 +260,6 @@
         </div>
     {/if}
     <h2 class="text-lg font-semibold text-gray-800 mb-3">Add New Inventory Item</h2>
-    <!-- Adjustments -->
-    <div class="bg-white shadow-sm rounded-lg p-4 border border-gray-200 mt-6">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Project Cost Adjustments</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Labor Input -->
-            <div class="flex flex-col">
-                <label for="labor" class="text-sm font-medium text-gray-700 mb-1">Labor (%)</label>
-                <input id="labor" type="number" step="0.01" min="0" max="100" bind:value={$laborPercentage}
-
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-            </div>
-
-            <!-- Logistics Input -->
-            <div class="flex flex-col">
-                <label for="logistics" class="text-sm font-medium text-gray-700 mb-1">Logistics Cost (₱)</label>
-                <input id="logistics" type="number" step="0.01" min="0" bind:value={$logisticsCost}
-                       on:input={(e) => logisticsCost.set(Number(e.target.value))}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-            </div>
-        </div>
-    </div>
     <div>
         <div class="flex flex-wrap items-center justify-start gap-4">
             <div class="flex flex-col h-20 py-4">
@@ -295,7 +277,8 @@
                 <label for="item" class="block text-gray-700 text-sm font-bold mb-2">
                     Item
                     {#if $selectedCategory !== ''}
-                        <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1" on:click={() => showAddItem = true}>
+                        <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1"
+                                on:click={() => showAddItem = true}>
                             Add
                         </button>
                     {/if}
@@ -327,19 +310,29 @@
             <div class="flex flex-col h-20 py-4">
                 <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
                     Brand
-                    <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1" on:click={() => showAddBrand = true}>
-                        Add
-                    </button>
+                    <!--                    <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1" on:click={() => showAddBrand = true}>-->
+                    <!--                        Add-->
+                    <!--                    </button>-->
                 </label>
-                <select
-                        id="brand"
-                        bind:value={$selectedBrand}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option value="" disabled selected>Select Brand</option>
-                    {#each $brands as brand}
-                        <option value="{brand}">{brand}</option>
-                    {/each}
-                </select>
+                <!--                <select-->
+                <!--                        id="brand"-->
+                <!--                        bind:value={$selectedBrand}-->
+                <!--                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">-->
+                <!--                    <option value="" disabled selected>Select Brand</option>-->
+                <!--                    {#each $brands as brand}-->
+                <!--                        <option value="{brand}">{brand}</option>-->
+                <!--                    {/each}-->
+                <!--                </select>-->
+                <input id="brand" type="text" bind:value={$selectedBrand}
+                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+            </div>
+            <div class="flex flex-col h-20 py-4">
+                <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
+                    Unit
+                </label>
+
+                <input id="unit" type="text" bind:value={$unit}
+                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
             </div>
             <div class="flex flex-col h-20 py-4">
                 <label for="unitPrice" class="block text-gray-700 text-sm font-bold mb-2">Unit Price</label>
@@ -364,6 +357,30 @@
 
     <!-- Inventory Table -->
     <div class="bg-white shadow-sm rounded-lg p-4 border border-gray-200 mt-6">
+
+        <!-- Adjustments -->
+        <div class="bg-white shadow-sm rounded-lg p-4 border border-gray-200 mt-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Project Cost Adjustments</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Labor Input -->
+                <div class="flex flex-col">
+                    <label for="labor" class="text-sm font-medium text-gray-700 mb-1">Labor (%)</label>
+                    <input id="labor" type="number" step="0.01" min="0" max="100" bind:value={$laborPercentage}
+
+                           class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+                </div>
+
+                <!-- Logistics Input -->
+                <div class="flex flex-col">
+                    <label for="logistics" class="text-sm font-medium text-gray-700 mb-1">Logistics Cost (₱)</label>
+                    <input id="logistics" type="number" step="0.01" min="0" bind:value={$logisticsCost}
+                           on:input={(e) => logisticsCost.set(Number(e.target.value))}
+                           class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+                </div>
+            </div>
+        </div>
+
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Inventory Summary</h2>
 
         <!-- Check if inventory has items -->
@@ -372,10 +389,9 @@
                 <table class="min-w-full border-collapse border border-gray-300">
                     <thead class="bg-gray-100">
                     <tr>
-                        <th class="border border-gray-300 px-4 py-2">Item</th>
-                        <th class="border border-gray-300 px-4 py-2">Brand</th>
                         <th class="border border-gray-300 px-4 py-2">Quantity</th>
                         <th class="border border-gray-300 px-4 py-2">Unit</th>
+                        <th class="border border-gray-300 px-4 py-2">Description</th>
                         <th class="border border-gray-300 px-4 py-2">Unit Price</th>
                         <th class="border border-gray-300 px-4 py-2">Subtotal</th>
                         <th class="border border-gray-300 px-4 py-2">Actions</th>
@@ -392,10 +408,9 @@
                         {#each items as item, index}
                             <tr class="text-gray-700">
                             <tr class="text-gray-700">
-                                <td class="border border-gray-300 px-4 py-2">{item.Description}</td>
-                                <td class="border border-gray-300 px-4 py-2">{item.Brand}</td>
                                 <td class="border border-gray-300 px-4 py-2">{item.Quantity}</td>
                                 <td class="border border-gray-300 px-4 py-2">{item.Unit}</td>
+                                <td class="border border-gray-300 px-4 py-2">{item.Description} {item.Brand}</td>
                                 <td class="border border-gray-300 px-4 py-2">₱{formatNumber(item["Unit Price"])}</td>
                                 <td class="border border-gray-300 px-4 py-2">₱{formatNumber(item.Subtotal)}</td>
                                 <td class="border border-gray-300 px-4 py-2 text-center">
