@@ -3,6 +3,8 @@
 
 export function AllowClose():Promise<void>;
 
+export function GetStoredHash():Promise<string>;
+
 export function LoadConstants():Promise<Record<string, any>>;
 
 export function LoadJSONFile():Promise<string>;

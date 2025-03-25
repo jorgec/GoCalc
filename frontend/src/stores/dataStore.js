@@ -3,6 +3,7 @@ import { writable } from 'svelte/store';
 import {SaveConstants} from "../../wailsjs/go/main/App.js";
 
 // Basic fields
+export const isUnlocked = writable(false);
 export const projectName = writable('');
 export const projectLocation = writable('');
 export const projectOwner = writable('');

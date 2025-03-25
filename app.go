@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -233,4 +234,48 @@ func (a *App) LoadMaterialInventory() (map[string]interface{}, error) {
 	}
 
 	return constants, nil
+}
+
+func (a *App) GetStoredHash() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("could not find executable path: %w", err)
+	}
+
+	exeDir := filepath.Dir(exePath)
+	passwordFilePath := filepath.Join(exeDir, "password")
+
+	file, err := os.Open(passwordFilePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to open 'password' file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	if scanner.Scan() {
+		return scanner.Text(), nil
+	}
+	if err := scanner.Err(); err != nil {
+		return "", fmt.Errorf("failed to read 'password' file: %w", err)
+	}
+
+	return "", fmt.Errorf("password file is empty")
+}
+
+func (a *App) __GetStoredHash() (string, error) {
+	file, err := os.Open("password")
+	if err != nil {
+		return "", fmt.Errorf("failed to open 'password' file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	if scanner.Scan() {
+		return scanner.Text(), nil
+	}
+	if err := scanner.Err(); err != nil {
+		return "", fmt.Errorf("failed to read 'password' file: %w", err)
+	}
+
+	return "", fmt.Errorf("password file is empty")
 }

@@ -12,7 +12,7 @@
         materialsInventory,
         totalInventoryCost,
         totalProjectCost,
-        wireTypes
+        wireTypes, brands
     } from '../stores/materialInventoryStore';
     import {derived, writable} from 'svelte/store';
     import {slugify} from '../utils/misc.js';
@@ -272,7 +272,20 @@
                     {/each}
                 </select>
             </div>
+            <div class="flex flex-col h-20 py-4">
+                <label for="quantity" class="block text-gray-700 text-sm font-bold mb-2">Quantity</label>
+                <input id="quantity" type="number" bind:value={$quantity} min="1"
+                       on:input={(e) => quantity.set(Number(e.target.value))}
+                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+            </div>
+            <div class="flex flex-col h-20 py-4">
+                <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
+                    Unit
+                </label>
 
+                <input id="unit" type="text" bind:value={$unit}
+                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+            </div>
             <div class="flex flex-col h-20 py-4">
                 <label for="item" class="block text-gray-700 text-sm font-bold mb-2">
                     Item
@@ -310,41 +323,29 @@
             <div class="flex flex-col h-20 py-4">
                 <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
                     Brand
-                    <!--                    <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1" on:click={() => showAddBrand = true}>-->
-                    <!--                        Add-->
-                    <!--                    </button>-->
+                                        <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1" on:click={() => showAddBrand = true}>
+                                            Add
+                                        </button>
                 </label>
-                <!--                <select-->
-                <!--                        id="brand"-->
-                <!--                        bind:value={$selectedBrand}-->
-                <!--                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">-->
-                <!--                    <option value="" disabled selected>Select Brand</option>-->
-                <!--                    {#each $brands as brand}-->
-                <!--                        <option value="{brand}">{brand}</option>-->
-                <!--                    {/each}-->
-                <!--                </select>-->
-                <input id="brand" type="text" bind:value={$selectedBrand}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+                    <select
+                            id="brand"
+                            bind:value={$selectedBrand}
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="" disabled selected>Select Brand</option>
+                        {#each $brands as brand}
+                            <option value="{brand}">{brand}</option>
+                        {/each}
+                    </select>
+<!--                <input id="brand" type="text" bind:value={$selectedBrand}-->
+<!--                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">-->
             </div>
-            <div class="flex flex-col h-20 py-4">
-                <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
-                    Unit
-                </label>
 
-                <input id="unit" type="text" bind:value={$unit}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-            </div>
             <div class="flex flex-col h-20 py-4">
                 <label for="unitPrice" class="block text-gray-700 text-sm font-bold mb-2">Unit Price</label>
                 <input id="unitPrice" type="number" bind:value={unitPrice} min="1"
                        class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
             </div>
-            <div class="flex flex-col h-20 py-4">
-                <label for="quantity" class="block text-gray-700 text-sm font-bold mb-2">Quantity</label>
-                <input id="quantity" type="number" bind:value={$quantity} min="1"
-                       on:input={(e) => quantity.set(Number(e.target.value))}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-            </div>
+
 
         </div>
         <div class="my-3">

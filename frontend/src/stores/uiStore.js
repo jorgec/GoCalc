@@ -15,3 +15,5 @@ export const statusMessage = writable({ text: '', type: '' }); // { text: string
 
 export const showMaterialsInventory = writable(false);
 
+export const showImageModal = writable(false);
+export const modalImage = writable('');

@@ -98,7 +98,7 @@ export function determineWireParams(wireSize_metric) {
 
 export function determineWireSize(loadSpec, baseRating, wireType = "THHN") {
     const wireSizingData = constants.wireSizingData;
-    const key = wireType === "THHN" ? "THHN_rating" :
+    let key = wireType === "THHN" ? "THHN_rating" :
         wireType === "THW" ? "THW_rating" :
             null;
 
@@ -107,7 +107,17 @@ export function determineWireSize(loadSpec, baseRating, wireType = "THHN") {
     }
 
     const v = get(volts);
-    const rating = parseFloat(baseRating) / v;
+    let rating = parseFloat(baseRating) / v;
+    if(loadSpec.category === "Motor"){
+        // console.log("original rating: " + baseRating + "/" + v + "=" + rating);
+        rating = rating * 1.75;
+        key = "branch_AT";
+    }
+    if(loadSpec.category === "Kitchen Load"){
+        key = "branch_AT";
+    }
+
+    // console.log("adjusted rating: " + rating);
 
     // First, try to find a matching entry in wireSizingData
     let matchingLoadEntry = null;
@@ -134,7 +144,7 @@ export function determineWireSize(loadSpec, baseRating, wireType = "THHN") {
         let requiredMinSize = 0;
 
         if (loadSpec.category === "Motor") {
-            requiredMinSize = 5.5;
+            requiredMinSize = 3.5;
         } else if (loadSpec.category === "Lighting") {
             // No minimum size constraint, use normal logic
             candidateWires = wireDataTable.filter(row => row[key] >= rating);
