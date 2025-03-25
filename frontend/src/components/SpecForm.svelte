@@ -21,7 +21,7 @@
     import {constants, updateConstant, hp_lookup, lookupWattage} from "../stores/constantsStore";
     import {addAnotherLightingRow, addLoadSpecification, removeLightingRow, resetSpecForm, recalcSpecifications} from "../utils/mutators";
 
-    import {showLightingInput, showSpecForm, statusMessage} from "../stores/uiStore";
+    import {modalImage, showLightingInput, showSpecForm, statusMessage} from "../stores/uiStore";
 
     const hpKeys =[...hp_lookup.keys()];
 
@@ -31,6 +31,7 @@
         ? constants.loadSpecificationCategories[catIndex]
         : null;
     $: hasCategoryTypes = !!(chosenCategory?.types?.length && catIndex !== 0);
+    import motor_table from "../assets/images/motor_table.jpg";
 
     let addCustomMotorFlag = false;
 
@@ -364,7 +365,8 @@
         {#if catIndex === 3}
             <div class="h-20 py-4">
             <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
-                HP:
+                HP
+                (<a href="#!" on:click|preventDefault={() => modalImage.set(motor_table)} class="underline">reference</a>)
             </label>
                 <select
                         id="category"

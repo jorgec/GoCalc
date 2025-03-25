@@ -16,10 +16,11 @@
     import {loadCurrentIFL} from "../utils/calculations.js";
     import {wireDataLookup} from "../utils/lookups.js";
     import {recalcSpecifications} from "../utils/mutators.js";
-    import wire_lookup from "../assets/images/wire_lookup.jpg";
 
     import {showMaterialsInventory, showImageModal, modalImage} from "../stores/uiStore";
-
+    import wire_table from "../assets/images/wire_table.jpg";
+    import conduit_table from "../assets/images/conduit_table.jpg";
+    import overcurrent_protection from "../assets/images/overcurrent_protection.jpg";
     import {
         derivedHighestNonTrivialLoad,
         serviceEntranceAmpacity,
@@ -47,17 +48,6 @@
             "Wire Types": wireTypes,
         }
         SaveMaterialInventory(materialInventory);
-    }
-
-    function prepImageModal(src){
-        if(src === "wire_lookup"){
-            modalImage.set(wire_lookup);
-        }
-        showImageModal.set(true);
-    }
-
-    function ArmMaterialInventory(){
-
     }
 
 </script>
@@ -151,12 +141,13 @@
                 {#if wireRecommendation}
                     <div class="my-4 p-4 text-gray-900 bg-green-200">
 
-                        Use <strong>2 - <a href="#!" on:click|preventDefault={() => prepImageModal("wire_lookup")} class="underline">
+                        Use <strong>2 - <a href="#!" on:click|preventDefault={() => modalImage.set(wire_table)} class="underline">
                         {wireRecommendation.wiresize_metric} ({wireRecommendation.wiresize_awg}
                         ) {$globalWireType}</a> wires</strong>
 
                         in
                         <strong>
+                            <a href="#!" on:click|preventDefault={() => modalImage.set(conduit_table)} class="underline">
                             {#if $globalConduitType === "PVC"}
                                 {wireRecommendation.conduitsize_metric_pvc}
                                 ({wireRecommendation.conduitsize_imperial_pvc}) Ø {$globalConduitType} pipe
@@ -164,11 +155,16 @@
                                 {wireRecommendation.conduitsize_metric_rmc}
                                 ({wireRecommendation.conduitsize_imperial_rmc}) Ø {$globalConduitType} pipe
                             {/if}
+                            </a>
                         </strong>
                     </div>
                     <div class="my-4 p-4 text-gray-900 bg-green-200">
                         Use
-                        <strong>1 - {wireRecommendation.entrance_AT} AT, 2P, {$volts}V 10 KAIC MCCB</strong>
+                        <strong>1 -
+                            <a href="#!" on:click|preventDefault={() => modalImage.set(overcurrent_protection)} class="underline">
+                                {wireRecommendation.entrance_AT} AT, 2P, {$volts}V 10 KAIC MCCB
+                            </a>
+                        </strong>
                         for Overcurrent Protection
                     </div>
                 {:else }

@@ -91,7 +91,6 @@
         return hashHex === storedHash;
     }
 
-
     let storedHash = "";
 
     onMount(async () => {
@@ -103,12 +102,21 @@
         }
     });
 
+    $: if ($modalImage !== null) {
+        showImageModal.set(true);
+    }
+
+    function closeModal(){
+        showImageModal.set(false);
+        modalImage.set(null);
+    }
+
 </script>
 
 <div class="flex flex-col h-screen">
     {#if $isUnlocked}
         {#if $showImageModal && $modalImage}
-            <ImageModal on:close={() => $showImageModal = false}>
+            <ImageModal on:close={closeModal}>
                 <img src={$modalImage} alt="{$modalImage}" style="max-width: 100%;"/>
             </ImageModal>
         {/if}
