@@ -6,6 +6,10 @@ export function AllowClose() {
   return window['go']['main']['App']['AllowClose']();
 }
 
+export function GetStoredHash() {
+  return window['go']['main']['App']['GetStoredHash']();
+}
+
 export function LoadConstants() {
   return window['go']['main']['App']['LoadConstants']();
 }
