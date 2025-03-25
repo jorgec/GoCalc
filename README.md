@@ -1,76 +1,147 @@
-# README
+# GoCalc - Electrical Load Calculator and Material Cost Estimator
 
 ## About
 
-Go (Golang) is a performant, statically typed language designed for simplicity and efficiency, ideal for backend
-development. Go was designed by Google in 2006 with modern computing in mind, including multicore processors, cloud-based infrastructure,
-and networked systems. Its features cater to the needs of developers building scalable and efficient software in today's
-distributed computing environments.
+### Why JavaScript and Svelte?
+JavaScript is one of the most widely used programming languages for creating interactive web interfaces. Svelte is a modern, reactive JavaScript framework that compiles your code into highly efficient, minimal runtime JavaScript. It allows you to build powerful and fast web applications with less overhead compared to other frameworks.
 
-For developers, Go offers a blend of performance, efficiency, and developer-friendly features, making it a compelling
-choice for a wide range of applications, from command-line tools and APIs to large-scale web services.
+### Why Go?
+Go (Golang) is a performant, statically typed language designed for simplicity and efficiency, ideal for backend development. It was created by Google in 2006 with modern computing in mind, including multicore processors, cloud-based infrastructure, and networked systems. Go’s concurrency model (goroutines and channels) and its straightforward syntax make it an excellent choice for building scalable, high-performance software.
 
-When used with Wails, a framework that allows Go to communicate with a frontend built in JavaScript (or web
-technologies like Svelte, React), it enables the creation of cross-platform desktop applications. This combination
-leverages Go's speed and robustness, JavaScript's versatility, and Wails' seamless bridge between them, making it an
-excellent stack for developers looking to build fast, native, cross-platform desktop apps with web technology frontends.
+### Why Wails?
+Wails allows you to build desktop applications for Windows, macOS, and Linux using Go for the backend logic and modern web technologies (like Svelte, React, Vue, or plain JavaScript/HTML/CSS) for the frontend. It essentially bridges Go to the frontend, so your Go code can directly interact with your web UI. This makes Wails ideal for developers who prefer Go for server-side or business logic, but want the convenience and flexibility of a JavaScript-based frontend.
+
+---
 
 ## Installation Instructions
 
-Follow these steps to clone the project repository and install the necessary dependencies
+Below are instructions for installing from scratch on Windows and macOS, ensuring you have all prerequisites to work with Wails 2.10.
 
 ### Prerequisites
 
-Ensure you have the following installed:
+You will need the following:
 
-- Git
-- Go (1.18 or newer recommended)
-- Node.js (LTS version recommended)
-- npm (comes with Node.js)
+1. **Git**
+    - **Windows**: [Download Git for Windows](https://git-scm.com/download/win) and run the installer.
+    - **macOS**: Git is typically installed by default on macOS. If not, install [Xcode Command Line Tools](https://developer.apple.com/download/all/) or use [Homebrew](https://brew.sh/) (`brew install git`).
 
-### Step 1: Clone the Project
+2. **Go (1.18 or newer recommended)**
+    - **Windows**: [Download Go](https://go.dev/dl/) for Windows and run the installer. Follow the prompts.
+    - **macOS**: [Download Go](https://go.dev/dl/) for macOS and run the installer, or use Homebrew (`brew install go`).
 
-1. Open a terminal or command prompt.
-2. Clone the project repository by running:
+3. **Node.js (LTS version recommended) & npm**
+    - **Windows**: [Download Node.js](https://nodejs.org/) for Windows and run the installer.
+    - **macOS**: [Download Node.js](https://nodejs.org/) for macOS and run the installer, or use Homebrew (`brew install node`).
 
-```bash
-git clone https://github.com/jorgec/GoCalc
-```
+4. **Wails CLI (2.10 or newer)**  
+   You can install Wails via:
+   ```bash
+   go install github.com/wailsapp/wails/v2/cmd/wails@latest
+   ```
+   Make sure your `GOPATH/bin` (or the equivalent Go bin directory) is in your `PATH`.
 
-### Step 2: Install Go dependencies
+#### Verifying your installations
 
-Navigate to the project directory
+- **Git**: `git --version`
+- **Go**: `go version`
+- **Node**: `node -v`
+- **npm**: `npm -v`
+- **Wails**: `wails version`
 
-```bash
-cd GoCalc
-```
+---
 
-Install the Go dependencies by running:
+## Step-by-Step Installation
 
-```bash
-go mod tidy
-```
+1. **Clone the Project**
 
-Install Wails CLI by running:
+   ```bash
+   git clone https://github.com/jorgec/GoCalc
+   ```
+   Then navigate into the project directory:
+   ```bash
+   cd GoCalc
+   ```
 
-```bash
-go install github.com/wailsapp/wails/v2/cmd/wails@latest
-```
+2. **Install Go Dependencies**
 
-Navigate to the `frontend` directory and install node
+   In the `GoCalc` folder (the root of the project), run:
+   ```bash
+   go mod tidy
+   ```
 
-```bash
-cd frontend
-npm install
-```
+3. **Install Wails CLI**
+
+   Ensure you have Wails (2.10 or newer) installed:
+   ```bash
+   go install github.com/wailsapp/wails/v2/cmd/wails@latest
+   ```
+
+4. **Install Frontend Dependencies**
+
+   Navigate to the `frontend` folder:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+5. **(Optional) Return to Project Root**
+   ```bash
+   cd ..
+   ```
+
+### Notes for Windows Users
+
+- Make sure the folder where Go installs executables (usually `%USERPROFILE%\go\bin`) is in your `PATH`.
+- If `wails` is not recognized as a command, open a new terminal or command prompt after adjusting your system `PATH`.
+
+### Notes for macOS Users
+
+- Ensure you have a recent Go version installed (1.18 or above).
+- If `wails` is not recognized, ensure `$(go env GOPATH)/bin` is in your `PATH`.
+- You can manage installations easily using [Homebrew](https://brew.sh/).
+
+### Notes for Linux Users
+- I'm assuming that if you're on Linux, it would be pretty condescending for me to give you any instructions :)
+
+---
 
 ## Live Development
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+From the project root directory (where your `main.go` and `go.mod` reside), run:
 
-## Building
+```bash
+wails dev
+```
 
-To build a redistributable, production mode package, use `wails build`.
+This does two things:
+1. Spins up a Vite development server that automatically hot-reloads frontend changes.
+2. Provides a dev server on [http://localhost:34115](http://localhost:34115), where you can open your browser and access Go methods from devtools if desired.
+
+---
+
+## Password
+You can generate a `password` file using the bundled `bash` script:
+```bash
+ ./passgen.sh 'password'
+```
+Note that the password parameter should be enclosed by single quotes.
+
+For Windows, you can use the PowerShell script `passgen.ps1` or the batch file `passgen.bat`
+
+## Building for Production
+
+To build a redistributable, production-mode package, run:
+
+```bash
+wails build
+```
+
+After the build completes, you will have a cross-platform desktop application in the `build/bin` folder (depending on your configuration and OS). Distribute it to users just like any other native application.
+
+For MacOS, copy the generated password file to the `App` package, for example:
+```
+cp password "build/bin/GoCalc.app/Contents/MacOS/"
+```
+For Windows, just make sure the password file is in the same location as the executable
+
+---
