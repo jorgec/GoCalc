@@ -292,7 +292,7 @@ export function addLoadSpecification() {
         const typeLabel = catType ? catType.label : 'Unknown';
         const hp = get(horsepower);
         let _horsepower = (w / 746).toFixed(2);
-        if(idx === 3){
+        if(idx === 3){ // motors
             if(w === 0){
                 w = lookupWattage(hp, get(volts), get(systemPhaseType));
                 _horsepower = hp;

@@ -451,7 +451,7 @@ const defaultConstants = {
             {
                 "Amp": 30,
                 "Load Type": "Air-Conditioning Unit",
-                "Wire Size": 5.5,
+                "Wire Size": 3.5,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"
@@ -487,7 +487,7 @@ const defaultConstants = {
             {
                 "Amp": 30,
                 "Load Type": "Tonner ACU",
-                "Wire Size": 5.5,
+                "Wire Size": 3.5,
                 "Wire Type": [
                     "THHN",
                     "THWN-2"

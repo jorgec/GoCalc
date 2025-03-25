@@ -68,11 +68,18 @@ export const csvData = derived(
                 if(spec.category === 'Convenience Outlet'){
                     ratings = spec.name;
                 }else{
+                    const acronym = spec.name.match(/[A-Z]+[a-z]*|[a-z]+/g)?.map(w => w[0].toUpperCase()).join('') || '';
                     ratings = `${spec.quantity} ${spec.category} (${spec.name})`;
+                    if(spec.category === 'Motor'){
+                        ratings = `${spec.quantity} ${spec.category} (${spec.horsepower}HP ${acronym})`;
+                    }
                 }
             }
             const AnnotatedWireSizeAndType = "2 - " + wireParamsAnnotated.wiresize_metric + " (" + wireParamsAnnotated.wiresize_awg + ") " + spec.wireType;
-
+            let displayAT = wireParams.branch_AT;
+            // if(spec.category === 'Kitchen Load'){
+            //     displayAT = wireParams.entrance_AT;
+            // }
             let rowObj = {
                 CRKTno,
                 Load: loadStr,
@@ -98,7 +105,7 @@ export const csvData = derived(
                 KAIC: 10,
                 Pole: 2,
                 Type: "PLUG-IN",
-                AT: wireParams.branch_AT
+                AT: displayAT
             };
             const numericSubtotal = parseFloat(spec.subtotal) || 0;
             const ampLoadValue = $volts > 0 ? numericSubtotal / $volts : 0;
