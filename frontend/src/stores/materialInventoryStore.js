@@ -77,7 +77,7 @@ export function removeItemFromCategory(category, itemSlug) {
 }
 
 // Derived calculations
-export const materialsCost = derived(totalInventoryCost, $total => $total * 1.25);
+export const materialsCost = derived(totalInventoryCost, $total => $total );
 export const laborCost = derived([totalInventoryCost, laborPercentage], ([$total, $labor]) => $total * ($labor/100));
 export const totalProjectCost = derived([materialsCost, laborCost, logisticsCost],
     ([$materials, $labor, $logistics]) => $materials + $labor + $logistics);
