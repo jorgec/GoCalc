@@ -29,7 +29,7 @@
     } from "../stores/derivedStore";
 
     import {formatWithCommas} from "../utils/misc.js";
-    import {SaveMaterialInventory, LoadMaterialInventory} from "../../wailsjs/go/main/App.js";
+    import {SaveMaterialInventory, LoadMaterialInventory, ExposePath} from "../../wailsjs/go/main/App.js";
     import {materialDictionary, wireTypes, brands, inventory} from "../stores/materialInventoryStore.js";
     import {get} from "svelte/store";
 
@@ -41,8 +41,11 @@
         recalcSpecifications(); // Recalculate after moving
     }
 
+    let materialInventory;
+    let savePath;
+
     function PrepMaterialInventory(){
-        const materialInventory = {
+        materialInventory = {
             "Inventory": $inventory,
             "brands": $brands,
             "Wire Types": wireTypes,
@@ -50,25 +53,32 @@
         SaveMaterialInventory(materialInventory);
     }
 
+    async function ArmMaterialInventory() {
+        materialInventory = await LoadMaterialInventory();
+        savePath = await ExposePath("material_dictionary.json");
+        console.log(materialInventory);
+    }
+
 </script>
 
 <div class="container-fluid m-2 pl-4">
     {#if $showMaterialsInventory}
+        {savePath}
         <div class="h-20 py-4">
             <div class="my-4 p-2 px-3">
                 <button
                         type="button"
                         class="bg-gray-600 hover:bg-gray-800 text-gray-200 hover:text-white p-2 rounded"
-                        on:click={PrepMaterialInventory}
+                        on:click|preventDefault={PrepMaterialInventory}
                 >
                     Save Materials
                 </button>
-<!--                <button-->
-<!--                        class="bg-gray-600 hover:bg-gray-800 text-gray-200 hover:text-white p-2 rounded"-->
-<!--                        on:click={ArmMaterialInventory}-->
-<!--                >-->
-<!--                    Load Materials-->
-<!--                </button>-->
+                <button
+                        class="bg-gray-600 hover:bg-gray-800 text-gray-200 hover:text-white p-2 rounded"
+                        on:click|preventDefault={ArmMaterialInventory}
+                >
+                    Load Materials
+                </button>
             </div>
         </div>
     {:else}

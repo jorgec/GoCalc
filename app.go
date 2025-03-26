@@ -164,13 +164,11 @@ func (a *App) SaveConstants(content interface{}) (string, error) {
 		savePath = filepath.Join(filepath.Dir(execPath), "constants.json")
 	}
 
-	// ✅ Ensure the directory exists
 	err = os.MkdirAll(filepath.Dir(savePath), 0755)
 	if err != nil {
 		return "", err
 	}
 
-	// ✅ Write the file
 	err = os.WriteFile(savePath, data, 0644)
 	if err != nil {
 		return "", err
@@ -190,6 +188,14 @@ func isDev() bool {
 		return true
 	}
 	return false
+}
+
+func (a *App) ExposePath(filename string) (string, error) {
+	savePath, err := getSavePath(filename)
+	if err != nil {
+		return "", err
+	}
+	return savePath, nil
 }
 
 func getSavePath(filename string) (string, error) {
@@ -215,10 +221,9 @@ func getSavePath(filename string) (string, error) {
 		case "darwin":
 			// Go up out of the .app bundle
 			// /Path/MyApp.app/Contents/MacOS/MyApp
-			appPath := filepath.Dir(execPath)           // /MacOS
-			contentsPath := filepath.Dir(appPath)       // /Contents
-			appBundlePath := filepath.Dir(contentsPath) // /MyApp.app
-			basePath = filepath.Dir(appBundlePath)      // One level up from .app
+			appPath := filepath.Dir(execPath) // /MacOS
+
+			basePath = filepath.Join(appPath, "..", "..", "..")
 		default:
 			// Fallback for other OSes
 			basePath = filepath.Dir(execPath)
@@ -234,7 +239,6 @@ func (a *App) SaveMaterialInventory(content interface{}) (string, error) {
 		return "", err
 	}
 
-	// 📂 Use config or home directory
 	baseDir, err := os.UserConfigDir() // or os.UserHomeDir()
 	if err != nil {
 		return "", err

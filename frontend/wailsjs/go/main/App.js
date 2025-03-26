@@ -6,6 +6,10 @@ export function AllowClose() {
   return window['go']['main']['App']['AllowClose']();
 }
 
+export function ExposePath(arg1) {
+  return window['go']['main']['App']['ExposePath'](arg1);
+}
+
 export function GetStoredHash() {
   return window['go']['main']['App']['GetStoredHash']();
 }
