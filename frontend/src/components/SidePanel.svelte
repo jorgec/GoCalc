@@ -57,6 +57,7 @@
         <div class="h-20 py-4">
             <div class="my-4 p-2 px-3">
                 <button
+                        type="button"
                         class="bg-gray-600 hover:bg-gray-800 text-gray-200 hover:text-white p-2 rounded"
                         on:click={PrepMaterialInventory}
                 >

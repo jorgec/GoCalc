@@ -146,8 +146,8 @@
     let newItemUnit = '';
 
     function addNewItemToList() {
-        if (newItemUnit === '' || newItemDescription === '') {
-            statusMessage.set({text: "Name or Unit can't be empty", type: 'error'});
+        if (newItemDescription === '') {
+            statusMessage.set({text: "Name can't be empty", type: 'error'});
         } else {
             const slug = slugify(newItemDescription, newItemUnit).join("-");
             const newAddedItem = {
@@ -191,16 +191,6 @@
                                 id="newItemDescription"
                                 type="text"
                                 bind:value={newItemDescription}
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        />
-                    </div>
-                    <div class="h-20 py-4">
-                        <label for="newItemUnit" class="block text-gray-700 text-sm font-bold mb-2">Unit</label>
-                        <input
-                                required
-                                id="newItemUnit"
-                                type="text"
-                                bind:value={newItemUnit}
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                         />
                     </div>
