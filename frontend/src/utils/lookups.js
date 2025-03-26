@@ -3,6 +3,29 @@ import {get} from "svelte/store";
 import {volts} from "../stores/dataStore.js";
 import {constants} from "../stores/constantsStore.js";
 
+export function categoryIndexLookup(cat){
+    const categories = constants.loadSpecificationCategories;
+    for(let i = 0; i < categories.length; i++){
+        if(categories[i].label === cat){
+            return i;
+        }
+    }
+    return null;
+}
+
+export function categoryTypeLookup(catId, typeValue) {
+    const category = constants.loadSpecificationCategories[catId];
+    if (Object.hasOwn(category, 'types') && category.types.length > 0) {
+        for(let i = 0; i < category.types.length; i++){
+            const type = category.types[i];
+            if(type.label === typeValue){
+                return type.value;
+            }
+        }
+    }
+    return null;
+}
+
 export function wireDataLookup(wireSize, wireType = "THHN", transform = true) {
     // Validate inputs: wireSize must be a valid number and wireType must be a string.
     if (typeof wireSize !== "number" || isNaN(wireSize)) {

@@ -1,16 +1,9 @@
 <!-- src/components/LoadSpecsTable.svelte -->
 <script>
     import {loadSpecifications, updateLoadSpecifications, volts, sa, sab, sabc, threeGang} from "../stores/dataStore";
-    import {showLoadSpecs} from "../stores/uiStore";
+    import {showLoadSpecs, loadSpecEditId} from "../stores/uiStore";
     import {moveSpecDown, moveSpecUp, removeLoadSpecification} from "../utils/mutators";
 
-    /**
-     * In your original code, you used a subscription to
-     * loadSpecifications to find totalOfAllVA and totalOfAllAmp.
-     * We'll replicate that logic in a derived store or inside
-     * the onMount if you prefer. For brevity, let's assume
-     * you have derived stores named "totalOfAllVA" and "totalOfAllAmp".
-     */
     import {totalOfAllAmp, totalOfAllVA} from "../stores/derivedStore";
     import {formatDecimal, formatInt, formatWithCommas} from "../utils/misc.js";
     import {get} from "svelte/store";
@@ -21,6 +14,10 @@
     let selectedWireType = null;
 
     let showSwitchEditModal = false;
+
+    function setLoadSpecEditId(idx){
+        loadSpecEditId.set(idx);
+    }
 
     function setWireType() {
         if (!selectedWireType) {
@@ -417,6 +414,22 @@
                                0H5v12h3V8zm4-6l-1-2h-4l-1
                                2H2v2h20V2h-5z"
                                                     />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                    type="button"
+                                                    on:click={() => setLoadSpecEditId(idx)}
+                                                    style="background-color: transparent; border: none; cursor: pointer; padding: 5px;"
+                                                    title="Edit"
+                                                    >
+                                                <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="18"
+                                                        height="18"
+                                                        fill="orange"
+                                                        viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                                                 </svg>
                                             </button>
                                         </td>
