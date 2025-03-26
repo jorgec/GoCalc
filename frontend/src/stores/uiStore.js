@@ -17,3 +17,6 @@ export const showMaterialsInventory = writable(false);
 
 export const showImageModal = writable(false);
 export const modalImage = writable('');
+
+export const isEditingLoadSpec = writable(false);
+export const loadSpecEditId = writable(null);

@@ -114,7 +114,7 @@
 </script>
 
 <div class="flex flex-col h-screen">
-    {#if $isUnlocked}
+    {#if ! $isUnlocked}
         {#if $showImageModal && $modalImage}
             <ImageModal on:close={closeModal}>
                 <img src={$modalImage} alt="{$modalImage}" style="max-width: 100%;"/>

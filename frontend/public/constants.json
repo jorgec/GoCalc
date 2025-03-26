@@ -330,22 +330,12 @@
         {
           "label": "Small Motor Load",
           "unit_load": 1,
-          "value": 999
+          "value": 4
         },
         {
           "label": "Other Load",
           "unit_load": 1,
-          "value": 999
-        },
-        {
-          "label": "asdgasdg",
-          "unit_load": 1,
-          "value": 999
-        },
-        {
-          "label": "asdf1234$$",
-          "unit_load": 1,
-          "value": 999
+          "value": 5
         }
       ],
       "value": 5

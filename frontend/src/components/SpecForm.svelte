@@ -1,37 +1,37 @@
 <script>
     import {
+        convenienceVA,
+        horsepower,
+        isABC,
+        lightingRows,
+        loadSpecifications,
+        quantity,
+        ratings,
         sa,
         sab,
         sabc,
-        threeGang,
-        convenienceVA,
-        isABC,
-        lightingRows,
-        quantity,
-        ratings,
         selectedCategoryIndex,
         selectedCategoryType,
         spareName,
-        wattage,
-        horsepower,
-        systemPhaseType,
-        loadSpecifications
+        threeGang,
+        wattage
     } from "../stores/dataStore";
 
-    import {constants, updateConstant, hp_lookup, lookupWattage} from "../stores/constantsStore";
-    import {addAnotherLightingRow, addLoadSpecification, removeLightingRow, resetSpecForm, recalcSpecifications} from "../utils/mutators";
+    import {constants, hp_lookup, updateConstant} from "../stores/constantsStore";
+    import {addAnotherLightingRow, addLoadSpecification, removeLightingRow, resetSpecForm} from "../utils/mutators";
 
-    import {modalImage, showLightingInput, showSpecForm, statusMessage} from "../stores/uiStore";
+    import {modalImage, showLightingInput, showSpecForm, statusMessage, isEditingLoadSpec, loadSpecEditId} from "../stores/uiStore";
+    import motor_table from "../assets/images/motor_table.jpg";
+    import {get} from "svelte/store";
+    import {categoryIndexLookup, categoryTypeLookup} from "../utils/lookups.js";
 
-    const hpKeys =[...hp_lookup.keys()];
+    const hpKeys = [...hp_lookup.keys()];
 
-    // For "hasCategoryTypes" logic:
     $: catIndex = $selectedCategoryIndex;
     $: chosenCategory = (catIndex != null)
         ? constants.loadSpecificationCategories[catIndex]
         : null;
     $: hasCategoryTypes = !!(chosenCategory?.types?.length && catIndex !== 0);
-    import motor_table from "../assets/images/motor_table.jpg";
 
     let addCustomMotorFlag = false;
 
@@ -42,7 +42,7 @@
     function addCustomModal(cat) {
         addCustomMotorFlag = true;
         customCat = cat;
-        if(cat !== 3){
+        if (cat !== 3) {
             customCatTitle = 'Load';
         }
     }
@@ -55,7 +55,7 @@
 
         if (newMotorName === '' || !customCat) {
             statusMessage.set({text: "Name can't be empty", type: 'error'});
-        }else{
+        } else {
             let cat = parseInt(customCat);
             let customMotor = {
                 label: newMotorName,
@@ -72,6 +72,115 @@
             addCustomMotorFlag = false;
             newMotorName = '';
         }
+    }
+
+    // Editing
+
+    let editIndex = null;
+    $: editIndex = $loadSpecEditId;
+
+    $: if (editIndex !== undefined) {
+        loadSpecForEdit(editIndex);
+    }
+
+
+    export function loadSpecForEdit(i) {
+        editIndex = i;
+
+        // Get the existing spec from loadSpecifications
+        const spec = get(loadSpecifications)[i];
+
+        if (!spec) return;
+        catIndex = categoryIndexLookup(spec.category);
+        chosenCategory = constants.loadSpecificationCategories[catIndex];
+
+        selectedCategoryIndex.set(catIndex ?? null);
+        hasCategoryTypes = !!(chosenCategory?.types?.length && catIndex !== 0);
+        if(hasCategoryTypes){
+            selectedCategoryType.set(categoryTypeLookup(catIndex, spec.name));
+        }
+
+        quantity.set(spec.quantity);
+        // For wattage, horsepower, ratings, etc.:
+        wattage.set(spec.wattage ?? 0);
+        horsepower.set(spec.horsepower ?? 0);
+        ratings.set(spec.ratings ?? '');
+        isABC.set(spec.abc ?? false);
+
+        // If this is a Lighting spec (category index 0), you have multiple lighting sub-rows.
+        // You can load them into lightingRows so the form can display them:
+        if (catIndex === 0) {
+            if (Array.isArray(spec.lightingLoads)) {
+                showLightingInput.set(true);
+                let rows = [];
+                for(let i = 0; i < spec.lightingLoads.length; i ++){
+                    const _load = spec.lightingLoads[i];
+                    const typeId = categoryTypeLookup(catIndex, _load.type);
+                    rows.push({
+                        typeValue: typeId,
+                        type: _load.type,
+                        wattage: _load.wattage,
+                        quantity: _load.quantity
+                    });
+                }
+                lightingRows.set(rows);
+            }else{
+                lightingRows.set([]);
+            }
+
+            // Switches
+            sa.set(spec.sa || 0);
+            sab.set(spec.sab || 0);
+            sabc.set(spec.sabc || 0);
+            threeGang.set(spec.threeGang || 0);
+
+        } else if (catIndex === 1) {
+            // CONVENIENCE OUTLET
+            quantity.set(spec.quantity ?? 1);
+            // You might store VA in `spec.va` or in `spec.wattage`
+            convenienceVA.set(spec.va ?? spec.wattage ?? 180);
+
+        } else if (catIndex === 2) {
+            // KITCHEN LOAD
+            wattage.set(spec.wattage ?? 0);
+
+        } else if (catIndex === 3) {
+            // MOTOR
+            // Motor might store wattage or rely on HP
+            wattage.set(spec.wattage ?? 0);
+            horsepower.set(spec.horsepower ?? 0);
+
+        } else if (catIndex === 4) {
+            // SPARE
+            spareName.set(spec.name ?? '');
+            wattage.set(spec.wattage ?? 0);
+
+        } else if (catIndex === 5) {
+            // OTHER LOAD
+            wattage.set(spec.wattage ?? 0);
+        }
+
+        // If this is a Spare:
+        spareName.set(spec.name ?? '');
+
+        // Finally, show the SpecForm
+        showSpecForm.set(true);
+    }
+
+    function onSubmitForm() {
+        if (editIndex !== null) {
+            // We’re in “edit mode”
+            // updateLoadSpecification(editIndex);
+            addLoadSpecification();
+            statusMessage.set({text: 'Load spec updated!', type: 'info'});
+        } else {
+            // We’re in “add mode”
+            addLoadSpecification();
+            statusMessage.set({text: 'Load spec added!', type: 'info'});
+        }
+
+        // Reset the form state
+        resetSpecForm();
     }
 
 </script>
@@ -115,7 +224,7 @@
         </div>
     </div>
 {/if}
-
+Edit: {$loadSpecEditId}
 {#if $showSpecForm}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 p-0">
         <div class="h-20 py-4">
@@ -158,8 +267,8 @@
                     Lighting
                 </h3>
 
-                {#if $showLightingInput || $lightingRows.length > 0}
-                    {#each $lightingRows as row, rowIndex}
+                {#if ($showLightingInput || $lightingRows.length > 0) && $lightingRows}
+                    {#each $lightingRows ?? [] as row, rowIndex}
                         <div class="flex flex-wrap gap-2 mb-2 items-end">
                             <!-- Type Selection -->
                             <div class="flex flex-col">
@@ -364,10 +473,10 @@
         {/if}
         {#if catIndex === 3}
             <div class="h-20 py-4">
-            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
-                HP
-                (<a href="#!" on:click|preventDefault={() => modalImage.set(motor_table)} class="underline">reference</a>)
-            </label>
+                <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
+                    HP
+                    (<a href="#!" on:click|preventDefault={() => modalImage.set(motor_table)} class="underline">reference</a>)
+                </label>
                 <select
                         id="category"
                         bind:value={$horsepower}
@@ -379,7 +488,7 @@
                     {/each}
                 </select>
             </div>
-        {/if }
+        {/if  }
     </div>
     <div class="flex items-center gap-4 py-4">
         {#if catIndex === 3 || catIndex == 5}
@@ -412,9 +521,13 @@
             <button
                     type="button"
                     class="mt-3 inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 sm:ml-3 sm:mt-0 sm:w-auto"
-                    on:click={prepAddLoadSpecification}
+                    on:click={onSubmitForm}
             >
-                Add
+                {#if editIndex !== null}
+                    Update
+                {:else}
+                    Add
+                {/if}
             </button>
             <button
                     type="button"

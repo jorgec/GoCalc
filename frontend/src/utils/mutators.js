@@ -31,7 +31,7 @@ import {
     wattage,
 } from '../stores/dataStore';
 
-import {showLightingInput, statusMessage} from '../stores/uiStore';
+import {loadSpecEditId, showLightingInput, statusMessage} from '../stores/uiStore';
 
 import {laborPercentage, logisticsCost, materialsInventory} from '../stores/materialInventoryStore';
 
@@ -140,6 +140,7 @@ export function resetSpecForm() {
     sab.set(0);
     sabc.set(0);
     threeGang.set(0);
+    loadSpecEditId.set(null);
 }
 
 function checkLoadSpecificationForm(rowData, part) {
@@ -287,13 +288,18 @@ export function addLoadSpecification() {
     // KITCHEN, MOTOR, OTHER LOADS (Categories with 'types')
     else if (idx === 2 || idx === 3 || idx === 5) {
         let w = get(wattage);
+        if(!w){
+            w = 0.0;
+        }else{
+            w = parseFloat(w);
+        }
         const catTypeIndex = get(selectedCategoryType);
         const catType = category.types?.[catTypeIndex]; // Safe access
         const typeLabel = catType ? catType.label : 'Unknown';
         const hp = get(horsepower);
         let _horsepower = (w / 746).toFixed(2);
         if(idx === 3){ // motors
-            if(w === 0){
+            if(w === 0.0){
                 w = lookupWattage(hp, get(volts), get(systemPhaseType));
                 _horsepower = hp;
             }
@@ -339,7 +345,6 @@ export function addLoadSpecification() {
         const wireSize = wireSizeRow.wiresize_metric;
 
         const wireParams = determineWireParams(wireSize, wireType);
-        console.log(wireParams);
         const wireParamsAnnotated = formatWireDataRow(wireParams);
 
         newSpec.wireSize = formatDecimal(wireSize, 1);
@@ -359,6 +364,14 @@ export function addLoadSpecification() {
 
         newSpec.wireParams = wireParams;
         newSpec.wireParamsAnnotated = wireParamsAnnotated;
+
+        const specId = get(loadSpecEditId);
+        console.log(specId);
+        if(specId !== null){
+            current[specId] = newSpec;
+            console.log(current);
+            return current;
+        }
 
         return [...current, newSpec]; // Return the updated array
     });

@@ -643,7 +643,11 @@ export const hp_lookup = new Map([
 export function lookupWattage(hp, volts, phase) {
     const remap = Object.fromEntries(hp_lookup);
     const hpRow = remap[hp];
-    let ampCol = hpRow[0];
+    let ampCol = 0;
+
+    if(Array.isArray(hpRow) && hpRow.length > 0){
+        ampCol = hpRow[0];
+    }
     if (phase === 1) {
         ampCol = hpRow[1];
     }
