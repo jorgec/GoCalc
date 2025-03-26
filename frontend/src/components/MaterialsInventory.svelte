@@ -27,19 +27,23 @@
 
     // Extract category names from materialDictionary
     let categories = [];
-    const items = derived([inventory, selectedCategory], ([$inventory, $selectedCategory]) => {
-        if ($selectedCategory && $inventory[$selectedCategory]) {
-            return $inventory[$selectedCategory];
-        } else {
-            return [];
-        }
-    });
+    let items;
 
+    deriveCategories();
+
+    function deriveCategories(){
+        items = derived([inventory, selectedCategory], ([$inventory, $selectedCategory]) => {
+            if ($selectedCategory && $inventory[$selectedCategory]) {
+                return $inventory[$selectedCategory];
+            } else {
+                return [];
+            }
+        });
+    }
 
     onMount(() => {
         categories = Object.keys(materialDictionary);
         return inventory.subscribe($inventory => {
-
             console.log('Inventory Store Changed:', $inventory);
         }); // Return the unsubscribe function for cleanup
     });
@@ -138,6 +142,10 @@
             showAddBrand = false;
             newBrand = '';
         }
+    }
+
+    $: if ($inventory) {
+        deriveCategories();
     }
 
     // items

@@ -57,6 +57,8 @@
         materialInventory = await LoadMaterialInventory();
         savePath = await ExposePath("material_dictionary.json");
         console.log(materialInventory);
+        brands.set(materialInventory.brands);
+        inventory.set(materialInventory.Inventory);
     }
 
 </script>

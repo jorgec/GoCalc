@@ -80,6 +80,12 @@
         "Unit": "pcs",
         "Unit Price": 4349,
         "slug": "12-branch-circuit"
+      },
+      {
+        "Description": "test",
+        "Unit": "",
+        "Unit Price": 0,
+        "slug": "test-"
       }
     ],
     "Circuit Breaker": [
@@ -429,6 +435,6 @@
     "Screwking",
     "Stanley",
     "Steelworld",
-    "xxx"
+    "yyy"
   ]
 }
