@@ -30,7 +30,7 @@
 
     import {formatWithCommas} from "../utils/misc.js";
     import {SaveMaterialInventory, LoadMaterialInventory} from "../../wailsjs/go/main/App.js";
-    import {materialDictionary, wireTypes, brands} from "../stores/materialInventoryStore.js";
+    import {materialDictionary, wireTypes, brands, inventory} from "../stores/materialInventoryStore.js";
     import {get} from "svelte/store";
 
     $: wireRecommendation = wireDataLookup($serviceEntranceAmpacity, $globalWireType);
@@ -43,7 +43,7 @@
 
     function PrepMaterialInventory(){
         const materialInventory = {
-            "Inventory": materialDictionary,
+            "Inventory": $inventory,
             "brands": $brands,
             "Wire Types": wireTypes,
         }

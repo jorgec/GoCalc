@@ -5,10 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	gruntime "runtime"
 )
 
 // App struct
@@ -21,7 +22,7 @@ type App struct {
 func (a *App) AllowClose() {
 	a.allowClose = true
 	fmt.Println("App is now allowed to close.")
-	runtime.Quit(a.ctx)
+	wruntime.Quit(a.ctx)
 }
 
 func (a *App) OnBeforeClose(ctx context.Context) (prevent bool) {
@@ -53,9 +54,9 @@ func (a *App) startup(ctx context.Context) {
 // LoadJSONFile opens a file dialog and returns the file contents.
 func (a *App) LoadJSONFile() (string, error) {
 	// OpenFileDialog returns the selected file path (or an empty string if cancelled).
-	filePath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+	filePath, err := wruntime.OpenFileDialog(a.ctx, wruntime.OpenDialogOptions{
 		Title: "Select a File",
-		Filters: []runtime.FileFilter{
+		Filters: []wruntime.FileFilter{
 			{
 				DisplayName: "JSON Files (*.json)",
 				Pattern:     "*.json",
@@ -82,10 +83,10 @@ func (a *App) LoadJSONFile() (string, error) {
 
 func (a *App) SaveFile(content string) (string, error) {
 	// Open a "Save File" dialog
-	savePath, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+	savePath, err := wruntime.SaveFileDialog(a.ctx, wruntime.SaveDialogOptions{
 		Title:           "Save Your File",
 		DefaultFilename: "",
-		Filters: []runtime.FileFilter{
+		Filters: []wruntime.FileFilter{
 			{
 				DisplayName: "All Files",
 				Pattern:     "",
@@ -178,6 +179,55 @@ func (a *App) SaveConstants(content interface{}) (string, error) {
 	return savePath, nil
 }
 
+func isDev() bool {
+	// Check if a file called "dev" exists in the current working dir
+	cwd, err := os.Getwd()
+	if err != nil {
+		return false
+	}
+	devFile := filepath.Join(cwd, "dev")
+	if _, err := os.Stat(devFile); err == nil {
+		return true
+	}
+	return false
+}
+
+func getSavePath(filename string) (string, error) {
+	var basePath string
+
+	if isDev() {
+		// In dev mode, use current working dir (project root)
+		cwd, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+		basePath = filepath.Join(cwd, "frontend", "src")
+	} else {
+		// In production mode
+		execPath, err := os.Executable()
+		if err != nil {
+			return "", err
+		}
+
+		switch gruntime.GOOS {
+		case "windows":
+			basePath = filepath.Dir(execPath)
+		case "darwin":
+			// Go up out of the .app bundle
+			// /Path/MyApp.app/Contents/MacOS/MyApp
+			appPath := filepath.Dir(execPath)           // /MacOS
+			contentsPath := filepath.Dir(appPath)       // /Contents
+			appBundlePath := filepath.Dir(contentsPath) // /MyApp.app
+			basePath = filepath.Dir(appBundlePath)      // One level up from .app
+		default:
+			// Fallback for other OSes
+			basePath = filepath.Dir(execPath)
+		}
+	}
+
+	return filepath.Join(basePath, filename), nil
+}
+
 func (a *App) SaveMaterialInventory(content interface{}) (string, error) {
 	data, err := json.MarshalIndent(content, "", "  ")
 	if err != nil {
@@ -196,7 +246,7 @@ func (a *App) SaveMaterialInventory(content interface{}) (string, error) {
 		return "", err
 	}
 
-	savePath := filepath.Join(appDir, "materialInventory.json")
+	savePath, err := getSavePath("material_dictionary.json")
 
 	err = os.WriteFile(savePath, data, 0644)
 	if err != nil {
@@ -206,17 +256,7 @@ func (a *App) SaveMaterialInventory(content interface{}) (string, error) {
 	return savePath, nil
 }
 func (a *App) LoadMaterialInventory() (map[string]interface{}, error) {
-	var filePath string
-
-	if a.isDev {
-		filePath = filepath.Join("frontend", "public", "materialInventory.json")
-	} else {
-		execPath, err := os.Executable()
-		if err != nil {
-			return nil, err
-		}
-		filePath = filepath.Join(filepath.Dir(execPath), "materialInventory.json")
-	}
+	filePath, err := getSavePath("material_dictionary.json")
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		return nil, err // No file yet, return nil

@@ -1,4 +1,421 @@
 {
+  "Inventory": {
+    "Boxes Fittings and Wire Fixtures": [
+      {
+        "Description": "25w lighting bulb",
+        "Unit": "pcs",
+        "Unit Price": 650,
+        "slug": "25w-lighting-bulb"
+      },
+      {
+        "Description": "50w lighting bulb",
+        "Unit": "pcs",
+        "Unit Price": 260,
+        "slug": "50w-lighting-bulb"
+      },
+      {
+        "Description": "Ceiling receptacle",
+        "Unit": "pcs",
+        "Unit Price": 35,
+        "slug": "ceiling-receptacle"
+      },
+      {
+        "Description": "Bulb Casing",
+        "Unit": "pcs",
+        "Unit Price": 129.99,
+        "slug": "bulb-casing"
+      },
+      {
+        "Description": "2 x 4 x 2 1/2 in. Utility Box",
+        "Unit": "pcs",
+        "Unit Price": 24,
+        "slug": "2-x-4-x-2-1_2-in-utility-box"
+      },
+      {
+        "Description": "4 x 4 x 2 1/2 in. Junction Box",
+        "Unit": "pcs",
+        "Unit Price": 24,
+        "slug": "4-x-4-x-2-1_2-in-junction-box"
+      },
+      {
+        "Description": "1 Gang Aircon Outlet",
+        "Unit": "set",
+        "Unit Price": 120,
+        "slug": "1-gang-aircon-outlet"
+      },
+      {
+        "Description": "2 Gang Convenience Outlet",
+        "Unit": "set",
+        "Unit Price": 127,
+        "slug": "2-gang-convenience-outlet"
+      },
+      {
+        "Description": "1 Gang Switch + 3 Gang Convenience Outlet",
+        "Unit": "set",
+        "Unit Price": 170,
+        "slug": "1-gang-switch-3-gang-convenience-outlet"
+      },
+      {
+        "Description": "1 Gang Switch",
+        "Unit": "set",
+        "Unit Price": 78,
+        "slug": "1-gang-switch"
+      },
+      {
+        "Description": "2 Gang Switch",
+        "Unit": "set",
+        "Unit Price": 127,
+        "slug": "2-gang-switch"
+      },
+      {
+        "Description": "3 Gang Switch",
+        "Unit": "set",
+        "Unit Price": 176,
+        "slug": "3-gang-switch"
+      }
+    ],
+    "Casing": [
+      {
+        "Description": "12 Branch Circuit",
+        "Unit": "pcs",
+        "Unit Price": 4349,
+        "slug": "12-branch-circuit"
+      }
+    ],
+    "Circuit Breaker": [
+      {
+        "Description": "15 Amperes",
+        "Unit": "pcs",
+        "Unit Price": 369,
+        "slug": "15-amperes"
+      },
+      {
+        "Description": "20 Amperes",
+        "Unit": "pcs",
+        "Unit Price": 369,
+        "slug": "20-amperes"
+      }
+    ],
+    "Conduit Raceway": [
+      {
+        "Description": "15 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 28,
+        "slug": "15-mm-pvc"
+      },
+      {
+        "Description": "20 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "20-mm-pvc"
+      },
+      {
+        "Description": "25 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "25-mm-pvc"
+      },
+      {
+        "Description": "32 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "32-mm-pvc"
+      },
+      {
+        "Description": "40 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "40-mm-pvc"
+      },
+      {
+        "Description": "50 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "50-mm-pvc"
+      },
+      {
+        "Description": "63 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "63-mm-pvc"
+      },
+      {
+        "Description": "75 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "75-mm-pvc"
+      },
+      {
+        "Description": "90 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "90-mm-pvc"
+      },
+      {
+        "Description": "110 mm Ø PVC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "110-mm-pvc"
+      },
+      {
+        "Description": "15 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 28,
+        "slug": "15-mm-rmc"
+      },
+      {
+        "Description": "20 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "20-mm-rmc"
+      },
+      {
+        "Description": "25 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "25-mm-rmc"
+      },
+      {
+        "Description": "32 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "32-mm-rmc"
+      },
+      {
+        "Description": "40 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "40-mm-rmc"
+      },
+      {
+        "Description": "50 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "50-mm-rmc"
+      },
+      {
+        "Description": "63 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "63-mm-rmc"
+      },
+      {
+        "Description": "65 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "65-mm-rmc"
+      },
+      {
+        "Description": "75 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "75-mm-rmc"
+      },
+      {
+        "Description": "90 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "90-mm-rmc"
+      },
+      {
+        "Description": "110 mm Ø RMC",
+        "Unit": "m",
+        "Unit Price": 32.6,
+        "slug": "110-mm-rmc"
+      }
+    ],
+    "Miscellaneous": [
+      {
+        "Description": "Solvent Cement 500 cc",
+        "Unit": "can",
+        "Unit Price": 137,
+        "slug": "solvent-cement-500-cc"
+      },
+      {
+        "Description": "Electrical Tape (16m)",
+        "Unit": "pcs",
+        "Unit Price": 45,
+        "slug": "electrical-tape-16m"
+      },
+      {
+        "Description": "Rubber Tape (8m)",
+        "Unit": "pcs",
+        "Unit Price": 105,
+        "slug": "rubber-tape-8m"
+      },
+      {
+        "Description": "Hacksaw Blade",
+        "Unit": "pcs",
+        "Unit Price": 30,
+        "slug": "hacksaw-blade"
+      },
+      {
+        "Description": "Plier",
+        "Unit": "pcs",
+        "Unit Price": 500,
+        "slug": "plier"
+      },
+      {
+        "Description": "Philips Screw",
+        "Unit": "box",
+        "Unit Price": 250,
+        "slug": "philips-screw"
+      },
+      {
+        "Description": "Hard Hat",
+        "Unit": "box",
+        "Unit Price": 50,
+        "slug": "hard-hat"
+      },
+      {
+        "Description": "#16 GI Wire",
+        "Unit": "kg",
+        "Unit Price": 40,
+        "slug": "16-gi-wire"
+      }
+    ],
+    "Wire and Cable": [
+      {
+        "Description": "2.0 mm² (14 AWG)",
+        "Unit": "m",
+        "Unit Price": 20,
+        "slug": "2_0-mm"
+      },
+      {
+        "Description": "3.5 mm² (12 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "3_5-mm"
+      },
+      {
+        "Description": "5.5 mm² (10 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "5_5-mm"
+      },
+      {
+        "Description": "8.0 mm² (8 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "8_0-mm"
+      },
+      {
+        "Description": "14.0 mm² (6 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "14_0-mm"
+      },
+      {
+        "Description": "22.0 mm² (4 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "22_0-mm"
+      },
+      {
+        "Description": "30.0 mm² (2 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "30-mm"
+      },
+      {
+        "Description": "38.0 mm² (1 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "38.0-mm"
+      },
+      {
+        "Description": "50.0 mm² (1/0 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "50.0-mm"
+      },
+      {
+        "Description": "60.0 mm² (2/0 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "60.0-mm"
+      },
+      {
+        "Description": "80.0 mm² (3/0 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "80.0-mm"
+      },
+      {
+        "Description": "100.0 mm² (4/0 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "100.0-mm"
+      },
+      {
+        "Description": "125.0 mm² (250 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "125.0-mm"
+      },
+      {
+        "Description": "150.0 mm² (300 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "150.0-mm"
+      },
+      {
+        "Description": "175.0 mm² (350 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "175.0-mm"
+      },
+      {
+        "Description": "200.0 mm² (400 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "200.0-mm"
+      },
+      {
+        "Description": "250.0 mm² (500 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "250.0-mm"
+      },
+      {
+        "Description": "325.0 mm² (650 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "325.0-mm"
+      },
+      {
+        "Description": "350.0 mm² (750 AWG)",
+        "Unit": "m",
+        "Unit Price": 33,
+        "slug": "350.0-mm"
+      },
+      {
+        "Description": "375.0 mm² (800 AWG)",
+        "Unit": "m",
+        "Unit Price": 1150,
+        "slug": "375.0-mm"
+      },
+      {
+        "Description": "400.0 mm² (1000 AWG)",
+        "Unit": "m",
+        "Unit Price": 1375,
+        "slug": "400.0-mm"
+      },
+      {
+        "Description": "500.0 mm² ( AWG)",
+        "Unit": "m",
+        "Unit Price": 2248,
+        "slug": "500.0-mm"
+      }
+    ]
+  },
+  "Wire Types": [
+    "THHN",
+    "THW",
+    "THWN",
+    "THWN-2",
+    "RHW-2"
+  ],
   "brands": [
     "Armak",
     "Blue Eagle",
@@ -12,423 +429,5 @@
     "Screwking",
     "Stanley",
     "Steelworld"
-  ],
-  "Wire Types": [
-    "THHN",
-    "THW",
-    "THWN",
-    "THWN-2",
-    "RHW-2"
-  ],
-  "Inventory": {
-    "Wire and Cable": [
-      {
-        "slug": "2_0-mm",
-        "Unit": "m",
-        "Description": "2.0 mm² (14 AWG)",
-        "Unit Price": 20.00
-      },
-      {
-        "slug": "3_5-mm",
-        "Unit": "m",
-        "Description": "3.5 mm² (12 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "5_5-mm",
-        "Unit": "m",
-        "Description": "5.5 mm² (10 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "8_0-mm",
-        "Unit": "m",
-        "Description": "8.0 mm² (8 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "14_0-mm",
-        "Unit": "m",
-        "Description": "14.0 mm² (6 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "22_0-mm",
-        "Unit": "m",
-        "Description": "22.0 mm² (4 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "30-mm",
-        "Unit": "m",
-        "Description": "30.0 mm² (2 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "38.0-mm",
-        "Unit": "m",
-        "Description": "38.0 mm² (1 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "50.0-mm",
-        "Unit": "m",
-        "Description": "50.0 mm² (1/0 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "60.0-mm",
-        "Unit": "m",
-        "Description": "60.0 mm² (2/0 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "80.0-mm",
-        "Unit": "m",
-        "Description": "80.0 mm² (3/0 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "100.0-mm",
-        "Unit": "m",
-        "Description": "100.0 mm² (4/0 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "125.0-mm",
-        "Unit": "m",
-        "Description": "125.0 mm² (250 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "150.0-mm",
-        "Unit": "m",
-        "Description": "150.0 mm² (300 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "175.0-mm",
-        "Unit": "m",
-        "Description": "175.0 mm² (350 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "200.0-mm",
-        "Unit": "m",
-        "Description": "200.0 mm² (400 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "250.0-mm",
-        "Unit": "m",
-        "Description": "250.0 mm² (500 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "325.0-mm",
-        "Unit": "m",
-        "Description": "325.0 mm² (650 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "350.0-mm",
-        "Unit": "m",
-        "Description": "350.0 mm² (750 AWG)",
-        "Unit Price": 33.00
-      },
-      {
-        "slug": "375.0-mm",
-        "Unit": "m",
-        "Description": "375.0 mm² (800 AWG)",
-        "Unit Price": 1150.00
-      },
-      {
-        "slug": "400.0-mm",
-        "Unit": "m",
-        "Description": "400.0 mm² (1000 AWG)",
-        "Unit Price": 1375.00
-      },
-      {
-        "slug": "500.0-mm",
-        "Unit": "m",
-        "Description": "500.0 mm² ( AWG)",
-        "Unit Price": 2248.00
-      }
-    ],
-    "Circuit Breaker": [
-      {
-        "slug": "15-amperes",
-        "Unit": "pcs",
-        "Description": "15 Amperes",
-        "Unit Price": 369.00
-      },
-      {
-        "slug": "20-amperes",
-        "Unit": "pcs",
-        "Description": "20 Amperes",
-        "Unit Price": 369.00
-      }
-
-    ],
-    "Casing": [
-      {
-        "slug": "12-branch-circuit",
-        "Unit": "pcs",
-        "Description": "12 Branch Circuit",
-        "Unit Price": 4349.00
-      }
-    ],
-    "Conduit Raceway": [
-      {
-        "slug": "15-mm-pvc",
-        "Unit": "m",
-        "Description": "15 mm Ø PVC",
-        "Unit Price": 28.00
-      },
-      {
-        "slug": "20-mm-pvc",
-        "Unit": "m",
-        "Description": "20 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "25-mm-pvc",
-        "Unit": "m",
-        "Description": "25 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "32-mm-pvc",
-        "Unit": "m",
-        "Description": "32 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "40-mm-pvc",
-        "Unit": "m",
-        "Description": "40 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "50-mm-pvc",
-        "Unit": "m",
-        "Description": "50 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "63-mm-pvc",
-        "Unit": "m",
-        "Description": "63 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "75-mm-pvc",
-        "Unit": "m",
-        "Description": "75 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "90-mm-pvc",
-        "Unit": "m",
-        "Description": "90 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "110-mm-pvc",
-        "Unit": "m",
-        "Description": "110 mm Ø PVC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "15-mm-rmc",
-        "Unit": "m",
-        "Description": "15 mm Ø RMC",
-        "Unit Price": 28.00
-      },
-      {
-        "slug": "20-mm-rmc",
-        "Unit": "m",
-        "Description": "20 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "25-mm-rmc",
-        "Unit": "m",
-        "Description": "25 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "32-mm-rmc",
-        "Unit": "m",
-        "Description": "32 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "40-mm-rmc",
-        "Unit": "m",
-        "Description": "40 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "50-mm-rmc",
-        "Unit": "m",
-        "Description": "50 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "63-mm-rmc",
-        "Unit": "m",
-        "Description": "63 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "65-mm-rmc",
-        "Unit": "m",
-        "Description": "65 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "75-mm-rmc",
-        "Unit": "m",
-        "Description": "75 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "90-mm-rmc",
-        "Unit": "m",
-        "Description": "90 mm Ø RMC",
-        "Unit Price": 32.60
-      },
-      {
-        "slug": "110-mm-rmc",
-        "Unit": "m",
-        "Description": "110 mm Ø RMC",
-        "Unit Price": 32.60
-      }
-    ],
-    "Boxes Fittings and Wire Fixtures": [
-      {
-        "slug": "25w-lighting-bulb",
-        "Unit": "pcs",
-        "Description": "25w lighting bulb",
-        "Unit Price": 650.00
-      },
-      {
-        "slug": "50w-lighting-bulb",
-        "Unit": "pcs",
-        "Description": "50w lighting bulb",
-        "Unit Price": 260.00
-      },
-      {
-        "slug": "ceiling-receptacle",
-        "Unit": "pcs",
-        "Description": "Ceiling receptacle",
-        "Unit Price": 35.00
-      },
-      {
-        "slug": "bulb-casing",
-        "Unit": "pcs",
-        "Description": "Bulb Casing",
-        "Unit Price": 129.99
-      },
-      {
-        "slug": "2-x-4-x-2-1_2-in-utility-box",
-        "Unit": "pcs",
-        "Description": "2 x 4 x 2 1/2 in. Utility Box",
-        "Unit Price": 24.00
-      },
-      {
-        "slug": "4-x-4-x-2-1_2-in-junction-box",
-        "Unit": "pcs",
-        "Description": "4 x 4 x 2 1/2 in. Junction Box",
-        "Unit Price": 24.00
-      },
-      {
-        "slug": "1-gang-aircon-outlet",
-        "Unit": "set",
-        "Description": "1 Gang Aircon Outlet",
-        "Unit Price": 120.00
-      },
-      {
-        "slug": "2-gang-convenience-outlet",
-        "Unit": "set",
-        "Description": "2 Gang Convenience Outlet",
-        "Unit Price": 127.00
-      },
-      {
-        "slug": "1-gang-switch-3-gang-convenience-outlet",
-        "Unit": "set",
-        "Description": "1 Gang Switch + 3 Gang Convenience Outlet",
-        "Unit Price": 170.00
-      },
-      {
-        "slug": "1-gang-switch",
-        "Unit": "set",
-        "Description": "1 Gang Switch",
-        "Unit Price": 78.00
-      },
-      {
-        "slug": "2-gang-switch",
-        "Unit": "set",
-        "Description": "2 Gang Switch",
-        "Unit Price": 127.00
-      },
-      {
-        "slug": "3-gang-switch",
-        "Unit": "set",
-        "Description": "3 Gang Switch",
-        "Unit Price": 176.00
-      }
-    ],
-    "Miscellaneous": [
-      {
-        "slug": "solvent-cement-500-cc",
-        "Unit": "can",
-        "Description": "Solvent Cement 500 cc",
-        "Unit Price": 137.00
-      },
-      {
-        "slug": "electrical-tape-16m",
-        "Unit": "pcs",
-        "Description": "Electrical Tape (16m)",
-        "Unit Price": 45.00
-      },
-      {
-        "slug": "rubber-tape-8m",
-        "Unit": "pcs",
-        "Description": "Rubber Tape (8m)",
-        "Unit Price": 105.00
-      },
-      {
-        "slug": "hacksaw-blade",
-        "Unit": "pcs",
-        "Description": "Hacksaw Blade",
-        "Unit Price": 30.00
-      },
-      {
-        "slug": "plier",
-        "Unit": "pcs",
-        "Description": "Plier",
-        "Unit Price": 500.00
-      },
-      {
-        "slug": "philips-screw",
-        "Unit": "box",
-        "Description": "Philips Screw",
-        "Unit Price": 250.00
-      },
-      {
-        "slug": "hard-hat",
-        "Unit": "box",
-        "Description": "Hard Hat",
-        "Unit Price": 50.00
-      },
-      {
-        "slug": "16-gi-wire",
-        "Unit": "kg",
-        "Description": "#16 GI Wire",
-        "Unit Price": 40.00
-      }
-    ]
-  }
+  ]
 }
