@@ -5,6 +5,7 @@ import materialConstants from '../material_dictionary.json';
 // Store for labor & logistics
 export const laborPercentage = writable(70); // Defaults to 70% (0.70)
 export const logisticsCost = writable(0.00); // Defaults to 0
+export const materialCostMultiplier = writable(1.0);
 
 // Store for inventory items
 export const inventory = writable(materialConstants["Inventory"]);
@@ -77,8 +78,20 @@ export function removeItemFromCategory(category, itemSlug) {
 }
 
 // Derived calculations
-export const materialsCost = derived(totalInventoryCost, $total => $total );
-export const laborCost = derived([totalInventoryCost, laborPercentage], ([$total, $labor]) => $total * ($labor/100));
-export const totalProjectCost = derived([materialsCost, laborCost, logisticsCost],
-    ([$materials, $labor, $logistics]) => $materials + $labor + $logistics);
+// export const materialsCost = derived(totalInventoryCost, $total => $total );
+// export const laborCost = derived([totalInventoryCost, laborPercentage], ([$total, $labor]) => $total * ($labor/100));
+// export const totalProjectCost = derived([materialsCost, laborCost, logisticsCost],
+//     ([$materials, $labor, $logistics]) => $materials + $labor + $logistics);
 
+export const materialsCost = derived([totalInventoryCost, materialCostMultiplier], ([$total, multiplier]) => parseFloat($total) * multiplier);
+
+export const laborCost = derived(
+    [totalInventoryCost, laborPercentage],
+    ([$total, $labor]) => $total * ($labor / 100)
+);
+
+export const totalProjectCost = derived(
+    [materialsCost, laborPercentage, logisticsCost],
+    ([$total, $labor, $logistics]) =>
+        $total + ($total * ($labor / 100)) + $logistics
+);

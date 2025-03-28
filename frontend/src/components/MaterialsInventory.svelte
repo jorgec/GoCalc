@@ -12,7 +12,7 @@
         materialsInventory,
         totalInventoryCost,
         totalProjectCost,
-        wireTypes, brands
+        wireTypes, brands, materialCostMultiplier
     } from '../stores/materialInventoryStore';
     import {derived, writable} from 'svelte/store';
     import {slugify} from '../utils/misc.js';
@@ -425,19 +425,68 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Labor Input -->
-                <div class="flex flex-col">
-                    <label for="labor" class="text-sm font-medium text-gray-700 mb-1">Labor (%)</label>
-                    <input id="labor" type="number" step="0.01" min="0" max="100" bind:value={$laborPercentage}
+                <div class="flex flex-wrap gap-4">
 
-                           class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
-                </div>
+                    <!-- Labor (%) -->
+                    <div class="relative flex-1 min-w-[160px]">
+                        <input
+                                id="labor"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                bind:value={$laborPercentage}
+                                placeholder=" "
+                                class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <label for="labor"
+                               class="absolute left-3 top-2 text-gray-500 text-sm transition-all
+                  peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
+                  peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                            Labor (%)
+                        </label>
+                    </div>
 
-                <!-- Logistics Input -->
-                <div class="flex flex-col">
-                    <label for="logistics" class="text-sm font-medium text-gray-700 mb-1">Logistics Cost (₱)</label>
-                    <input id="logistics" type="number" step="0.01" min="0" bind:value={$logisticsCost}
-                           on:input={(e) => logisticsCost.set(Number(e.target.value))}
-                           class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+                    <!-- Logistics Cost (₱) -->
+                    <div class="relative flex-1 min-w-[160px]">
+                        <input
+                                id="logistics"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                bind:value={$logisticsCost}
+                                on:input={(e) => logisticsCost.set(Number(e.target.value))}
+                                placeholder=" "
+                                class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <label for="logistics"
+                               class="absolute left-3 top-2 text-gray-500 text-sm transition-all
+                  peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
+                  peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                            Logistics Cost (₱)
+                        </label>
+                    </div>
+
+                    <!-- Material Cost Multiplier -->
+                    <div class="relative flex-1 min-w-[160px]">
+                        <input
+                                id="materialCostMultiplier"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                bind:value={$materialCostMultiplier}
+                                placeholder=" "
+                                class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <label for="materialCostMultiplier"
+                               class="absolute left-3 top-2 text-gray-500 text-sm transition-all
+                  peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
+                  peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                            Material Cost Multiplier
+                        </label>
+                    </div>
+
                 </div>
             </div>
         </div>
