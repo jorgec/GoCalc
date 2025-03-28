@@ -39,15 +39,15 @@
     function generateDisplayHeaders(phase) {
 
         let displayHeaders = [
-            "CRKTno",
-            "Load",
+            "Circuit No.",
+            "Lighting Load",
             "Convenience Outlet",
-            "Volt Ampere",
+            "VA",
             "Volts",
             "Sa",
             "Sab",
             "Sabc",
-            "Three Way",
+            "3-W",
             "Wire Size and Type", // Combined header
             "Conduit Size",
             "Pole",
@@ -57,7 +57,7 @@
         ];
 
         if (phase === 0) {
-            displayHeaders.splice(5, 0, "Single Load");
+            displayHeaders.splice(5, 0, "Amp Load");
         } else {
             displayHeaders.splice(5, 0, "AB", "BC", "CA", "ABC");
         }
@@ -82,7 +82,7 @@
     }
 </script>
 
-<div class="overflow-x-auto">
+<div class="overflow-x-auto my-4 flow-roo">
     {#if csvData && csvData.length > 0}
         <table class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">

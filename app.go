@@ -207,7 +207,7 @@ func getSavePath(filename string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		basePath = filepath.Join(cwd, "frontend", "src")
+		basePath = filepath.Join(cwd, "release")
 	} else {
 		// In production mode
 		execPath, err := os.Executable()
@@ -219,11 +219,10 @@ func getSavePath(filename string) (string, error) {
 		case "windows":
 			basePath = filepath.Dir(execPath)
 		case "darwin":
-			// Go up out of the .app bundle
-			// /Path/MyApp.app/Contents/MacOS/MyApp
-			appPath := filepath.Dir(execPath) // /MacOS
-
-			basePath = filepath.Join(appPath, "..", "..", "..")
+			appPath := filepath.Dir(execPath)           // /MacOS
+			contentsPath := filepath.Dir(appPath)       // /Contents
+			appBundlePath := filepath.Dir(contentsPath) // /MyApp.app
+			basePath = filepath.Dir(appBundlePath)
 		default:
 			// Fallback for other OSes
 			basePath = filepath.Dir(execPath)

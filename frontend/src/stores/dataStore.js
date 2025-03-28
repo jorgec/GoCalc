@@ -9,7 +9,8 @@ export const projectLocation = writable('');
 export const projectOwner = writable('');
 export const projectInCharge = writable('');
 export const projectDate = writable(Date());
-export const floorArea = writable(0);
+export const floorArea = writable('');
+export const panelboardName = writable('');
 export const totalLoad = writable(0);          // used by occupancy logic
 export const loadByOccupancy = writable(0);    // occupant-based calculation
 

@@ -3,7 +3,7 @@ import {get} from 'svelte/store';
 import {
     applicationDemandFactor,
     convenienceVA,
-    floorArea, globalConduitType, globalWireType, horsepower,
+    floorArea, globalConduitType, globalWireType, horsepower, panelboardName,
     isABC,
     lightingRows,
     loadSpecifications,
@@ -408,6 +408,7 @@ export function loadProjectData(projectData) {
         // Basic fields (with default values if missing):
         projectName.set(projectData.projectName || '');
         floorArea.set(projectData.floorArea || 0);
+        panelboardName.set(projectData.panelboardName || '');
         volts.set(projectData.volts || 230);  // Default to 220V
         systemPhaseType.set(projectData.systemPhaseType ?? null); // Use nullish coalescing
         selectedOccupancyValue.set(projectData.selectedOccupancyValue ?? null);

@@ -224,7 +224,7 @@
         </div>
     </div>
 {/if}
-Edit: {$loadSpecEditId}
+
 {#if $showSpecForm}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 p-0">
         <div class="h-20 py-4">

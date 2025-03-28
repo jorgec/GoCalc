@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <circle cx="256" cy="256" r="256" style="fill:rgb(255,198,27);"/>
+    <path d="M511.573,270.657L355.556,114.64L266.171,223.325L111.192,369.778L253.381,511.967C254.255,511.976 255.124,512 256,512C392.464,512 503.975,405.22 511.573,270.657Z" style="fill:rgb(234,162,47);fill-rule:nonzero;"/>
+    <rect x="111.192" y="200.835" width="144.239" height="168.943" style="fill:rgb(56,104,149);"/>
+    <rect x="255.431" y="200.835" width="145.377" height="168.943" style="fill:rgb(39,59,122);"/>
+    <path d="M111.192,369.778L256,261.172L400.808,369.778L111.192,369.778Z" style="fill:rgb(2,178,178);fill-rule:nonzero;"/>
+    <path d="M256,261.172L255.426,261.603L255.426,369.778L400.808,369.778L256,261.172Z" style="fill:rgb(0,155,151);fill-rule:nonzero;"/>
+    <path d="M111.192,200.835L255.426,284.972L255.426,200.835L111.192,200.835Z" style="fill:rgb(39,59,122);fill-rule:nonzero;"/>
+    <g>
+        <path d="M400.808,200.835L255.426,200.835L255.426,284.972L256,285.306L400.808,200.835Z" style="fill:rgb(18,17,73);fill-rule:nonzero;"/>
+        <path d="M111.192,200.835L256,86.195L400.808,200.835L111.192,200.835Z" style="fill:rgb(18,17,73);fill-rule:nonzero;"/>
+    </g>
+    <path d="M256,86.195L255.426,86.65L255.426,200.835L400.808,200.835L256,86.195Z" style="fill:rgb(12,12,58);fill-rule:nonzero;"/>
+    <path d="M156.444,114.64L156.444,227.233L256,285.306L355.556,227.231L355.556,114.64L156.444,114.64Z" style="fill:white;fill-rule:nonzero;"/>
+    <path d="M255.426,114.64L255.426,284.972L256,285.306L355.556,227.231L355.556,114.64L255.426,114.64Z" style="fill:rgb(208,209,211);fill-rule:nonzero;"/>
+</svg>

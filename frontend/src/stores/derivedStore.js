@@ -1,26 +1,34 @@
 // src/stores/derivedStore.js
 import {derived, get} from 'svelte/store';
 import {
-    floorArea, globalConduitType, globalWireType, horsepower,
-    loadSpecifications, projectDate, projectInCharge, projectLocation,
-    projectName, projectOwner, rowConduitType,
+    floorArea,
+    globalConduitType,
+    globalWireType,
+    loadSpecifications,
+    panelboardName,
+    projectDate,
+    projectInCharge,
+    projectLocation,
+    projectName,
+    projectOwner,
+    rowConduitType,
     selectedAddOnValue,
     selectedOccupancyValue,
     selectedTypeValue,
     systemPhaseType,
     volts
 } from './dataStore';
-import {determineConduitSize, determineWireSizeAndType, wireData} from '../utils/calculations';
+import {wireData} from '../utils/calculations';
 import {
-    inventory,
     laborCost,
     laborPercentage,
     logisticsCost,
-    materialsCost, materialsInventory,
+    materialsCost,
+    materialsInventory,
     totalInventoryCost,
     totalProjectCost
 } from './materialInventoryStore';
-import {formatDecimal, formatInt} from "../utils/misc.js";
+import {formatInt} from "../utils/misc.js";
 import {determineWireParams, formatWireDataRow} from "../utils/lookups.js"; // Include inventory store
 
 // Derived store for the CSV data
@@ -44,33 +52,33 @@ export const csvData = derived(
 
             let conduitSize = spec.conduitSize;
             let conduitSizeAnnotated = spec.conduitSize;
-            if(_globalConduitType === "PVC"){
+            if (_globalConduitType === "PVC") {
                 conduitSizeAnnotated = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
-            }else{
+            } else {
                 conduitSizeAnnotated = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
             }
             conduitSizeAnnotated += " ø " + _globalConduitType;
 
             let loadStr = spec.name;
             let ratings = '';
-            if (spec.category === 'Lighting'){
-                if(spec.lightingLoads){
+            if (spec.category === 'Lighting') {
+                if (spec.lightingLoads) {
                     const combos = spec.lightingLoads.map(
-                        (row) => `${row.type}: ${row.wattage}W x ${row.quantity}`
+                        (row) => `${row.quantity}x ${row.wattage}W ${row.type}`
                     );
                     loadStr = combos.join('; ');
-                }else{
+                } else {
                     loadStr = '';
                 }
                 ratings = '';
-            }else{
+            } else {
                 loadStr = '';
-                if(spec.category === 'Convenience Outlet'){
+                if (spec.category === 'Convenience Outlet') {
                     ratings = spec.name;
-                }else{
+                } else {
                     const acronym = spec.name.match(/[A-Z]+[a-z]*|[a-z]+/g)?.map(w => w[0].toUpperCase()).join('') || '';
                     ratings = `${spec.quantity} ${spec.category} (${spec.name})`;
-                    if(spec.category === 'Motor'){
+                    if (spec.category === 'Motor') {
                         ratings = `${spec.quantity} ${spec.category} (${spec.horsepower}HP ${acronym})`;
                     }
                 }
@@ -227,6 +235,7 @@ export const projectData = derived(
         totalProjectCost,
         globalWireType,
         globalConduitType,
+        panelboardName
     ],
     ([
          $projectName,
@@ -250,6 +259,7 @@ export const projectData = derived(
          $totalProjectCost,
          $globalWireType,
          $globalConduitType,
+         $panelboardName
 
      ]) => {
         return {
@@ -274,7 +284,7 @@ export const projectData = derived(
             totalProjectCost: $totalProjectCost,
             globalWireType: $globalWireType,
             globalConduitType: $globalConduitType,
-
+            panelboardName: $panelboardName
         };
     }
 );

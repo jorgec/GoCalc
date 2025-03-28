@@ -184,8 +184,8 @@
     {/if}
 
     {#if $showLoadSpecs && Array.isArray($loadSpecifications) && $loadSpecifications.length > 0}
-        <div class="m-2 flow-root">
-            <div class="my-2 overflow-y-auto">
+        <div class="flow-root">
+            <div class="overflow-y-auto">
                 <div class="inline-block w-full">
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5">
                         <table class="w-full divide-y divide-gray-300">

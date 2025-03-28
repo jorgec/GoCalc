@@ -100,7 +100,7 @@
                                 {category} ({data.count})
                             </div>
                             <div class="p-0 m-0">
-                                <code>{formatWithCommas(data.sum)}</code>
+                                <code>{formatWithCommas(data.sum)} VA</code>
                             </div>
                         </div>
                     {/each}
@@ -116,12 +116,12 @@
                     </p>
                     <p>
                         <span class="font-bold">Total Amp:</span>
-                        <code>{formatWithCommas($totalOfAllAmp)}</code>
+                        <code>{formatWithCommas($totalOfAllAmp)} A</code>
                     </p>
                 {/if}
                 <p>
                     <span class="font-bold">Service Entrance Ampacity:</span>
-                    <code>{formatWithCommas($serviceEntranceAmpacity)}</code>
+                    <code>{formatWithCommas($serviceEntranceAmpacity)} A</code>
                 </p>
 
             </div>

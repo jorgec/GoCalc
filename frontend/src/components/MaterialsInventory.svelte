@@ -257,97 +257,159 @@
             </div>
         </div>
     {/if}
-    <h2 class="text-lg font-semibold text-gray-800 mb-3">Add New Inventory Item</h2>
+    <h2 class="text-xl font-semibold text-gray-800 my-2">
+        Project Cost Estimate</h2>
     <div>
-        <div class="flex flex-wrap items-center justify-start gap-4">
-            <div class="flex flex-col h-20 py-4">
-                <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
-                <select id="category" bind:value={$selectedCategory}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option value="" disabled selected>Select Category</option>
+        <div class="flex flex-wrap items-start gap-4">
+
+            <!-- Category -->
+            <div class="relative flex-1 min-w-[160px]">
+                <select
+                        id="category"
+                        bind:value={$selectedCategory}
+                        class="peer w-full bg-white border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                    <option value="" disabled selected hidden></option>
                     {#each categories as category}
                         <option value="{category}">{category}</option>
                     {/each}
                 </select>
+                <label for="category"
+                       class="absolute left-3 top-2 text-gray-500 text-sm transition-all
+                    peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500
+                    peer-[value='']:top-4 peer-[value='']:text-base peer-[value='']:text-gray-400">
+                    Category
+                </label>
             </div>
-            <div class="flex flex-col h-20 py-4">
-                <label for="quantity" class="block text-gray-700 text-sm font-bold mb-2">Quantity</label>
-                <input id="quantity" type="number" bind:value={$quantity} min="1"
-                       on:input={(e) => quantity.set(Number(e.target.value))}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+
+            <!-- Quantity -->
+            <div class="relative flex-1 min-w-[160px]">
+                <input
+                        id="quantity"
+                        type="number"
+                        min="1"
+                        bind:value={$quantity}
+                        on:input={(e) => quantity.set(Number(e.target.value))}
+                        placeholder=" "
+                        class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <label for="quantity" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                    Quantity
+                </label>
             </div>
-            <div class="flex flex-col h-20 py-4">
-                <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
+
+            <!-- Unit -->
+            <div class="relative flex-1 min-w-[160px]">
+                <input
+                        id="unit"
+                        type="text"
+                        bind:value={$unit}
+                        placeholder=" "
+                        class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <label for="unit" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
                     Unit
                 </label>
-
-                <input id="unit" type="text" bind:value={$unit}
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
             </div>
-            <div class="flex flex-col h-20 py-4">
-                <label for="item" class="block text-gray-700 text-sm font-bold mb-2">
+
+            <!-- Item -->
+            <div class="relative flex-1 min-w-[160px]">
+                <select
+                        id="item"
+                        bind:value={$selectedItem}
+                        disabled={!$selectedCategory}
+                        class="peer w-full bg-white border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                >
+                    <option value="" disabled selected hidden></option>
+                    {#each $items as item}
+                        <option value="{item.slug}">{item.Description}</option>
+                    {/each}
+                </select>
+                <label for="item"
+                       class="absolute left-3 top-2 text-gray-500 text-sm flex items-center gap-2 transition-all
+                    peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500
+                    peer-[value='']:top-4 peer-[value='']:text-base peer-[value='']:text-gray-400">
                     Item
                     {#if $selectedCategory !== ''}
-                        <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1"
+                        <button
+                                type="button"
+                                class="ml-2 font-bold text-xs bg-green-700 text-green-200 px-2 py-1 rounded"
                                 on:click={() => showAddItem = true}>
                             Add
                         </button>
                     {/if}
                 </label>
-                <select id="item" bind:value={$selectedItem}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:bg-gray-100"
-                        disabled={!$selectedCategory}>
-                    <option value="" disabled selected>Select Item</option>
-                    {#each $items as item}
-                        <option value="{item.slug}">{item.Description}</option>
-                    {/each}
-                </select>
             </div>
 
+            <!-- Wire Type (conditional) -->
             {#if $selectedCategory === "Wire and Cable"}
-                <div class="flex flex-col h-20 py-4">
-                    <label for="item" class="block text-gray-700 text-sm font-bold mb-2">Wire Type</label>
-                    <select id="item"
+                <div class="relative flex-1 min-w-[160px]">
+                    <select
+                            id="wireType"
                             bind:value={selectedWireType}
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:bg-gray-100">
-                        <option value="" selected>Select Wire Type</option>
+                            class="peer w-full bg-white border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                    >
+                        <option value="" disabled selected hidden></option>
                         {#each wireTypes as item}
                             <option value="{item}">{item}</option>
                         {/each}
                     </select>
+                    <label for="wireType"
+                           class="absolute left-3 top-2 text-gray-500 text-sm transition-all
+                      peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500
+                      peer-[value='']:top-4 peer-[value='']:text-base peer-[value='']:text-gray-400">
+                        Wire Type
+                    </label>
                 </div>
             {/if}
 
-            <div class="flex flex-col h-20 py-4">
-                <label for="brand" class="block text-gray-700 text-sm font-bold mb-2">
+            <!-- Brand -->
+            <div class="relative flex-1 min-w-[160px]">
+                <select
+                        id="brand"
+                        bind:value={$selectedBrand}
+                        class="peer w-full bg-white border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                    <option value="" disabled selected hidden></option>
+                    {#each $brands as brand}
+                        <option value="{brand}">{brand}</option>
+                    {/each}
+                </select>
+                <label for="brand"
+                       class="absolute left-3 top-2 text-gray-500 text-sm flex items-center gap-2 transition-all
+                    peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500
+                    peer-[value='']:top-4 peer-[value='']:text-base peer-[value='']:text-gray-400">
                     Brand
-                                        <button class="font-bold text-xs bg-green-700 text-green-200 px-2 py-1" on:click={() => showAddBrand = true}>
-                                            Add
-                                        </button>
+                    <button
+                            type="button"
+                            class="ml-2 font-bold text-xs bg-green-700 text-green-200 px-2 py-1 rounded"
+                            on:click={() => showAddBrand = true}>
+                        Add
+                    </button>
                 </label>
-                    <select
-                            id="brand"
-                            bind:value={$selectedBrand}
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <option value="" disabled selected>Select Brand</option>
-                        {#each $brands as brand}
-                            <option value="{brand}">{brand}</option>
-                        {/each}
-                    </select>
-<!--                <input id="brand" type="text" bind:value={$selectedBrand}-->
-<!--                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">-->
             </div>
 
-            <div class="flex flex-col h-20 py-4">
-                <label for="unitPrice" class="block text-gray-700 text-sm font-bold mb-2">Unit Price</label>
-                <input id="unitPrice" type="number" bind:value={unitPrice} min="1"
-                       class="border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md px-3 py-2 text-gray-700">
+            <!-- Unit Price -->
+            <div class="relative flex-1 min-w-[160px]">
+                <input
+                        id="unitPrice"
+                        type="number"
+                        min="1"
+                        bind:value={unitPrice}
+                        placeholder=" "
+                        class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <label for="unitPrice" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                    Unit Price
+                </label>
             </div>
-
-
         </div>
+
+        <!-- Add Item Button -->
         <div class="my-3">
-            <button on:click={addItem}
+            <button
+                    type="button"
+                    on:click={addItem}
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-all">
                 Add Item
             </button>
