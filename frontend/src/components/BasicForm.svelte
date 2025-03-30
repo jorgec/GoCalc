@@ -48,12 +48,11 @@
     }
 </script>
 
-<!-- EXACT markup for floor area, occupancy selects, system phase, volts -->
 <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
-    <h2 class="text-xl font-semibold text-gray-800 my-2">
-        Schedule of Loads
-    </h2>
-    <div class="w-full p-6 bg-white rounded-2xl shadow-lg">
+    <div class="w-full p-6 pt-2 bg-white shadow-lg my-4">
+        <h2 class="text-xl font-semibold text-gray-800">
+            Schedule of Loads
+        </h2>
         <div class="flex flex-wrap gap-4">
             <!-- Panelboard Name -->
             <div class="relative flex-1 min-w-[240px]">
@@ -138,7 +137,7 @@
             {/if}
 
             <!-- System Phase -->
-            <div class="relative flex-1 min-w-[240px]">
+            <div class="relative flex-1 min-w-[160px]">
                 <select
                         bind:value={$systemPhaseType}
                         required
@@ -198,7 +197,7 @@
                 </label>
             </div>
             <!-- Floor Area -->
-            <div class="relative flex-1 min-w-[160px]">
+            <div class="relative flex-1 min-w-[100px]">
                 <input
                         type="number"
                         id="floorArea"

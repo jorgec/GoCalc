@@ -3,16 +3,18 @@
     import {
         addBrand,
         addItemToCategory,
+        brands,
         inventory,
         laborCost,
         laborPercentage,
         logisticsCost,
+        materialCostMultiplier,
         materialDictionary,
         materialsCost,
         materialsInventory,
         totalInventoryCost,
         totalProjectCost,
-        wireTypes, brands, materialCostMultiplier
+        wireTypes
     } from '../stores/materialInventoryStore';
     import {derived, writable} from 'svelte/store';
     import {slugify} from '../utils/misc.js';
@@ -31,7 +33,7 @@
 
     deriveCategories();
 
-    function deriveCategories(){
+    function deriveCategories() {
         items = derived([inventory, selectedCategory], ([$inventory, $selectedCategory]) => {
             if ($selectedCategory && $inventory[$selectedCategory]) {
                 return $inventory[$selectedCategory];
@@ -257,9 +259,11 @@
             </div>
         </div>
     {/if}
-    <h2 class="text-xl font-semibold text-gray-800 my-2">
-        Project Cost Estimate</h2>
-    <div>
+    <div class="w-full p-6 pt-2 bg-white shadow-lg my-4">
+        <h2 class="text-xl font-semibold text-gray-800">
+
+            Project Cost Estimate</h2>
+
         <div class="flex flex-wrap items-start gap-4">
 
             <!-- Category -->
@@ -293,7 +297,8 @@
                         placeholder=" "
                         class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <label for="quantity" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                <label for="quantity"
+                       class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
                     Quantity
                 </label>
             </div>
@@ -307,7 +312,8 @@
                         placeholder=" "
                         class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <label for="unit" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                <label for="unit"
+                       class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
                     Unit
                 </label>
             </div>
@@ -399,7 +405,8 @@
                         placeholder=" "
                         class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <label for="unitPrice" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                <label for="unitPrice"
+                       class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
                     Unit Price
                 </label>
             </div>
