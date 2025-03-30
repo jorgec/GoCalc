@@ -87,7 +87,7 @@
         <div class="h-20 py-4">
             <div class="my-4 p-2 px-3">
 
-                {#if $floorArea > 0}
+                {#if parseFloat($floorArea) > 0}
                     <h3 class="block text-gray-700 font-bold mb-2">
                         Lighting Load at {$totalLoad}VA per m<sup>2</sup>:
                         <code>{$loadByOccupancy} VA</code>
@@ -112,7 +112,7 @@
                     </p>
                     <p>
                         <span class="font-bold">Total:</span>
-                        <code>{formatWithCommas($totalSumOfSpecs)} VA</code>
+                        <code>{formatWithCommas($totalOfAllVA)} VA</code>
                     </p>
                     <p>
                         <span class="font-bold">Total Amp:</span>
