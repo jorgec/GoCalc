@@ -20,3 +20,5 @@ export const modalImage = writable('');
 
 export const isEditingLoadSpec = writable(false);
 export const loadSpecEditId = writable(null);
+
+export const hasActivePanelboard = writable(false);
