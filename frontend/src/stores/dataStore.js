@@ -44,6 +44,7 @@ export const horsepower = writable(0);
 export const spareName = writable('');
 export const ratings = writable('');
 export const isABC = writable(false);
+export const demandFactor = writable(100.0);
 
 // The array of all specs
 export const loadSpecifications = writable([]);

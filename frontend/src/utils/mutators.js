@@ -3,17 +3,27 @@ import {get} from 'svelte/store';
 import {
     applicationDemandFactor,
     convenienceVA,
-    floorArea, globalConduitType, globalWireType, horsepower, panelboardName,
+    currentPanelBoard,
+    demandFactor,
+    floorArea,
+    globalConduitType,
+    globalWireType,
+    horsepower,
     isABC,
     lightingRows,
     loadSpecifications,
+    panelBoardList,
+    panelboardName,
+    panelBoards,
     projectDate,
     projectInCharge,
     projectLocation,
     projectName,
     projectOwner,
     quantity,
-    ratings, rowConduitType, rowWireType,
+    ratings,
+    rowConduitType,
+    rowWireType,
     sa,
     sab,
     sabc,
@@ -28,7 +38,7 @@ import {
     threeGang,
     totalSumOfSpecs,
     volts,
-    wattage, panelBoards, panelBoardList, currentPanelBoard,
+    wattage
 } from '../stores/dataStore';
 
 import {loadSpecEditId, showLightingInput, statusMessage} from '../stores/uiStore';
@@ -36,8 +46,8 @@ import {loadSpecEditId, showLightingInput, statusMessage} from '../stores/uiStor
 import {laborPercentage, logisticsCost, materialsInventory} from '../stores/materialInventoryStore';
 
 import {constants, lookupWattage} from '../stores/constantsStore';
-import {determineConduitSize, determineWireSizeAndType, getSumOfSpecifications} from './calculations';
-import {determineWireParams, determineWireSize, formatWireDataRow, wireDataLookup} from "./lookups.js";
+import {getSumOfSpecifications} from './calculations';
+import {determineWireParams, determineWireSize, formatWireDataRow} from "./lookups.js";
 import {formatDecimal} from "./misc.js";
 
 // --- Helper Functions (Internal) ---
@@ -56,14 +66,14 @@ export function recalcSpecifications() {
 }
 
 // --- Exported Mutator Functions ---
-export function recalcHP(phase){
+export function recalcHP(phase) {
     loadSpecifications.update(specs => {
         const _volts = get(volts);
 
         return specs.map(spec => {
             if (spec.horsepower && (spec.horsepower !== 0 && spec.horsepower !== "") && spec.category === "Motor") {
                 let wattage = parseFloat(spec.wattage);
-                if(wattage <= 0 || !wattage){
+                if (wattage <= 0 || !wattage) {
                     wattage = lookupWattage(spec.horsepower, _volts, phase);
                 }
                 let subtotal = spec.quantity * wattage;
@@ -141,6 +151,7 @@ export function resetSpecForm() {
     sabc.set(0);
     threeGang.set(0);
     loadSpecEditId.set(null);
+    demandFactor.set(100);
 }
 
 function checkLoadSpecificationForm(rowData, part) {
@@ -195,76 +206,76 @@ export function addLoadSpecification() {
 
     // LIGHTING (Category Index 0)
     if (idx === 0) {
-        if (idx === 0) {
-            const rows = get(lightingRows);      // 1. Get rows synchronously
-            if (rows.length === 0) {
-                statusMessage.set({text: "Please add at least one lighting row", type: "error"});
-                return;  // Stop here
-            }
 
-            let rowDetails = [];
-            let totalLighting = 0;
-            let tempName = (rows.length > 1) ? "Multiple Lighting Loads" : "Lighting Load";
+        const rows = get(lightingRows);      // 1. Get rows synchronously
+        if (rows.length === 0) {
+            statusMessage.set({text: "Please add at least one lighting row", type: "error"});
+            return;  // Stop here
+        }
 
-            // 2. Validate each row before adding
-            for (let row of rows) {
-                // Attempt to find the matching type label
-                let foundType = (category.types || [])
-                    .find(t => t.value === +row.typeValue);
+        let rowDetails = [];
+        let totalLighting = 0;
+        let tempName = (rows.length > 1) ? "Multiple Lighting Loads" : "Lighting Load";
 
-                const rowData = {
-                    type: foundType ? foundType.label : '',
-                    wattage: row.wattage,
-                    quantity: row.quantity,
-                };
+        // 2. Validate each row before adding
+        for (let row of rows) {
+            // Attempt to find the matching type label
+            let foundType = (category.types || [])
+                .find(t => t.value === +row.typeValue);
 
-                // Call your validation function
-                const {status, msg} = checkLoadSpecificationForm(rowData, "lighting-row");
-                if (!status) {
-                    // If invalid, set the error message and STOP
-                    statusMessage.set({text: `Lighting row error: ${msg}`, type: 'error'});
-                    return;  // No rows are added
-                }
+            const rowData = {
+                type: foundType ? foundType.label : '',
+                wattage: row.wattage,
+                quantity: row.quantity,
+            };
 
-                // If valid, accumulate
-                totalLighting += rowData.wattage * rowData.quantity;
-                rowDetails.push(rowData);
-            }
-            let switches = {
-                sa: get(sa) >= 0,
-                sab: get(sab) >= 0,
-                sabc: get(sabc) >= 0,
-                threeGang: get(threeGang) >= 0
-            }
-
-            const {status, msg} = checkLoadSpecificationForm(switches, "lighting-switches");
+            // Call your validation function
+            const {status, msg} = checkLoadSpecificationForm(rowData, "lighting-row");
             if (!status) {
                 // If invalid, set the error message and STOP
-                statusMessage.set({text: `Switch Error`, type: 'error'});
+                statusMessage.set({text: `Lighting row error: ${msg}`, type: 'error'});
                 return;  // No rows are added
             }
 
-            // If we get here, all rows are valid
-            details = {
-                category: category.label,
-                name: `${tempName} (${rowDetails.length} rows)`,
-                lightingLoads: rowDetails,
-                wattage: totalLighting,
-                horsepower: (totalLighting / 746).toFixed(2),
-                quantity: rowDetails.length,
-                sa: get(sa),
-                sab: get(sab),
-                sabc: get(sabc),
-                threeGang: get(threeGang),
-                subtotal: totalLighting.toFixed(2),
-                ratings: '-',
-                abc: false
-            };
-
-            // Reset lighting input after success
-            lightingRows.set([]);
-            showLightingInput.set(false);
+            // If valid, accumulate
+            totalLighting += rowData.wattage * rowData.quantity;
+            rowDetails.push(rowData);
         }
+        let switches = {
+            sa: get(sa) >= 0,
+            sab: get(sab) >= 0,
+            sabc: get(sabc) >= 0,
+            threeGang: get(threeGang) >= 0
+        }
+
+        const {status, msg} = checkLoadSpecificationForm(switches, "lighting-switches");
+        if (!status) {
+            // If invalid, set the error message and STOP
+            statusMessage.set({text: `Switch Error`, type: 'error'});
+            return;  // No rows are added
+        }
+
+        // If we get here, all rows are valid
+        details = {
+            category: category.label,
+            name: `${tempName} (${rowDetails.length} rows)`,
+            lightingLoads: rowDetails,
+            wattage: totalLighting,
+            horsepower: (totalLighting / 746).toFixed(2),
+            quantity: rowDetails.length,
+            sa: get(sa),
+            sab: get(sab),
+            sabc: get(sabc),
+            threeGang: get(threeGang),
+            subtotal: totalLighting.toFixed(2),
+            ratings: '-',
+            abc: false
+        };
+
+        // Reset lighting input after success
+        lightingRows.set([]);
+        showLightingInput.set(false);
+
     }
 
     // CONVENIENCE OUTLET (Category Index 1)
@@ -288,18 +299,18 @@ export function addLoadSpecification() {
     // KITCHEN, MOTOR, OTHER LOADS (Categories with 'types')
     else if (idx === 2 || idx === 3 || idx === 5) {
         let w = get(wattage);
-        if(!w){
+        if (!w) {
             w = 0.0;
-        }else{
+        } else {
             w = parseFloat(w);
         }
         const catTypeIndex = get(selectedCategoryType);
         const catType = category.types?.[catTypeIndex]; // Safe access
         const typeLabel = catType ? catType.label : 'Unknown';
         const hp = get(horsepower);
-        let _horsepower = (w / 746).toFixed(2);
-        if(idx === 3){ // motors
-            if(w === 0.0){
+        let _horsepower = null; //(w / 746).toFixed(2);
+        if (idx === 3) { // motors
+            if (w === 0.0) {
                 w = lookupWattage(hp, get(volts), get(systemPhaseType));
                 _horsepower = hp;
             }
@@ -314,6 +325,14 @@ export function addLoadSpecification() {
             ratings: get(ratings).trim() !== '' ? get(ratings) : '-',
             abc: (get(systemPhaseType) == 1 && get(isABC)) ? true : false
         };
+
+        const _df = parseFloat(get(demandFactor));
+        if(idx === 2) { // kitchen
+            details.demandFactor = _df;
+            details.originalWattage = w;
+            details.wattage = w * (_df / 100);
+            details.subtotal = details.wattage * details.quantity;
+        }
     }
 
     // SPARE (Category Index 4)
@@ -350,15 +369,15 @@ export function addLoadSpecification() {
         newSpec.wireSize = formatDecimal(wireSize, 1);
         newSpec.wireTypeSelection = wireType;
         newSpec.wireType = wireType;
-        if(Array.isArray(wireType)){
+        if (Array.isArray(wireType)) {
             newSpec.wireType = wireType[0];
         }
 
         // newSpec.conduitSize = determineConduitSize(wireSize); // Calculate conduit
 
-        if(_globalConduitType === "RMC"){
+        if (_globalConduitType === "RMC") {
             newSpec.conduitSize = `${wireParamsAnnotated.conduitsize_metric_rmc} (${wireParamsAnnotated.conduitsize_imperial_rmc})`;
-        }else{
+        } else {
             newSpec.conduitSize = `${wireParamsAnnotated.conduitsize_metric_pvc} (${wireParamsAnnotated.conduitsize_imperial_pvc})`;
         }
 
@@ -367,7 +386,7 @@ export function addLoadSpecification() {
 
         const specId = get(loadSpecEditId);
         console.log(specId);
-        if(specId !== null){
+        if (specId !== null) {
             current[specId] = newSpec;
             console.log(current);
             return current;
@@ -382,15 +401,15 @@ export function addLoadSpecification() {
     return retVal;
 }
 
-export function updateSpecs(loadSpecifications){
-    for(let i = 0; i < loadSpecifications.length; i++){
+export function updateSpecs(loadSpecifications) {
+    for (let i = 0; i < loadSpecifications.length; i++) {
         loadSpecifications[i] = updateWireData(loadSpecifications[i]);
     }
     return loadSpecifications;
 }
 
-export function updateWireData(row){
-    if(! ('wireParamsAnnotated' in row)){
+export function updateWireData(row) {
+    if (!('wireParamsAnnotated' in row)) {
         row.wireParams = determineWireParams(row.wireSize, row.wireType);
         row.wireParamsAnnotated = formatWireDataRow(row.wireParams);
     }
@@ -462,7 +481,14 @@ export function loadProjectData(projectData) {
     }
 }
 
-export function saveSpecficiationsToPanelboard(n){
+export function removePanelboardSet(n) {
+    let _panelboards = get(panelBoards);
+    _panelboards.splice(n, 1);
+    panelBoards.set(_panelboards);
+    updatePanelboardList(_panelboards);
+}
+
+export function saveSpecficiationsToPanelboard(n) {
     const loadSpecs = get(loadSpecifications);
     const _panelboardName = get(panelboardName);
     let _panelBoards = get(panelBoards);
@@ -472,13 +498,13 @@ export function saveSpecficiationsToPanelboard(n){
         "loadSpecifications": loadSpecs
     };
 
-    if(n === null){
+    if (n === null) {
         n = _panelBoards.length;
     }
 
-    if(_panelBoards.length > 0){
+    if (_panelBoards.length > 0) {
         _panelBoards[n] = data;
-    }else{
+    } else {
         _panelBoards = [data];
     }
 
@@ -489,26 +515,26 @@ export function saveSpecficiationsToPanelboard(n){
 
 export function updatePanelboardList(_panelBoards) {
     let _panelBoardList = [];
-    for(let i = 0; i < _panelBoards.length; i++){
+    for (let i = 0; i < _panelBoards.length; i++) {
         _panelBoardList.push(_panelBoards[i].panelboardName);
     }
     panelBoardList.set(_panelBoardList);
 }
 
-export function loadSpecificationsFromPanelboard(n){
+export function loadSpecificationsFromPanelboard(n) {
     currentPanelBoard.set(n);
     const _panelBoards = get(panelBoards);
     let loadSpecs = [];
     if (!Array.isArray(_panelBoards) || _panelBoards.length > 0) {
-        if(Array.isArray(_panelBoards) && _panelBoards.length > 0 &&
-            _panelBoards.every(panel => panel.hasOwnProperty("panelboardName") && panel.hasOwnProperty("loadSpecifications"))){
+        if (Array.isArray(_panelBoards) && _panelBoards.length > 0 &&
+            _panelBoards.every(panel => panel.hasOwnProperty("panelboardName") && panel.hasOwnProperty("loadSpecifications"))) {
             updatePanelboardList(_panelBoards);
             loadSpecs = updateSpecs(_panelBoards[n].loadSpecifications)
             loadSpecifications.set(loadSpecs);
             panelboardName.set(_panelBoards[n].panelboardName);
             statusMessage.set({text: "Panelboard " + _panelBoards[n].panelboardName + " loaded", type: 'info'});
         }
-    }else{
+    } else {
         loadSpecifications.set([]); // Set to an empty array
         statusMessage.set({
             text: "Warning: Invalid loadSpecifications data. Loading empty array.",

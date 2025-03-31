@@ -19,7 +19,11 @@
     import {showSpecForm} from "../stores/uiStore";
     import {constants} from "../stores/constantsStore";
     import {get} from "svelte/store";
-    import {loadSpecificationsFromPanelboard, saveSpecficiationsToPanelboard} from "../utils/mutators.js";
+    import {
+        loadSpecificationsFromPanelboard,
+        removePanelboardSet,
+        saveSpecficiationsToPanelboard
+    } from "../utils/mutators.js";
 
     // Derive occupant-based logic, just like original
     $: occupancyObj = constants.occupancyTypes.find(o => o.value == +$selectedOccupancyValue);
@@ -53,6 +57,12 @@
     function savePanelboard(){
         const panelboardId = get(currentPanelBoard);
         saveSpecficiationsToPanelboard(panelboardId);
+    }
+
+    function removePanelboard() {
+        const panelboardId = get(currentPanelBoard);
+        removePanelboardSet(panelboardId);
+        newPanelboard();
     }
 
     function newPanelboard(){
@@ -246,6 +256,14 @@
     >
         Save Panelboard
     </button>
+    {#if $currentPanelBoard !== null}
+        <button
+                class="bg-red-400 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-red-900 transition"
+                on:click={() => removePanelboard()}
+        >
+            Remove Current Panelboard: {$currentPanelBoard}
+        </button>
+    {/if}
 
     <!-- Panelboards dropdown -->
     <div class="relative">

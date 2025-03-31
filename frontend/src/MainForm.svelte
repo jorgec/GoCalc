@@ -131,7 +131,7 @@
                     <BasicForm/>
                     <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
                         {#if $showSpecForm}
-                            <div class="bg-gray-100 border border-gray-300 rounded-lg py-0 px-4 shadow-sm">
+                            <div class="bg-gray-100 border border-gray-300  py-0 px-4 shadow-sm">
                                 <SpecForm/>
                             </div>
                         {/if}
@@ -183,37 +183,46 @@
     {:else}
         <div class="h-screen w-screen bg-gray-100 flex items-center justify-center">
 
-            <form class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm flex flex-col items-center space-y-6">
-                <h1 class="text-2xl font-semibold text-gray-800">Enter Password</h1>
+            <form class="bg-white p-8 rounded shadow-md w-full max-w-sm flex flex-col items-center space-y-6">
+                <h1 class="text-2xl font-medium text-gray-900">Enter Password</h1>
+
                 {#if authError}
                     <p class="w-full text-sm text-red-600 min-h-[1.25rem]">
                         {authError}
                     </p>
                 {/if}
-                <input
-                        type="password"
-                        placeholder="Password"
-                        bind:value={password}
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                />
 
-                <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+                <!-- Floating label container -->
+                <div class="relative w-full">
+                    <input
+                            type="password"
+                            bind:value={password}
+                            id="password"
+                            placeholder=" "
+                            required
+                            class="rounded peer w-full px-4 pt-5 pb-2 text-base border border-gray-300  placeholder-transparent focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    />
+                    <label for="password" class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+                        Password
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 w-full">
                     <button
                             type="button"
                             on:click={authCheck}
-                            class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200"
+                            class="rounded py-2 px-4 bg-blue-400 hover:bg-blue-700 text-white font-medium  shadow-md hover:shadow-lg transition duration-200"
                     >
                         Submit
                     </button>
 
                     <button
                             type="button"
-                            class="py-2 px-4 bg-red-600 hover:bg-red-400 text-white font-medium rounded-lg transition duration-200"
                             on:click={() => {
-                              AllowClose();
-                              window.close();
-                            }}
+                AllowClose();
+                window.close();
+            }}
+                            class="rounded py-2 px-4 bg-red-400 hover:bg-red-700 text-white font-medium  shadow-md hover:shadow-lg transition duration-200"
                     >
                         Exit
                     </button>
