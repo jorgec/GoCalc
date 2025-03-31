@@ -5,7 +5,7 @@ import {
     globalConduitType,
     globalWireType,
     loadSpecifications,
-    panelboardName,
+    panelboardName, panelBoards,
     projectDate,
     projectInCharge,
     projectLocation,
@@ -225,7 +225,7 @@ export const projectData = derived(
         selectedTypeValue,
         systemPhaseType,
         volts,
-        loadSpecifications,
+        // loadSpecifications,
         materialsInventory,
         laborPercentage,
         logisticsCost,
@@ -235,7 +235,8 @@ export const projectData = derived(
         totalProjectCost,
         globalWireType,
         globalConduitType,
-        panelboardName
+        panelboardName,
+        panelBoards,
     ],
     ([
          $projectName,
@@ -249,7 +250,7 @@ export const projectData = derived(
          $selectedTypeValue,
          $systemPhaseType,
          $volts,
-         $loadSpecifications,
+         // $loadSpecifications,
          $materialsInventory,
          $laborPercentage,
          $logisticsCost,
@@ -259,7 +260,8 @@ export const projectData = derived(
          $totalProjectCost,
          $globalWireType,
          $globalConduitType,
-         $panelboardName
+         $panelboardName,
+        $panelBoards
 
      ]) => {
         return {
@@ -274,7 +276,7 @@ export const projectData = derived(
             selectedTypeValue: $selectedTypeValue,
             systemPhaseType: $systemPhaseType,
             volts: $volts,
-            loadSpecifications: $loadSpecifications,
+            // loadSpecifications: $loadSpecifications,
             materialsInventory: $materialsInventory,
             labor: $laborPercentage,
             logistics: $logisticsCost,
@@ -284,7 +286,8 @@ export const projectData = derived(
             totalProjectCost: $totalProjectCost,
             globalWireType: $globalWireType,
             globalConduitType: $globalConduitType,
-            panelboardName: $panelboardName
+            panelboardName: $panelboardName,
+            panelBoards: $panelBoards
         };
     }
 );

@@ -61,6 +61,10 @@ export const globalConduitType = writable("PVC");
 export const rowConduitType = writable("PVC");
 export const rowWireType = writable("THHN");
 
+export const panelBoards = writable([]);
+export const panelBoardList = writable([]);
+export const currentPanelBoard = writable(null);
+
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {
 

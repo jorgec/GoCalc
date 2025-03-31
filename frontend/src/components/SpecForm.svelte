@@ -14,7 +14,8 @@
         selectedCategoryType,
         spareName,
         threeGang,
-        wattage
+        wattage,
+        panelboardName
     } from "../stores/dataStore";
 
     import {constants, hp_lookup, updateConstant} from "../stores/constantsStore";
@@ -226,7 +227,24 @@
 {/if}
 
 {#if $showSpecForm}
+    <!-- Panelboard Name -->
+    <div class="relative flex-1 min-w-[240px] my-4">
+        <input
+                type="text"
+                id="panelboardName"
+                bind:value="{$panelboardName}"
+                required
+                min="0"
+                placeholder=" "
+                class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        <label for="panelboardName" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+            Panelboard Name
+        </label>
+    </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b-gray-500 p-0">
+
+
         <div class="h-20 py-4">
             <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
                 Load Specification Category:

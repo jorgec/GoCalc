@@ -12,11 +12,14 @@
         volts,
         rowWireType,
         rowConduitType,
-        panelboardName
+        panelBoards,
+        currentPanelBoard, loadSpecifications, panelboardName
     } from "../stores/dataStore";
 
     import {showSpecForm} from "../stores/uiStore";
     import {constants} from "../stores/constantsStore";
+    import {get} from "svelte/store";
+    import {loadSpecificationsFromPanelboard, saveSpecficiationsToPanelboard} from "../utils/mutators.js";
 
     // Derive occupant-based logic, just like original
     $: occupancyObj = constants.occupancyTypes.find(o => o.value == +$selectedOccupancyValue);
@@ -37,7 +40,7 @@
                     if (addon) tmpLoad += addon.unit_load;
                 }
                 totalLoad.set(tmpLoad);
-                loadByOccupancy.set(tmpLoad * $floorArea);
+                loadByOccupancy.set(tmpLoad * parseFloat($floorArea));
                 selectedLightingDemandFactorID.set(occType.lighting_df);
             }
         } else {
@@ -46,6 +49,20 @@
             selectedLightingDemandFactorID.set(null);
         }
     }
+
+    function savePanelboard(){
+        const panelboardId = get(currentPanelBoard);
+        saveSpecficiationsToPanelboard(panelboardId);
+    }
+
+    function newPanelboard(){
+        currentPanelBoard.set(null);
+        showSpecForm.set(true);
+        panelboardName.set('');
+        loadSpecifications.set([]);
+    }
+
+    let showPanelboardDropdown = false;
 </script>
 
 <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
@@ -54,21 +71,6 @@
             Schedule of Loads
         </h2>
         <div class="flex flex-wrap gap-4">
-            <!-- Panelboard Name -->
-            <div class="relative flex-1 min-w-[240px]">
-                <input
-                        type="text"
-                        id="panelboardName"
-                        bind:value={$panelboardName}
-                        required
-                        min="0"
-                        placeholder=" "
-                        class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                <label for="panelboardName" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                    Panelboard Name
-                </label>
-            </div>
 
             <!-- Type of Occupancy -->
             <div class="relative flex-1 min-w-[240px]">
@@ -228,5 +230,51 @@
             </div>
 
         </div>
+    </div>
+</div>
+<div class="-mt-4 mb-6 flex gap-2 px-6">
+    <!-- Add Panelboard button -->
+    <button
+            class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-teal-900 transition"
+            on:click={() => newPanelboard()}
+    >
+        Add Panelboard
+    </button>
+    <button
+            class="bg-green-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-green-900 transition"
+            on:click={() => savePanelboard()}
+    >
+        Save Panelboard
+    </button>
+
+    <!-- Panelboards dropdown -->
+    <div class="relative">
+        <button
+                class="bg-gray-100 text-gray-800 font-medium py-2 px-4 rounded-b-md border border-gray-300 hover:bg-gray-200 transition"
+                on:click={() => showPanelboardDropdown = !showPanelboardDropdown}
+        >
+            Panelboards
+            <svg class="inline w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        {#if showPanelboardDropdown}
+            <ul class="absolute z-10 mt-1 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
+                {#each $panelBoards as panelboard, i}
+                    <li>
+                        <a
+                                on:click={() => {
+                                        loadSpecificationsFromPanelboard(i);
+                                        showPanelboardDropdown = false;
+                                    }
+                                }
+                                href="#!" class="block px-4 py-2 hover:bg-gray-100">
+                            {panelboard.panelboardName}
+                        </a>
+                    </li>
+                {/each}
+            </ul>
+        {/if}
     </div>
 </div>
