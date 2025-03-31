@@ -15,7 +15,8 @@
         spareName,
         threeGang,
         wattage,
-        panelboardName
+        panelboardName,
+        demandFactor
     } from "../stores/dataStore";
 
     import {constants, hp_lookup, updateConstant} from "../stores/constantsStore";
@@ -90,6 +91,7 @@
 
         // Get the existing spec from loadSpecifications
         const spec = get(loadSpecifications)[i];
+        console.log(spec);
 
         if (!spec) return;
         catIndex = categoryIndexLookup(spec.category);
@@ -103,7 +105,10 @@
 
         quantity.set(spec.quantity);
         // For wattage, horsepower, ratings, etc.:
-        wattage.set(spec.wattage ?? 0);
+        let _wattage = spec.wattage;
+
+        wattage.set(_wattage ?? 0);
+        demandFactor.set(spec.demandFactor ?? 100.0);
         horsepower.set(spec.horsepower ?? 0);
         ratings.set(spec.ratings ?? '');
         isABC.set(spec.abc ?? false);
@@ -143,7 +148,9 @@
 
         } else if (catIndex === 2) {
             // KITCHEN LOAD
-            wattage.set(spec.wattage ?? 0);
+            if(spec.originalWattage){
+                wattage.set(spec.originalWattage);
+            }
 
         } else if (catIndex === 3) {
             // MOTOR
@@ -183,6 +190,8 @@
         // Reset the form state
         resetSpecForm();
     }
+
+    let applyDF = false;
 
 </script>
 
@@ -246,36 +255,72 @@
 
 
         <div class="h-20 py-4">
-            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
-                Load Specification Category:
-            </label>
-            <select
-                    id="category"
-                    bind:value={$selectedCategoryIndex}
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            >
-                <option value={null}>Select a Category</option>
-                {#each constants.loadSpecificationCategories as category, i}
-                    <option value={i}>{category.label}</option>
-                {/each}
-            </select>
+            <!-- Floating label select for Load Specification Category -->
+            <div class="relative w-full">
+                <select
+                        id="category"
+                        bind:value={$selectedCategoryIndex}
+                        class="peer w-full appearance-none px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                >
+                    <option value={null} disabled>Select a Category</option>
+                    {#each constants.loadSpecificationCategories as category, i}
+                        <option value={i}>{category.label}</option>
+                    {/each}
+                </select>
+
+                <label
+                        for="category"
+                        class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+                >
+                    Load Specification Category
+                </label>
+
+                <!-- Optional chevron icon for visual hint -->
+                <svg
+                        class="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
         </div>
 
         {#if hasCategoryTypes}
             <div class="h-20 py-4">
-                <label for="selectedCategoryType" class="block text-gray-700 text-sm font-bold mb-2">
-                    Type:
-                </label>
-                <select
-                        bind:value={$selectedCategoryType}
-                        required
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                >
-                    <option value={null}>Select Type</option>
-                    {#each chosenCategory.types as t, i}
-                        <option value={i}>{t.label}</option>
-                    {/each}
-                </select>
+                <div class="relative w-full">
+                    <select
+                            id="selectedCategoryType"
+                            bind:value={$selectedCategoryType}
+                            required
+                            class="peer w-full appearance-none px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    >
+                        <option value={null} disabled>Select Type</option>
+                        {#each chosenCategory.types as t, i}
+                            <option value={i}>{t.label}</option>
+                        {/each}
+                    </select>
+
+                    <label
+                            for="selectedCategoryType"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+                    >
+                        Type
+                    </label>
+
+                    <!-- Optional chevron icon -->
+                    <svg
+                            class="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
             </div>
         {/if}
 
@@ -398,113 +443,176 @@
 
         {#if catIndex === 1}
             <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Quantity:</label>
-                <input
-                        type="number"
-                        min="1"
-                        max="8"
-                        bind:value={$quantity}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
+                <!-- Floating label for Quantity input -->
+                <div class="relative w-full">
+                    <input
+                            type="number"
+                            id="quantity"
+                            min="1"
+                            max="8"
+                            bind:value={$quantity}
+                            placeholder=" "
+                            class="peer w-full px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg placeholder-transparent text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    />
+                    <label
+                            for="quantity"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+                    >
+                        Quantity
+                    </label>
+                </div>
             </div>
             <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">VA:</label>
-                <input
-                        type="number"
-                        min="1"
-                        bind:value={$convenienceVA}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
+                <!-- Floating label for VA input -->
+                <div class="relative w-full">
+                    <input
+                            type="number"
+                            id="va"
+                            min="1"
+                            bind:value={$convenienceVA}
+                            placeholder=" "
+                            class="peer w-full px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg placeholder-transparent text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    />
+                    <label
+                            for="va"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+                    >
+                        VA
+                    </label>
+                </div>
             </div>
 
-        {/if}
-
-        {#if catIndex === 2}
-            <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Wattage:</label>
-                <input
-                        type="number"
-                        min="1"
-                        bind:value={$wattage}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
-            </div>
-        {/if}
-
-        {#if catIndex === 3}
-            <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Wattage:</label>
-                <input
-                        type="number"
-                        min="1"
-                        bind:value={$wattage}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
-            </div>
         {/if}
 
         {#if catIndex === 4}
             <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Spare Name (optional)</label>
-                <input
-                        type="text"
-                        bind:value={$spareName}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="e.g. Spare Heater, Spare Light..."
-                />
-            </div>
-            <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Wattage:</label>
-                <input
-                        type="number"
-                        min="1"
-                        bind:value={$wattage}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
+                <div class="relative w-full">
+                    <input
+                            type="text"
+                            id="spareName"
+                            bind:value={$spareName}
+                            placeholder=" "
+                            class="peer w-full px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg placeholder-transparent text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    />
+                    <label
+                            for="spareName"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+                    >
+                        Spare Name (optional)
+                    </label>
+                </div>
             </div>
         {/if}
 
-        {#if catIndex === 5}
+        {#if catIndex >= 2}
             <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Wattage:</label>
-                <input
-                        type="number"
-                        min="1"
-                        bind:value={$wattage}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
+                <div class="relative w-full">
+                    <input
+                            type="number"
+                            id="wattage"
+                            min="1"
+                            bind:value={$wattage}
+                            placeholder=" "
+                            class="peer w-full px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg placeholder-transparent text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    />
+                    <label
+                            for="wattage"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+                    >
+                        Wattage
+                    </label>
+
+                    {#if catIndex === 2}
+                        <div class="flex items-center space-x-2 mt-4">
+                            <input
+                                    type="checkbox"
+                                    id="applyDF"
+                                    bind:checked={applyDF}
+                                    class="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-500 border-gray-300 rounded transition duration-200"
+                            />
+                            <label for="applyDF" class="text-gray-700 text-sm">
+                                Apply Demand Factor (DF)
+                            </label>
+                        </div>
+                    {/if}
+                </div>
             </div>
+            {#if catIndex ===2 && applyDF}
+                <div class="h-20 py-4">
+                    <div class="relative w-full">
+                        <input
+                                type="number"
+                                id="demandFactor"
+                                min="1"
+                                bind:value={$demandFactor}
+                                placeholder=" "
+                                class="peer w-full px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg placeholder-transparent text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                        />
+                        <label
+                                for="demandFactor"
+                                class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+                        >
+                            Demand Factor (%)
+                        </label>
+
+
+                    </div>
+                </div>
+            {/if}
         {/if}
 
         {#if catIndex !== null && catIndex != 0 && catIndex != 1 && catIndex != 3}
             <div class="h-20 py-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="ratings">
-                    Description:
-                </label>
-                <input
-                        type="text"
-                        bind:value={$ratings}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="e.g. 1/2 HP, 220V..."
-                />
+                <div class="relative w-full">
+                    <input
+                            type="text"
+                            id="ratings"
+                            bind:value={$ratings}
+                            placeholder=" "
+                            class="peer w-full px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg placeholder-transparent text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    />
+                    <label
+                            for="ratings"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600"
+                    >
+                        Description
+                    </label>
+                </div>
             </div>
         {/if}
         {#if catIndex === 3}
             <div class="h-20 py-4">
-                <label for="category" class="block text-gray-700 text-sm font-bold mb-2">
-                    HP
-                    (<a href="#!" on:click|preventDefault={() => modalImage.set(motor_table)} class="underline">reference</a>)
-                </label>
-                <select
-                        id="category"
-                        bind:value={$horsepower}
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                >
-                    <option value=0>Select HP</option>
-                    {#each hpKeys as hp}
-                        <option value={hp}>{hp}</option>
-                    {/each}
-                </select>
+                <div class="relative w-full">
+                    <select
+                            id="category"
+                            bind:value={$horsepower}
+                            class="peer w-full appearance-none px-4 pt-5 pb-2 text-base border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    >
+                        <option value="0" disabled>Select HP</option>
+                        {#each hpKeys as hp}
+                            <option value={hp}>{hp}</option>
+                        {/each}
+                    </select>
+
+                    <label
+                            for="category"
+                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+                    >
+                        HP
+                        (<a
+                            href="#!"
+                            on:click|preventDefault={() => modalImage.set(motor_table)}
+                            class="underline hover:text-blue-600 transition"
+                    >
+                        reference
+                    </a>)
+                    </label>
+
+                    <!-- Chevron icon to mimic native select (optional) -->
+                    <svg class="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
             </div>
         {/if  }
     </div>

@@ -79,7 +79,11 @@ export const csvData = derived(
                     const acronym = spec.name.match(/[A-Z]+[a-z]*|[a-z]+/g)?.map(w => w[0].toUpperCase()).join('') || '';
                     ratings = `${spec.quantity} ${spec.category} (${spec.name})`;
                     if (spec.category === 'Motor') {
-                        ratings = `${spec.quantity} ${spec.category} (${spec.horsepower}HP ${acronym})`;
+                        let hpText = `${spec.wattage}W `;
+                        if(spec.horsepower !== null){
+                            hpText = `${spec.horsepower}HP `;
+                        }
+                        ratings = `${spec.quantity} ${spec.category} (${hpText}${acronym})`;
                     }
                 }
             }

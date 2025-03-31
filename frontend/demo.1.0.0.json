@@ -19,7 +19,7 @@
   "totalProjectCost": 0,
   "globalWireType": "THHN",
   "globalConduitType": "PVC",
-  "panelboardName": "Panel Board 1",
+  "panelboardName": "",
   "panelBoards": [
     {
       "panelboardName": "Panel Board 1",
@@ -1073,7 +1073,7 @@
           "name": "Washing Machine",
           "quantity": 1,
           "wattage": 1500,
-          "horsepower": "2.01",
+          "horsepower": null,
           "subtotal": 1500,
           "ratings": "-",
           "abc": false,
@@ -1111,7 +1111,7 @@
           "name": "Clothes Dryer",
           "quantity": 1,
           "wattage": 5000,
-          "horsepower": "6.70",
+          "horsepower": null,
           "subtotal": 5000,
           "ratings": "-",
           "abc": false,
@@ -1692,7 +1692,7 @@
           "name": "Washing Machine",
           "quantity": 1,
           "wattage": 1500,
-          "horsepower": "2.01",
+          "horsepower": null,
           "subtotal": 1500,
           "ratings": "-",
           "abc": false,
@@ -1730,7 +1730,7 @@
           "name": "Clothes Dryer",
           "quantity": 1,
           "wattage": 5000,
-          "horsepower": "6.70",
+          "horsepower": null,
           "subtotal": 5000,
           "ratings": "-",
           "abc": false,
@@ -2072,10 +2072,6 @@
           }
         }
       ]
-    },
-    {
-      "panelboardName": "Asasdgas",
-      "loadSpecifications": []
     }
   ]
 }
