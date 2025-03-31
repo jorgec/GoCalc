@@ -19,6 +19,7 @@
     import {showSpecForm} from "../stores/uiStore";
     import {constants} from "../stores/constantsStore";
     import {get} from "svelte/store";
+    import {loadSpecificationsFromPanelboard, saveSpecficiationsToPanelboard} from "../utils/mutators.js";
 
     // Derive occupant-based logic, just like original
     $: occupancyObj = constants.occupancyTypes.find(o => o.value == +$selectedOccupancyValue);
@@ -39,7 +40,7 @@
                     if (addon) tmpLoad += addon.unit_load;
                 }
                 totalLoad.set(tmpLoad);
-                loadByOccupancy.set(tmpLoad * $floorArea);
+                loadByOccupancy.set(tmpLoad * parseFloat($floorArea));
                 selectedLightingDemandFactorID.set(occType.lighting_df);
             }
         } else {
@@ -50,20 +51,15 @@
     }
 
     function savePanelboard(){
-        const panelboardData = {
-            "load": get(loadSpecifications),
-            "panelboardName": get(panelboardName)
-        };
         const panelboardId = get(currentPanelBoard);
+        saveSpecficiationsToPanelboard(panelboardId);
+    }
 
-        if(panelboardId === null){
-            panelBoards.set([panelboardData]);
-            currentPanelBoard.set(0);
-        }else{
-            let currentPanelboards = get(panelBoards);
-            currentPanelboards[panelboardId] = panelboardData;
-            panelBoards.set(currentPanelboards);
-        }
+    function newPanelboard(){
+        currentPanelBoard.set(null);
+        showSpecForm.set(true);
+        panelboardName.set('');
+        loadSpecifications.set([]);
     }
 
     let showPanelboardDropdown = false;
@@ -240,7 +236,7 @@
     <!-- Add Panelboard button -->
     <button
             class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-teal-900 transition"
-            on:click={() => showSpecForm.set(true)}
+            on:click={() => newPanelboard()}
     >
         Add Panelboard
     </button>
@@ -267,7 +263,13 @@
             <ul class="absolute z-10 mt-1 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
                 {#each $panelBoards as panelboard, i}
                     <li>
-                        <a href="#!" class="block px-4 py-2 hover:bg-gray-100">
+                        <a
+                                on:click={() => {
+                                        loadSpecificationsFromPanelboard(i);
+                                        showPanelboardDropdown = false;
+                                    }
+                                }
+                                href="#!" class="block px-4 py-2 hover:bg-gray-100">
                             {panelboard.panelboardName}
                         </a>
                     </li>

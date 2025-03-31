@@ -19,6 +19,7 @@
   "totalProjectCost": 0,
   "globalWireType": "THHN",
   "globalConduitType": "PVC",
+  "panelboardName": "Panel Board 1",
   "panelBoards": [
     {
       "panelboardName": "Panel Board 1",
@@ -29,8 +30,8 @@
           "lightingLoads": [
             {
               "type": "Lighting",
-              "wattage": 25,
-              "quantity": 2
+              "wattage": 50,
+              "quantity": 5
             },
             {
               "type": "Lighting",
@@ -38,14 +39,14 @@
               "quantity": 5
             }
           ],
-          "wattage": 300,
-          "horsepower": "0.40",
+          "wattage": 500,
+          "horsepower": "0.67",
           "quantity": 2,
           "sa": 1,
           "sab": 0,
           "sabc": 1,
           "threeGang": 0,
-          "subtotal": "300.00",
+          "subtotal": "500.00",
           "ratings": "-",
           "abc": false,
           "wireSize": "2.0",
@@ -2071,6 +2072,10 @@
           }
         }
       ]
+    },
+    {
+      "panelboardName": "Asasdgas",
+      "loadSpecifications": []
     }
   ]
 }

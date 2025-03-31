@@ -28,7 +28,7 @@ import {
     threeGang,
     totalSumOfSpecs,
     volts,
-    wattage,
+    wattage, panelBoards, panelBoardList, currentPanelBoard,
 } from '../stores/dataStore';
 
 import {loadSpecEditId, showLightingInput, statusMessage} from '../stores/uiStore';
@@ -423,23 +423,7 @@ export function loadProjectData(projectData) {
         globalWireType.set(projectData.globalWireType || '');
         globalConduitType.set(projectData.globalConduitType || '');
         rowConduitType.set(projectData.rowConduitType || 'PCV');
-
-        // Check for missing data in loadSpecifications
-
-        let loadSpecs = [];
-        // Load Specifications (Crucially, *replace* the existing array)
-        if (Array.isArray(projectData.loadSpecifications)) {
-            loadSpecs = updateSpecs(projectData.loadSpecifications);
-            console.log(loadSpecs);
-            loadSpecifications.set(loadSpecs);
-        } else {
-            // Handle the case where loadSpecifications is missing or invalid.
-            loadSpecifications.set([]); // Set to an empty array
-            statusMessage.set({
-                text: "Warning: Invalid loadSpecifications data. Loading empty array.",
-                type: "warning"
-            });
-        }
+        panelBoards.set(projectData.panelBoards || []);
 
         if (projectData.materialsInventory) {
             materialsInventory.set(projectData.materialsInventory);
@@ -467,7 +451,7 @@ export function loadProjectData(projectData) {
 
 
         // Recalculate derived values. VERY important after loading.
-
+        loadSpecificationsFromPanelboard(0);
         setTimeout(() => statusMessage.set({text: '', type: ''}), 5000);
         recalcSpecifications();
         statusMessage.set({text: "Project loaded successfully!", type: 'info'});
@@ -475,5 +459,60 @@ export function loadProjectData(projectData) {
     } catch (error) {
         console.error("Error loading project:", error);  // Log the full error
         statusMessage.set({text: `Error loading project: ${error}`, type: 'error'});
+    }
+}
+
+export function saveSpecficiationsToPanelboard(n){
+    const loadSpecs = get(loadSpecifications);
+    const _panelboardName = get(panelboardName);
+    let _panelBoards = get(panelBoards);
+
+    const data = {
+        "panelboardName": _panelboardName,
+        "loadSpecifications": loadSpecs
+    };
+
+    if(n === null){
+        n = _panelBoards.length;
+    }
+
+    if(_panelBoards.length > 0){
+        _panelBoards[n] = data;
+    }else{
+        _panelBoards = [data];
+    }
+
+    panelBoards.set(_panelBoards);
+    updatePanelboardList(_panelBoards);
+    statusMessage.set({text: "Panelboard " + _panelboardName + " saved", type: 'info'});
+}
+
+export function updatePanelboardList(_panelBoards) {
+    let _panelBoardList = [];
+    for(let i = 0; i < _panelBoards.length; i++){
+        _panelBoardList.push(_panelBoards[i].panelboardName);
+    }
+    panelBoardList.set(_panelBoardList);
+}
+
+export function loadSpecificationsFromPanelboard(n){
+    currentPanelBoard.set(n);
+    const _panelBoards = get(panelBoards);
+    let loadSpecs = [];
+    if (!Array.isArray(_panelBoards) || _panelBoards.length > 0) {
+        if(Array.isArray(_panelBoards) && _panelBoards.length > 0 &&
+            _panelBoards.every(panel => panel.hasOwnProperty("panelboardName") && panel.hasOwnProperty("loadSpecifications"))){
+            updatePanelboardList(_panelBoards);
+            loadSpecs = updateSpecs(_panelBoards[n].loadSpecifications)
+            loadSpecifications.set(loadSpecs);
+            panelboardName.set(_panelBoards[n].panelboardName);
+            statusMessage.set({text: "Panelboard " + _panelBoards[n].panelboardName + " loaded", type: 'info'});
+        }
+    }else{
+        loadSpecifications.set([]); // Set to an empty array
+        statusMessage.set({
+            text: "Warning: Invalid loadSpecifications data. Loading empty array.",
+            type: "warning"
+        });
     }
 }
