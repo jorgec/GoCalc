@@ -1,10 +1,11 @@
 // src/stores/derivedStore.js
 import {derived, get} from 'svelte/store';
 import {
+    currentPanelBoard,
     floorArea,
     globalConduitType,
     globalWireType,
-    loadSpecifications,
+    loadSpecifications, panelBoardCollations,
     panelboardName, panelBoards,
     projectDate,
     projectInCharge,
@@ -29,7 +30,7 @@ import {
     totalProjectCost
 } from './materialInventoryStore';
 import {formatInt} from "../utils/misc.js";
-import {determineWireParams, formatWireDataRow} from "../utils/lookups.js"; // Include inventory store
+import {determineWireParams, formatWireDataRow, wireDataLookup} from "../utils/lookups.js"; // Include inventory store
 
 // Derived store for the CSV data
 export const csvData = derived(
@@ -299,4 +300,49 @@ export const projectData = derived(
 window.myDerived = {
     "csv": csvData,
     "projectData": projectData
+}
+
+// monitoring for derived values
+export function updatePanelBoardCollations(storeName, value, key) {
+    const pboard = get(currentPanelBoard);
+    let _panelBoardCollations = get(panelBoardCollations);
+    if(key in _panelBoardCollations){
+        _panelBoardCollations[key][pboard] = value;
+
+        if(key === "serviceEntranceAmpacity"){
+            const _globalWireType = get(globalWireType);
+            const _globalConduitType = get(globalConduitType);
+            const wireRecommendation = wireDataLookup(value, _globalWireType);
+            _panelBoardCollations["wire"][pboard] = _globalWireType;
+            _panelBoardCollations["conduit"][pboard] = _globalConduitType;
+            _panelBoardCollations["wireRecommendation"][pboard] = wireRecommendation;
+            _panelBoardCollations["highestMotorLoad"][pboard] = get(derivedHighestNonTrivialLoad);
+        }
+
+    }
+    panelBoardCollations.set(_panelBoardCollations);
+    console.log(_panelBoardCollations);
+}
+
+function monitorStore(store, storeName, callback, key) {
+    let lastValue = undefined;
+
+    return store.subscribe(value => {
+        if (value !== null && value !== lastValue) {
+            lastValue = value;
+            callback(storeName, value, key);
+        }
+    });
+}
+
+// Set up monitors
+const unsubscribers = [
+    monitorStore(serviceEntranceAmpacity, 'serviceEntranceAmpacity', updatePanelBoardCollations, "serviceEntranceAmpacity"),
+    monitorStore(totalOfAllAmp, 'totalOfAllAmp', updatePanelBoardCollations, "a"),
+    monitorStore(totalOfAllVA, 'totalOfAllVA', updatePanelBoardCollations, "va")
+];
+
+// Optional: clean up
+export function stopMonitoring() {
+    unsubscribers.forEach(unsub => unsub());
 }

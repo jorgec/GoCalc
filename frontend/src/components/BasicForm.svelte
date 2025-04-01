@@ -16,7 +16,7 @@
         currentPanelBoard, loadSpecifications, panelboardName
     } from "../stores/dataStore";
 
-    import {showSpecForm} from "../stores/uiStore";
+    import {showMainDistributionPanel, showSpecForm} from "../stores/uiStore";
     import {constants} from "../stores/constantsStore";
     import {get} from "svelte/store";
     import {
@@ -73,6 +73,10 @@
     }
 
     let showPanelboardDropdown = false;
+    export function generateMainDistributionPanel() {
+        $showSpecForm = ! $showSpecForm;
+        $showMainDistributionPanel = ! $showMainDistributionPanel;
+    }
 </script>
 
 <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
@@ -262,6 +266,12 @@
                 on:click={() => removePanelboard()}
         >
             Remove Current Panelboard: {$currentPanelBoard}
+        </button>
+        <button
+                class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-blue-900 transition"
+                on:click={() => generateMainDistributionPanel()}
+        >
+            Main Distribution Panel
         </button>
     {/if}
 

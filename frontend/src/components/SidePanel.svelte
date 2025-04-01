@@ -25,7 +25,8 @@
         derivedHighestNonTrivialLoad,
         serviceEntranceAmpacity,
         totalOfAllAmp,
-        totalOfAllVA
+        totalOfAllVA,
+        updatePanelBoardCollations
     } from "../stores/derivedStore";
 
     import {formatWithCommas} from "../utils/misc.js";
@@ -34,6 +35,7 @@
     import {get} from "svelte/store";
 
     $: wireRecommendation = wireDataLookup($serviceEntranceAmpacity, $globalWireType);
+
     $: if ($globalConduitType) {
         loadSpecifications.update(specs => {
             return specs;

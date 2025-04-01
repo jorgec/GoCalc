@@ -15,17 +15,25 @@
         showConsole,
         showCsvTable,
         showImageModal,
-        showLoadSpecs,
+        showLoadSpecs, showMainDistributionPanel,
         showMaterialsInventory,
         showSpecForm,
         statusMessage
     } from "./stores/uiStore"; // Import statusMessage and showLoadSpecs/showSpecForm
-    import {isUnlocked, systemPhaseType} from "./stores/dataStore";
+    import {currentPanelBoard, isUnlocked, panelBoardCollations, systemPhaseType} from "./stores/dataStore";
     import {csvData} from "./stores/derivedStore";
     import {sumCsvData} from "./utils/calculations";
     import {recalcHP} from "./utils/mutators.js";
     import {onMount} from "svelte";
     import {AllowClose} from "../wailsjs/go/main/App.js";
+    import {
+        derivedHighestNonTrivialLoad,
+        serviceEntranceAmpacity,
+        totalOfAllAmp,
+        totalOfAllVA
+    } from "./stores/derivedStore.js";
+    import {get} from "svelte/store";
+    import MainDistributionPanel from "./components/MainDistributionPanel.svelte";
 
     $: if ($csvData) {
         sums = sumCsvData($csvData);
@@ -133,6 +141,11 @@
                         {#if $showSpecForm}
                             <div class="bg-gray-100 border border-gray-300  py-0 px-4 shadow-sm">
                                 <SpecForm/>
+                            </div>
+                        {/if}
+                        {#if $showMainDistributionPanel}
+                            <div class="bg-gray-100 border border-gray-300  p-4 shadow-sm">
+                                <MainDistributionPanel />
                             </div>
                         {/if}
 

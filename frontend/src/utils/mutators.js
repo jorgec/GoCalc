@@ -58,7 +58,6 @@ export function recalcSpecifications() {
     const phase = get(systemPhaseType);
     const {sumOfSpecs, totalSumOfSpecs: total, applicationDemandFactor: adf} =
         getSumOfSpecifications(items);
-
     recalcHP(phase);
     sumOfSpecifications.set(sumOfSpecs);
     totalSumOfSpecs.set(total);

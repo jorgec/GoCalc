@@ -193,7 +193,7 @@ export function determineConduitSize(wireSize) {
 }
 
 export function loadCurrentIFL(volts, load, totalVA) {
-    return (totalVA + ((load * .8)*.5)) / volts;
+    return (totalVA + ((load * .8)*.25)) / volts;
 }
 
 export function getWireRecommendation(value) {

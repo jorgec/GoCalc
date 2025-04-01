@@ -66,6 +66,19 @@ export const panelBoards = writable([]);
 export const panelBoardList = writable([]);
 export const currentPanelBoard = writable(null);
 
+// Main Panel data
+export const panelBoardCollations = writable({
+    "va": [],
+    "a": [],
+    "wire": [],
+    "conduit": [],
+    "branchAT": [],
+    "highestMotorLoad": [],
+    "serviceEntranceAmpacity": [],
+    "wireRecommendation": []
+
+});
+
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {
 
