@@ -3,15 +3,27 @@
     import {currentPanelBoard, panelBoardCollations, panelBoardList, volts} from "../stores/dataStore.js";
     import {get} from "svelte/store";
     import {loadSpecificationsFromPanelboard} from "../utils/mutators.js";
+    import {formatWithCommas} from "../utils/misc.js";
+    import {mainDistributionCalculations} from "../utils/calculations.js";
 
-    const panelBoards = get(panelBoardList);
-    for (let i = 0; i < panelBoards.length; i++) {
-        loadSpecificationsFromPanelboard(i);
+    let _current;
+    let panelBoards;
+    let sums;
+
+    function init() {
+        _current = get(currentPanelBoard);
+        panelBoards = get(panelBoardList);
+        for (let i = 0; i < panelBoards.length; i++) {
+            loadSpecificationsFromPanelboard(i);
+        }
+        currentPanelBoard.set(_current);
+        sums = mainDistributionCalculations();
+        console.log("########################");
+        console.log(sums);
+        console.log($panelBoardCollations);
     }
-    currentPanelBoard.set(0);
 
-    console.log($panelBoardCollations);
-
+    init();
 </script>
 
 
@@ -44,48 +56,100 @@
                 {panel}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                {$panelBoardCollations.va[i]}
+                <code>{formatWithCommas($panelBoardCollations.va[i])}</code>
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                {$volts}
+                <code>{$volts}</code>
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                {$panelBoardCollations.a[i]}
+                <code>{formatWithCommas($panelBoardCollations.a[i])}</code>
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                {$panelBoardCollations.wireRecommendation[i].wiresize_metric}
-                ({$panelBoardCollations.wireRecommendation[i].wiresize_awg}) {$panelBoardCollations.wire[i]}
-            </td>
-            <td class="border border-gray-300 px-4 py-2">
-                {#if $panelBoardCollations.conduit[i] === "PVC"}
-                    {$panelBoardCollations.wireRecommendation[i].conduitsize_metric_pvc}
-                    ({$panelBoardCollations.wireRecommendation[i].conduitsize_imperial_pvc}) Ø {$panelBoardCollations.conduit[i]} pipe
-                {:else}
-                    {$panelBoardCollations.wireRecommendation[i].conduitsize_metric_rmc}
-                    ({$panelBoardCollations.wireRecommendation[i].conduitsize_imperial_rmc}) Ø {$panelBoardCollations.conduit[i]} pipe
+                {#if $panelBoardCollations.wireRecommendation.length > 0 && $panelBoardCollations.wireRecommendation[i]}
+                    {$panelBoardCollations.wireRecommendation[i].wiresize_metric}
+                    ({$panelBoardCollations.wireRecommendation[i].wiresize_awg}) {$panelBoardCollations.wire[i]}
                 {/if}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                {$panelBoardCollations.wireRecommendation[i].branch_AT}
+                {#if $panelBoardCollations.wireRecommendation.length > 0 && $panelBoardCollations.wireRecommendation[i]}
+                    {#if $panelBoardCollations.conduit[i] === "PVC"}
+                        {$panelBoardCollations.wireRecommendation[i].conduitsize_metric_pvc}
+                        ({$panelBoardCollations.wireRecommendation[i].conduitsize_imperial_pvc}) Ø {$panelBoardCollations.conduit[i]} pipe
+                    {:else}
+                        {$panelBoardCollations.wireRecommendation[i].conduitsize_metric_rmc}
+                        ({$panelBoardCollations.wireRecommendation[i].conduitsize_imperial_rmc}) Ø {$panelBoardCollations.conduit[i]} pipe
+                    {/if}
+                {/if}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                {$volts}
+                <code>
+                {#if $panelBoardCollations.wireRecommendation.length > 0 && $panelBoardCollations.wireRecommendation[i]}
+                    {$panelBoardCollations.wireRecommendation[i].branch_AT}
+                {/if}
+                </code>
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                2
+                <code>{$volts}</code>
             </td>
             <td class="border border-gray-300 px-4 py-2">
-                10
+                <code>2</code>
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+                <code>10</code>
             </td>
             <td class="border border-gray-300 px-4 py-2">
                 MCCB
             </td>
         </tr>
     {/each}
-
-
     </tbody>
+    <tfoot>
+        <tr>
+            <th class="border border-gray-300 px-4 py-2 text-left">TOTAL</th>
+            <th class="border border-gray-300 px-4 py-2 text-left">
+                <code>
+                    {formatWithCommas(sums.totalVA)}
+                </code>
+            </th>
+            <th class="border border-gray-300 px-4 py-2 text-left"></th>
+            <th class="border border-gray-300 px-4 py-2 text-left">
+                <code>
+                    {formatWithCommas(sums.totalA)}
+                </code>
+            </th>
+            <th class="border border-gray-300 px-4 py-2 text-left" colspan="7"></th>
+        </tr>
+        <tr>
+            <th class="border border-gray-300 px-4 py-2 text-left font-normal" colspan="4">
+                <strong>Computation @ 80% Demand Factor</strong>
+                <hr class="border-t border-gray-300" />
+                <code>
+                    I = [{sums.totalVA} + (25% * {sums.getMaxLoad} * 80%)]/{get(volts)} = <strong>{formatWithCommas(sums.ifl)} A</strong>
+                </code>
+            </th>
+            <th class="border border-gray-300 px-4 py-2 text-left font-normal" colspan="7">
+                <code>
+                    I = {sums.totalA} * 125% = <strong>{formatWithCommas(sums.i)} A</strong>
+                </code>
+                <hr class="border-t border-gray-300" />
+                USE: {sums.wireRecommendation} wires
+                <hr class="border-t border-gray-300" />
+                1-{sums.at} AT, 2P, 230 V, 10 KAIC for Overcurrent Protection
+            </th>
+        </tr>
+    </tfoot>
 </table>
+<div class="h-20 py-4">
+    <div class="my-4 p-2 px-3">
+        <button
+                type="button"
+                class="bg-gray-600 hover:bg-gray-800 text-gray-200 hover:text-white p-2 rounded"
+                on:click|preventDefault={init}
+        >
+            Refresh Calculations
+        </button>
+    </div>
+</div>
 
 <style>
 

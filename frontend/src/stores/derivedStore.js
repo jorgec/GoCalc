@@ -200,7 +200,6 @@ export const derivedHighestNonTrivialLoad = derived(
                 // Change to motor if it should be just motor category specifically
                 if (spec.category === 'Motor') {
                     let currentAmpLoad = $volts > 0 ? parseFloat(spec.subtotal) || 0 / $volts : 0;
-                    console.log(spec, currentAmpLoad);
                     if (currentAmpLoad > highestNonTrivialLoad[1]) {
                         highestNonTrivialLoad = [i, currentAmpLoad];
                     }
@@ -309,19 +308,19 @@ export function updatePanelBoardCollations(storeName, value, key) {
     if(key in _panelBoardCollations){
         _panelBoardCollations[key][pboard] = value;
 
-        if(key === "serviceEntranceAmpacity"){
-            const _globalWireType = get(globalWireType);
-            const _globalConduitType = get(globalConduitType);
-            const wireRecommendation = wireDataLookup(value, _globalWireType);
-            _panelBoardCollations["wire"][pboard] = _globalWireType;
-            _panelBoardCollations["conduit"][pboard] = _globalConduitType;
-            _panelBoardCollations["wireRecommendation"][pboard] = wireRecommendation;
-            _panelBoardCollations["highestMotorLoad"][pboard] = get(derivedHighestNonTrivialLoad);
-        }
+        const _globalWireType = get(globalWireType);
+        const _globalConduitType = get(globalConduitType);
+        const wireRecommendation = wireDataLookup(value, _globalWireType);
 
+        _panelBoardCollations["wire"][pboard] = _globalWireType;
+        _panelBoardCollations["conduit"][pboard] = _globalConduitType;
+        _panelBoardCollations["wireRecommendation"][pboard] = wireRecommendation;
+        _panelBoardCollations["highestMotorLoad"][pboard] = get(derivedHighestNonTrivialLoad ?? 0);
+        if(wireRecommendation){
+            _panelBoardCollations["branchAT"][pboard] = wireRecommendation.branch_AT;
+        }
     }
     panelBoardCollations.set(_panelBoardCollations);
-    console.log(_panelBoardCollations);
 }
 
 function monitorStore(store, storeName, callback, key) {

@@ -13,7 +13,9 @@
         rowWireType,
         rowConduitType,
         panelBoards,
-        currentPanelBoard, loadSpecifications, panelboardName
+        currentPanelBoard, loadSpecifications, panelboardName,
+        panelBoardList
+
     } from "../stores/dataStore";
 
     import {showMainDistributionPanel, showSpecForm} from "../stores/uiStore";
@@ -21,6 +23,7 @@
     import {get} from "svelte/store";
     import {
         loadSpecificationsFromPanelboard,
+        recalcSpecifications,
         removePanelboardSet,
         saveSpecficiationsToPanelboard
     } from "../utils/mutators.js";
@@ -54,9 +57,16 @@
         }
     }
 
-    function savePanelboard(){
+    function savePanelboard() {
         const panelboardId = get(currentPanelBoard);
-        saveSpecficiationsToPanelboard(panelboardId);
+        const n = saveSpecficiationsToPanelboard(panelboardId);
+        if(panelboardId !== null){
+            loadSpecificationsFromPanelboard(panelboardId);
+            recalcSpecifications();
+        }else{
+            loadSpecificationsFromPanelboard(n);
+            recalcSpecifications();
+        }
     }
 
     function removePanelboard() {
@@ -65,7 +75,7 @@
         newPanelboard();
     }
 
-    function newPanelboard(){
+    function newPanelboard() {
         currentPanelBoard.set(null);
         showSpecForm.set(true);
         panelboardName.set('');
@@ -73,9 +83,10 @@
     }
 
     let showPanelboardDropdown = false;
+
     export function generateMainDistributionPanel() {
-        $showSpecForm = ! $showSpecForm;
-        $showMainDistributionPanel = ! $showMainDistributionPanel;
+        $showMainDistributionPanel = !$showMainDistributionPanel;
+        recalcSpecifications();
     }
 </script>
 
@@ -222,7 +233,8 @@
                         placeholder=" "
                         class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <label for="floorArea" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                <label for="floorArea"
+                       class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
                     Floor Area
                 </label>
             </div>
@@ -238,7 +250,8 @@
                         placeholder=" "
                         class="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <label for="volts" class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                <label for="volts"
+                       class="absolute left-3 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
                     Volts
                 </label>
             </div>
@@ -247,33 +260,31 @@
     </div>
 </div>
 <div class="-mt-4 mb-6 flex gap-2 px-6">
-    <!-- Add Panelboard button -->
-    <button
-            class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-teal-900 transition"
-            on:click={() => newPanelboard()}
-    >
-        Add Panelboard
-    </button>
-    <button
-            class="bg-green-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-green-900 transition"
-            on:click={() => savePanelboard()}
-    >
-        Save Panelboard
-    </button>
-    {#if $currentPanelBoard !== null}
+    {#if ! $showMainDistributionPanel}
         <button
-                class="bg-red-400 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-red-900 transition"
-                on:click={() => removePanelboard()}
+                class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-teal-900 transition"
+                on:click={() => newPanelboard()}
         >
-            Remove Current Panelboard: {$currentPanelBoard}
+            Add Panelboard
         </button>
         <button
-                class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-blue-900 transition"
-                on:click={() => generateMainDistributionPanel()}
+                class="bg-green-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-green-900 transition"
+                on:click={() => savePanelboard()}
         >
-            Main Distribution Panel
+            Save Panelboard {#if $currentPanelBoard !== null}({$currentPanelBoard}){/if}
         </button>
     {/if}
+    <button
+            class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-blue-900 transition"
+            on:click={() => generateMainDistributionPanel()}
+    >
+        {#if $showMainDistributionPanel}
+            Back to Panelboard Modifications
+        {:else}
+            Show Main Distribution Panel
+        {/if}
+    </button>
+
 
     <!-- Panelboards dropdown -->
     <div class="relative">
@@ -283,7 +294,7 @@
         >
             Panelboards
             <svg class="inline w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
         </button>
 
@@ -305,4 +316,13 @@
             </ul>
         {/if}
     </div>
+
+    {#if $currentPanelBoard !== null && ! $showMainDistributionPanel}
+        <button
+                class="right-0 bg-red-400 text-white font-semibold py-2 px-4 rounded-b-md shadow hover:bg-red-900 transition"
+                on:click={() => removePanelboard()}
+        >
+            Remove Current Panelboard: {$currentPanelBoard}
+        </button>
+    {/if}
 </div>

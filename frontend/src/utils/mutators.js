@@ -41,7 +41,7 @@ import {
     wattage
 } from '../stores/dataStore';
 
-import {loadSpecEditId, showLightingInput, statusMessage} from '../stores/uiStore';
+import {loadSpecEditId, showLightingInput, showSpecForm, statusMessage} from '../stores/uiStore';
 
 import {laborPercentage, logisticsCost, materialsInventory} from '../stores/materialInventoryStore';
 
@@ -151,6 +151,7 @@ export function resetSpecForm() {
     threeGang.set(0);
     loadSpecEditId.set(null);
     demandFactor.set(100);
+    horsepower.set(null);
 }
 
 function checkLoadSpecificationForm(rowData, part) {
@@ -466,10 +467,14 @@ export function loadProjectData(projectData) {
         ratings.set('');
         isABC.set(false);
         rowConduitType.set('PVC');
-
+        panelboardName.set('');
+        showSpecForm.set(false);
 
         // Recalculate derived values. VERY important after loading.
-        loadSpecificationsFromPanelboard(0);
+        if(get(panelBoards).length > 0){
+            loadSpecificationsFromPanelboard(0);
+            currentPanelBoard.set(0);
+        }
         setTimeout(() => statusMessage.set({text: '', type: ''}), 5000);
         recalcSpecifications();
         statusMessage.set({text: "Project loaded successfully!", type: 'info'});
@@ -485,6 +490,7 @@ export function removePanelboardSet(n) {
     _panelboards.splice(n, 1);
     panelBoards.set(_panelboards);
     updatePanelboardList(_panelboards);
+    recalcSpecifications();
 }
 
 export function saveSpecficiationsToPanelboard(n) {
@@ -509,7 +515,9 @@ export function saveSpecficiationsToPanelboard(n) {
 
     panelBoards.set(_panelBoards);
     updatePanelboardList(_panelBoards);
+    recalcSpecifications();
     statusMessage.set({text: "Panelboard " + _panelboardName + " saved", type: 'info'});
+    return n;
 }
 
 export function updatePanelboardList(_panelBoards) {
@@ -540,4 +548,5 @@ export function loadSpecificationsFromPanelboard(n) {
             type: "warning"
         });
     }
+    recalcSpecifications();
 }

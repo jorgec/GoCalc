@@ -23,7 +23,7 @@
     import {currentPanelBoard, isUnlocked, panelBoardCollations, systemPhaseType} from "./stores/dataStore";
     import {csvData} from "./stores/derivedStore";
     import {sumCsvData} from "./utils/calculations";
-    import {recalcHP} from "./utils/mutators.js";
+    import {loadSpecificationsFromPanelboard, recalcHP} from "./utils/mutators.js";
     import {onMount} from "svelte";
     import {AllowClose} from "../wailsjs/go/main/App.js";
     import {
@@ -119,10 +119,14 @@
         modalImage.set(null);
     }
 
+    $: if($currentPanelBoard !== null){
+        loadSpecificationsFromPanelboard($currentPanelBoard);
+    }
+
 </script>
 
 <div class="flex flex-col h-screen">
-    {#if $isUnlocked}
+    {#if !$isUnlocked}
         {#if $showImageModal && $modalImage}
             <ImageModal on:close={closeModal}>
                 <img src={$modalImage} alt="{$modalImage}" style="max-width: 100%;"/>
@@ -137,15 +141,16 @@
                 {:else}
 
                     <BasicForm/>
-                    <div class="container-fluid mx-auto px-4 mb-2 bg-gray-200">
-                        {#if $showSpecForm}
-                            <div class="bg-gray-100 border border-gray-300  py-0 px-4 shadow-sm">
-                                <SpecForm/>
-                            </div>
-                        {/if}
+                    <div class="container-fluid mx-auto px-4 mb-2 bg-gray-100">
                         {#if $showMainDistributionPanel}
                             <div class="bg-gray-100 border border-gray-300  p-4 shadow-sm">
                                 <MainDistributionPanel />
+                            </div>
+                        {/if}
+
+                        {#if $showSpecForm}
+                            <div class="bg-gray-100 border border-gray-300  py-0 px-4 shadow-sm">
+                                <SpecForm/>
                             </div>
                         {/if}
 

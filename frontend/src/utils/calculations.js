@@ -1,10 +1,17 @@
 // src/utils/calculations.js
 import {get} from 'svelte/store';
 import {constants} from '../stores/constantsStore';
-import {selectedLightingDemandFactorID, volts} from '../stores/dataStore';
+import {
+    globalConduitType,
+    globalWireType,
+    panelBoardCollations,
+    selectedLightingDemandFactorID,
+    volts
+} from '../stores/dataStore';
 import {formatDecimal} from "./misc.js";
 import {csvData} from "../stores/derivedStore.js";
-import {onDestroy} from "svelte"; // Import volts
+import {onDestroy} from "svelte";
+import {wireDataLookup} from "./lookups.js"; // Import volts
 
 
 /**
@@ -205,6 +212,65 @@ export function getWireRecommendation(value) {
     }
 
     return 0.00;
+}
+
+function getMax(arr){
+    if(! Array.isArray(arr)){
+        return 0;
+    }
+    if(arr.length <=0){
+        return 0;
+    }
+    let max = parseFloat(arr[0]);
+    for(let i = 0; i < arr.length; i++){
+        if(max > parseFloat(arr[i])){
+            max = parseFloat(arr[i]);
+        }
+    }
+    return parseFloat(max);
+}
+
+function getSum(arr){
+    if(! Array.isArray(arr)){
+        return 0;
+    }
+    if(arr.length <=0){
+        return 0;
+    }
+    let sum = 0.0;
+    for(let i = 0; i < arr.length; i++){
+        sum += parseFloat(arr[i]);
+    }
+    return parseFloat(sum);
+}
+
+export function mainDistributionCalculations(){
+    const collations = get(panelBoardCollations);
+    let sums = {};
+    
+    const wireType = get(globalWireType);
+    const conduitType = get(globalConduitType);
+
+    sums.totalVA = collations.va.reduce((sum, val) => sum + (typeof val === 'number' ? val : Number(val) || 0), 0);
+    sums.totalA = collations.a.reduce((sum, val) => sum + (typeof val === 'number' ? val : Number(val) || 0), 0);
+    sums.getMaxLoad = getMax(collations.highestMotorLoad);
+    sums.ifl = loadCurrentIFL(get(volts), sums.getMaxLoad, sums.totalVA);
+    sums.i = sums.totalA * 1.25;
+    sums.at = getSum(collations.branchAT);
+
+    const wireRecommendation = wireDataLookup(sums.i, wireType);
+    sums.wireRecommendation = `${wireRecommendation.wiresize_metric} (${wireRecommendation.wiresize_awg}) ${wireType}`;
+
+    let conduitRecommendation = '';
+    if(conduitType === "PVC"){
+        conduitRecommendation = `${wireRecommendation.conduitsize_metric_pvc} (${wireRecommendation.conduitsize_imperial_pvc}) Ø ${conduitType}`;
+    }else{
+        conduitRecommendation = `${wireRecommendation.conduitsize_metric_rmc} (${wireRecommendation.conduitsize_imperial_rmc}) Ø ${conduitType}`;
+    }
+    sums.conduitRecommendation = conduitRecommendation;
+    return sums;
+
+
 }
 
 export function sumCsvData(data) {

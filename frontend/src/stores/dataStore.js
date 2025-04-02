@@ -79,6 +79,17 @@ export const panelBoardCollations = writable({
 
 });
 
+export const mainDistributionSums = writable({
+    totalVA: 0,
+    totalA: 0,
+    getMaxLoad: 0,
+    ifl: 0,
+    i: 0,
+    wireRecommendation: '',
+    conduitRecommendation: '',
+    at: 0
+});
+
 export function updateLoadSpecifications(path, value) {
     loadSpecifications.update(current => {
 
