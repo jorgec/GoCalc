@@ -1,0 +1,58 @@
+Software Designing and Development
+Materials
+
+This section discusses the materials/equipment used in the conduct of the study. Hardware and software used in the study are also included.
+
+Hardware Specifications
+
+To run and develop desktop applications using the Wails framework in conjunction with the Svelte frontend library, specific system requirements must be satisfied. Wails is a modern application framework that facilitates the development of native desktop applications using the Go programming language for backend logic, and frontend frameworks such as Svelte for the user interface [1]. These requirements differ depending on whether the software is being run by an end user or being developed by a programmer.
+
+For end users, the minimum requirements are comparatively lightweight. The system must be running a 64-bit operating system, with official support for Windows 10 or later, macOS 11 (Big Sur) or newer, and Linux distributions that include GNU C Library (glibc) version 2.28 or higher, such as Ubuntu 20.04+, Fedora 30+, or CentOS 8+ [2]. On Windows and macOS, the Wails build process produces a self-contained binary, packaging all required dependencies. However, on Linux, certain shared libraries—such as GTK 3, WebKit2GTK, and GLib—must be installed at the system level to support GUI rendering [3].
+
+In contrast, software development using Wails and Svelte requires a more comprehensive environment. Developers must install Go version 1.21 or higher, along with Node.js (version 18 LTS or newer), which is necessary for managing frontend dependencies via npm or yarn [4]. The Wails CLI, which serves as the command-line interface for project generation, live reloading, and builds, is installed through the Go toolchain [1]. In terms of hardware, a minimum of 4 GB of RAM is recommended, though 8 GB or more provides a smoother development experience. At least 1 GB of free disk space is also advised to accommodate Go modules and JavaScript packages. A typical development workflow involves initializing a project via wails init using the Svelte template, installing dependencies using npm install, and running a live development server using wails dev [5].
+
+Internet access is essential during initial setup to fetch package dependencies, and Git is typically employed for version control. A modern text editor or integrated development environment (IDE), such as Visual Studio Code or GoLand, is also recommended for efficient development workflows and debugging capabilities.
+
+Software Design Model
+
+This section includes the software development life cycle and the
+corresponding phases of development. 
+
+Extreme Programming (XP) is an Agile software development methodology that emphasizes customer satisfaction, simplicity in design, rapid feedback, and continuous improvement. XP is particularly well-suited to projects with rapidly changing or poorly defined requirements, and has been successfully adapted even for small-scale and solo development contexts [6]. Though XP does not rigidly define lifecycle phases in the traditional sense, its iterative nature allows for a structured interpretation of the software development process through the lenses of analysis, design, coding, testing, and evaluation.
+
+In the analysis phase, XP substitutes traditional requirements documentation with user stories—concise, plain-language descriptions of desired functionality written from the perspective of the end user [7]. These stories are collected and prioritized through constant interaction with the customer (or in solo development, a proxy such as a self-assigned product vision). The goal of this phase is not exhaustive specification but just-in-time clarification, ensuring that work is driven by immediate user value and current context rather than speculative planning.
+
+The design phase in XP is deliberately minimalistic, following the principle of “do the simplest thing that could possibly work” [8]. Rather than large-scale upfront architectural design, XP encourages incremental design through constant refactoring and emergent structure. The system architecture evolves naturally as the codebase grows, guided by the ongoing addition of new features and the reworking of existing ones. This approach lowers the cost of change and avoids overengineering, a common risk in solo or rapidly evolving projects.
+
+The coding phase is central to XP and is tightly coupled with testing. Developers write small, functional units of code that directly support user stories. Practices such as pair programming, though originally intended for teams, may be simulated by solo developers through techniques like rubber duck debugging or frequent commits and reviews. The code is integrated frequently—often several times a day—ensuring that all changes are visible, testable, and mergeable without conflict [9].
+
+The testing phase in XP is distinguished by the principle of Test-Driven Development (TDD), in which automated tests are written before the code they validate [10]. This ensures that tests serve both as specifications and as living documentation. Unit tests validate individual components, while functional and integration tests verify that larger subsystems behave as intended. The test suite grows organically alongside the application, enabling fearless refactoring and regression prevention throughout the lifecycle.
+
+Finally, the evaluation phase in XP takes place continuously, rather than at fixed milestones. Feedback loops are embedded at every level—from tests and integration checks to informal retrospectives and user reviews. Developers reflect frequently on what works, what does not, and how processes or code can be improved. This reflective practice supports XP’s overarching goal: to sustainably deliver high-quality software that continuously adapts to the user’s evolving needs [11].
+
+
+⸻
+
+References
+
+[1] Wails Project. “Wails Documentation – Introduction,” Wails.io, 2024. [Online]. Available: https://wails.io/docs/introduction/overview
+
+[2] Wails Project. “Supported Platforms,” Wails.io, 2024. [Online]. Available: https://wails.io/docs/gettingstarted/installation
+
+[3] WebKitGTK Team. “Dependencies – WebKitGTK,” WebKit.org, 2023. [Online]. Available: https://webkitgtk.org/
+
+[4] Go Project. “Download and Install – The Go Programming Language,” golang.org, 2024. [Online]. Available: https://go.dev/doc/install
+
+[5] Wails Project. “Getting Started with Svelte,” Wails.io, 2024. [Online]. Available: https://wails.io/templates/svelte
+
+[6] D. Wells, “Extreme Programming: A Gentle Introduction,” 2000. [Online]. Available: https://www.extremeprogramming.org/
+
+[7] M. Cohn, User Stories Applied: For Agile Software Development, Addison-Wesley, 2004.
+
+[8] K. Beck, Extreme Programming Explained: Embrace Change, 2nd ed., Addison-Wesley, 2004.
+
+[9] A. Cockburn and L. Williams, “The Costs and Benefits of Pair Programming,” in Extreme Programming Examined, Addison-Wesley, 2001, pp. 223–243.
+
+[10] K. Beck, Test-Driven Development: By Example, Addison-Wesley, 2003.
+
+[11] R. Jeffries, “What is Extreme Programming?” [Online]. Available: https://ronjeffries.com/xprog/what-is-extreme-programming/
