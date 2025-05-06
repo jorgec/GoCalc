@@ -133,7 +133,7 @@
                     I = {sums.totalA} * 125% = <strong>{formatWithCommas(sums.i)} A</strong>
                 </code>
                 <hr class="border-t border-gray-300" />
-                USE: 2 {sums.wireRecommendation} wires and {sums.conduitRecommendation} conduits
+                USE: 2 - {sums.wireRecommendation} wires and {sums.conduitRecommendation} conduits
                 <hr class="border-t border-gray-300" />
                 1-{sums.at} AT, 2P, 230 V, 10 KAIC for Overcurrent Protection
             </th>

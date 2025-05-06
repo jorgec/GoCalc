@@ -259,6 +259,7 @@ export function mainDistributionCalculations(){
     sums.at = getSum(collations.branchAT);
 
     const wireRecommendation = wireDataLookup(sums.i, wireType);
+
     sums.wireRecommendation = `${wireRecommendation.wiresize_metric} (${wireRecommendation.wiresize_awg}) ${wireType}`;
 
     let conduitRecommendation = '';

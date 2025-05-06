@@ -61,8 +61,14 @@ export function wireDataLookup(wireSize, wireType = "THHN", transform = true) {
 }
 
 export function formatWireDataRow(wireDataRow){
+    let digits = 1;
+    let tmp = parseFloat(wireDataRow.wiresize_metric);
+    if(tmp > 100){
+        digits = 0;
+    }
+    tmp = tmp.toFixed(1);
     return {
-        "wiresize_metric": parseFloat(wireDataRow.wiresize_metric).toFixed(1) + "mm²",
+        "wiresize_metric": tmp + "mm²",
         "wiresize_awg": "#" + wireDataRow.wiresize_awg + " AWG",
         "THW_rating": wireDataRow.THW_rating,
         "THHN_rating": wireDataRow.THHN_rating,
